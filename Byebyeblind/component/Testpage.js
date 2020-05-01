@@ -50,6 +50,7 @@ export class Testpage extends Component {
         return q;
     }
 
+
     getNaturalKs(xs, ys, ks) {
         var n = xs.length - 1;
         var A = this.zerosMat(n + 1, n + 2);
