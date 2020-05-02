@@ -121,7 +121,7 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <HomeScreen/>
+      <HomeScreen />
     </NavigationContainer>
   );
 }
