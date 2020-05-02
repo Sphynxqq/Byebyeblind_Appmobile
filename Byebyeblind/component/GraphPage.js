@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   PanResponder,
   Button,
+  Platform,
 } from 'react-native';
+import Svg from 'react-native-svg';
 
 import {
   VictoryChart,
@@ -53,6 +55,70 @@ export class GraphPage extends Component {
 
   //ขนาดหน้าจอโทรศัพท์ที่ใช้เทส width:731, height:411
   render() {
+    const sampleData = [
+      {x: new Date(1982, 1, 1), y: 125},
+      {x: new Date(1987, 1, 1), y: 257},
+      {x: new Date(1993, 1, 1), y: 345},
+      {x: new Date(1997, 1, 1), y: 515},
+    ];
+    const chart = (
+      <VictoryChart
+        events={[
+          {
+            childName: 'line',
+            target: 'data',
+            eventHandlers: {
+              onPress: () => {
+                return [
+                  {
+                    childName: 'line',
+                    mutation: (props) => {
+                      const fill = props.style.fill;
+                      return fill === '#030303'
+                        ? null
+                        : {style: {fill: '#030303'}};
+                    },
+                  },
+                ];
+              },
+            },
+          },
+        ]}
+        padding={{top: 22, bottom: 10, left: 45, right: 11}}
+        width={700}
+        height={205}>
+        <VictoryLine
+          name="line"
+          data={sampleData}
+          style={{
+            data: {stroke: 'tomato'},
+          }}
+          animate={{
+            duration: 2000,
+            onLoad: {duration: 1000},
+          }}
+          interpolation="linear"
+          containerComponent={
+            <VictoryCursorContainer
+              cursorDimension="x"
+              cursorLabel={({datum}) =>
+                `${round(datum.x, 2)}, ${round(datum.y, 2)}`
+              }
+            />
+          }
+        />
+
+        <VictoryScatter
+          name="scatter"
+          data={sampleData}
+          size={5}
+          style={{
+            data: {fill: '#c43a31'},
+          }}
+          labels={({datum}) => datum.y}
+        />
+      </VictoryChart>
+    );
     return (
       <View>
         <View style={styles.setBtnDate}>
@@ -90,72 +156,7 @@ export class GraphPage extends Component {
           // // onResponderTerminationRequest={(ev) => true}
           // // onResponderTerminate={this.onTouchEvent.bind(this, "onResponderTerminate")}
         >
-          <VictoryChart
-            events={[
-              {
-                childName: 'line',
-                target: 'data',
-                eventHandlers: {
-                  onPress: () => {
-                    return [
-                      {
-                        childName: 'line',
-                        mutation: props => {
-                          const fill = props.style.fill;
-                          return fill === '#030303'
-                            ? null
-                            : {style: {fill: '#030303'}};
-                        },
-                      },
-                    ];
-                  },
-                },
-              },
-            ]}
-            padding={{top: 22, bottom: 10, left: 45, right: 11}}
-            width={700}
-            height={205}>
-            <VictoryLine
-              name="line"
-              data={[
-                {x: new Date(1982, 1, 1), y: 125},
-                {x: new Date(1987, 1, 1), y: 257},
-                {x: new Date(1993, 1, 1), y: 345},
-                {x: new Date(1997, 1, 1), y: 515},
-              ]}
-              style={{
-                data: {stroke: 'tomato'},
-              }}
-              animate={{
-                duration: 2000,
-                onLoad: {duration: 1000},
-              }}
-              interpolation="linear"
-              containerComponent={
-                <VictoryCursorContainer
-                  cursorDimension="x"
-                  cursorLabel={({datum}) =>
-                    `${round(datum.x, 2)}, ${round(datum.y, 2)}`
-                  }
-                />
-              }
-            />
-
-            <VictoryScatter
-              name="scatter"
-              data={[
-                {x: new Date(1982, 1, 1), y: 125},
-                {x: new Date(1987, 1, 1), y: 257},
-                {x: new Date(1993, 1, 1), y: 345},
-                {x: new Date(1997, 1, 1), y: 515},
-              ]}
-              size={5}
-              style={{
-                data: {fill: '#c43a31'},
-              }}
-              labels={({datum}) => datum.y}
-            />
-          </VictoryChart>
+          {Platform.OS === 'ios' ? chart : <Svg>{chart}</Svg>}
         </View>
 
         <View>
