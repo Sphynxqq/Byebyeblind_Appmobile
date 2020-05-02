@@ -23,13 +23,15 @@ class HomeScreen extends React.Component {
   componentDidMount() {
     console.log('start');
     fetch('http://10.90.3.75/ticker_name')
-      .then(response => response.json())
-      .then(ticker_name => {
-        this.state.name = Object.keys(ticker_name).map(key => ticker_name[key]);
+      .then((response) => response.json())
+      .then((ticker_name) => {
+        this.state.name = Object.keys(ticker_name).map(
+          (key) => ticker_name[key],
+        );
         console.log(this.state.name[0].TICKER);
       });
 
-    Voice.onSpeechResults = res => {
+    Voice.onSpeechResults = (res) => {
       const key = res.value[0];
       this.speech2(res.value[0]);
       Alert.alert(
