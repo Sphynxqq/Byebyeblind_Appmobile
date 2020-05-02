@@ -1,130 +1,112 @@
-import React, { Component } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-  TextInput,
-  Image,
-  ImageBackground,
-  Alert,
-} from 'react-native';
+import React from 'react';
+import {StyleSheet, View, Alert} from 'react-native';
 
 import Tts from 'react-native-tts';
-import Voice from 'react-native-voice'
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
-import { GraphPage } from './GraphPage';
-import { Loginfb } from './Loginfb';
-import { FavoritePage } from './FavoritePage';
-
+import Voice from 'react-native-voice';
+import {createAppContainer, createSwitchNavigator} from 'react-navigation';
+import {GraphPage} from './GraphPage';
+import {FavoritePage} from './FavoritePage';
 
 class HomeScreen extends React.Component {
-
   constructor() {
-    super()
+    super();
     this.speech();
 
     this.state = {
       check: true,
-      name: []
-    }
+      name: [],
+    };
   }
 
   componentDidMount() {
-    console.log("start")
+    console.log('start');
     fetch('http://10.90.3.75/ticker_name')
       .then(response => response.json())
       .then(ticker_name => {
-        this.state.name = Object.keys(ticker_name).map(key => (ticker_name[key]))
+        this.state.name = Object.keys(ticker_name).map(key => ticker_name[key]);
         console.log(this.state.name[0].TICKER);
-      })
+      });
 
-    Voice.onSpeechResults = (res) => {
+    Voice.onSpeechResults = res => {
       const key = res.value[0];
       this.speech2(res.value[0]);
       Alert.alert(
-        "ยืนยัน",
+        'ยืนยัน',
         res.value[0],
         [
           {
-            text: "ยกเลิก",
+            text: 'ยกเลิก',
             onPress: () => {
               return null;
-            }
+            },
           },
           {
-            text: "ตกลง",
+            text: 'ตกลง',
             onPress: async () => {
-
-              if (key != "favorite") {
-                this.stock_check(key)
+              if (key != 'favorite') {
+                this.stock_check(key);
                 alert(this.state.check);
                 if (this.state.check == true) {
-                  this.props.navigation.navigate('Graph', { key })
+                  this.props.navigation.navigate('Graph', {key});
                 } else {
-                  this.speech3()
+                  this.speech3();
                 }
-
               } else {
-                this.props.navigation.navigate('Favorite', { key })
+                this.props.navigation.navigate('Favorite', {key});
               }
-            }
-          }
+            },
+          },
         ],
-        { cancelable: false }
-      )
-
-    }
-
+        {cancelable: false},
+      );
+    };
   }
 
   stock_check(key) {
-    for (let i = 0; i < (this.state.name).length; i++) {
-      if (this.state.name[i].TICKER == key) {
-        console.log("check : " + this.state.name[i].TICKER)
-        this.setState({ check: true });
+    for (let i = 0; i < this.state.name.length; i++) {
+      if (this.state.name[i].TICKER === key) {
+        console.log('check : ' + this.state.name[i].TICKER);
+        this.setState({check: true});
         break;
       } else {
-        this.setState({ check: false });
+        this.setState({check: false});
       }
     }
   }
 
   speech() {
-    Tts.speak('Welcome to Bye Bye Blind', { androidParams: { KEY_PARAM_PAN: -1, KEY_PARAM_VOLUME: 1.0, KEY_PARAM_STREAM: 'STREAM_MUSIC' } });
-
+    Tts.speak('Welcome to Bye Bye Blind', {
+      androidParams: {
+        KEY_PARAM_PAN: -1,
+        KEY_PARAM_VOLUME: 1.0,
+        KEY_PARAM_STREAM: 'STREAM_MUSIC',
+      },
+    });
   }
   speech2(res) {
-    Tts.speak(res + 'Confirm', { androidParams: { KEY_PARAM_PAN: -1, KEY_PARAM_VOLUME: 1.0, KEY_PARAM_STREAM: 'STREAM_MUSIC' } });
-
+    Tts.speak(res + 'Confirm', {
+      androidParams: {
+        KEY_PARAM_PAN: -1,
+        KEY_PARAM_VOLUME: 1.0,
+        KEY_PARAM_STREAM: 'STREAM_MUSIC',
+      },
+    });
   }
   speech3() {
-    Tts.speak('We dont have a stock', { androidParams: { KEY_PARAM_PAN: -1, KEY_PARAM_VOLUME: 1.0, KEY_PARAM_STREAM: 'STREAM_MUSIC' } });
-
+    Tts.speak('We dont have a stock', {
+      androidParams: {
+        KEY_PARAM_PAN: -1,
+        KEY_PARAM_VOLUME: 1.0,
+        KEY_PARAM_STREAM: 'STREAM_MUSIC',
+      },
+    });
   }
 
   render() {
     return (
       <View>
-        {/* <View style={styles.setflex}>
-          <Text style={styles.fontHomepage}>Bye Bye Blind</Text>
-
-          <View style={styles.voiceBtn}>
-            <TouchableOpacity onPress={() => Voice.start('en-US')}>
-              <Image source={require('../assets/iconmicro.png')}></Image>
-            </TouchableOpacity>
-          </View>
-
-          <Loginfb></Loginfb>
-        </View> */}
-        
-        <GraphPage/>
+        <GraphPage />
         {/* <FavoritePage/> */}
-        
       </View>
     );
   }
@@ -138,8 +120,7 @@ const RootStack = createSwitchNavigator(
 
   {
     initialRouteName: 'Home',
-  }
-
+  },
 );
 
 const AppContainer = createAppContainer(RootStack);
@@ -149,60 +130,3 @@ export default class App extends React.Component {
     return <AppContainer />;
   }
 }
-
-const styles = StyleSheet.create({
-  setflex: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: '#01273C'
-  },
-
-  fontHomepage: {
-    fontSize: 50,
-    color: '#ffffff',
-    fontWeight: '700',
-  },
-
-  voiceBtn: {
-    marginTop: 25,
-  },
-
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export default class App extends React.Component {
-//   render() {
-//     return <AppContainer />;
-//   }
-// }
-
-
-// export default class App extends Component {
-
-
-
-//   render() {
-//     return (
-
-
-//     )
-//   }
-// }
-
-// const styles = StyleSheet.create({
-
-// })
-
-

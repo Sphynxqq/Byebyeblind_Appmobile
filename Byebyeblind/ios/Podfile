@@ -34,11 +34,8 @@ target 'Byebyeblind' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
-  pod 'TextToSpeech', :path => '../node_modules/react-native-tts'
 
-  pod 'react-native-voice', :path => '../node_modules/react-native-voice'
 
   target 'ByebyeblindTests' do
     inherit! :search_paths
