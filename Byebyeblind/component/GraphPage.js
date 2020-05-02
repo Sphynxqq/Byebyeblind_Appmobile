@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
-import { Platform, AppRegistry, FlatList, StyleSheet, Text, View, Image, TouchableOpacity, PanResponder, Button } from 'react-native';
+import {
+    Platform, AppRegistry, FlatList, StyleSheet, Text, View, Image,
+    TouchableOpacity, PanResponder, Button, Dimensions, UIManager, findNodeHandle
+} from 'react-native';
 
-import { VictoryBar, VictoryAnimation, VictoryStack, VictoryChart, VictoryLine, VictoryScatter, VictoryArea, VictoryAxis, VictoryBoxPlot, VictoryContainer, VictoryBrushContainer, VictoryClipContainer, VictoryGroup, VictoryLegend, VictoryPie, VictoryTheme, VictoryLabel, VictoryVoronoiContainer, VictoryTooltip, VictoryZoomContainer } from "victory-native";
-import { RGBA_ASTC_10x5_Format } from 'three';
-
+import {
+    VictoryBar, VictoryAnimation, VictoryStack, VictoryChart,
+    VictoryLine, VictoryScatter, VictoryArea, VictoryAxis, VictoryBoxPlot,
+    VictoryContainer, VictoryBrushContainer, VictoryClipContainer, VictoryGroup,
+    VictoryLegend, VictoryPie, VictoryTheme, VictoryLabel, VictoryVoronoiContainer,
+    VictoryTooltip, VictoryZoomContainer, Chart, VictoryCursorContainer, round
+} from "victory-native";
+import { RGBA_ASTC_10x5_Format, Line } from 'three';
 
 export class GraphPage extends Component {
-
     constructor() {
         super();
         this.state = {};
@@ -28,44 +35,22 @@ export class GraphPage extends Component {
             onMoveShouldSetPanResponder: (ev, gs) => true,
             onMoveShouldSetPanResponderCapture: (ev, gs) => true,
             onPanResponderMove: (ev, gs) => {
-                // X position relative to the page
-                //console.log(e.nativeEvent.pageX);
-                console.log(`page_x: ${ev.nativeEvent.pageX}`);
-                console.log(`page_y: ${ev.nativeEvent.pageY}`);
-                console.log(`location_x: ${ev.nativeEvent.locationX}`);
-                console.log(`location_y: ${ev.nativeEvent.locationY}`);
-                console.log(`target: ${ev.nativeEvent.target}`);
+                // The X,Y position of the touch, relative to the root element
+                // console.log(`page_x: ${ev.nativeEvent.pageX}`);
+                // console.log(`page_y: ${ev.nativeEvent.pageY}`);
 
-                // The X position of the touch, relative to the element
-                //console.log(e.nativeEvent.positionX);
+                // The X,Y position of the touch, relative to the element
+                // console.log(`location_x: ${ev.nativeEvent.locationX}`);
+                // console.log(`location_y: ${ev.nativeEvent.locationY}`);
+
+                // The node id of the element receiving the touch event
+                // console.log(`target: ${ev.nativeEvent.target}`);
             },
         });
     }
 
-    onTouchEvent(name, ev) {
-        // console.log(`[${name}]`);
-        // console.log(`page_x: ${ev.nativeEvent.pageX}`);
-        // console.log(`page_y: ${ev.nativeEvent.pageY}`);
-        // console.log(`location_x: ${ev.nativeEvent.locationX}`);
-        // console.log(`location_y: ${ev.nativeEvent.locationY}`);
-        // console.log(`target: ${ev.nativeEvent.target}`);
-    }
-
+    //ขนาดหน้าจอโทรศัพท์ที่ใช้เทส width:731, height:411
     render() {
-
-        
-
-
-        const data = [
-            { x: new Date(1982, 1, 1), y: 125 },
-            { x: new Date(1987, 1, 1), y: 257 },
-            { x: new Date(1993, 1, 1), y: 345 },
-            { x: new Date(1997, 1, 1), y: 515 },
-            { x: new Date(2001, 1, 1), y: 132 },
-            { x: new Date(2005, 1, 1), y: 305 },
-            { x: new Date(2011, 1, 1), y: 270 },
-            { x: new Date(2015, 1, 1), y: 470 }
-        ];
 
         return (
             <View >
@@ -90,6 +75,7 @@ export class GraphPage extends Component {
                         }}
                         title="MONTH"
                     />
+                    <Text>{this.props.answer}</Text>
                 </View>
 
                 <View
@@ -103,32 +89,74 @@ export class GraphPage extends Component {
                 // // onResponderTerminationRequest={(ev) => true}
                 // // onResponderTerminate={this.onTouchEvent.bind(this, "onResponderTerminate")}
                 >
-                    <VictoryChart height={250} scale={{ x: "time" }}
-                        containerComponent={
-                            <VictoryZoomContainer responsive={false}
-                                zoomDimension="x"
-                                zoomDomain={this.state.zoomDomain}
-                                onZoomDomainChange={this.handleZoom.bind(this)}
-                            />
-                        }
+
+                    <VictoryChart
+                        events={[{
+                            childName: "line",
+                            target: "data",
+                            eventHandlers: {
+                                onPress: () => {
+                                    return [{
+                                        childName: "line",
+                                        mutation: (props) => {
+                                            const fill = props.style.fill;
+                                            return fill === "#030303" ? null : { style: { fill: "#030303" } };
+                                        }
+                                    }];
+                                }
+                            }
+                        }]}
+                        padding={{ top: 22, bottom: 10, left: 45, right: 11 }}
+                        width={700}
+                        height={205}
                     >
-                        <VictoryLine data={data}
+
+                        <VictoryLine
+                            name="line"
+                            data={[
+                                { x: new Date(1982, 1, 1), y: 125 },
+                                { x: new Date(1987, 1, 1), y: 257 },
+                                { x: new Date(1993, 1, 1), y: 345 },
+                                { x: new Date(1997, 1, 1), y: 515 }
+                            ]}
                             style={{
                                 data: { stroke: "tomato" }
                             }}
-                            
+                            animate={{
+                                duration: 2000,
+                                onLoad: { duration: 1000 }
+                            }}
+                            interpolation="linear"
+                            containerComponent={
+                                <VictoryCursorContainer
+                                    cursorDimension="x"
+                                    cursorLabel={({ datum }) => `${round(datum.x, 2)}, ${round(datum.y, 2)}`}
+                                />
+                            }
                         />
 
-                        <VictoryScatter data={data}
+
+                        <VictoryScatter
+                            name="scatter"
+                            data={[
+                                { x: new Date(1982, 1, 1), y: 125 },
+                                { x: new Date(1987, 1, 1), y: 257 },
+                                { x: new Date(1993, 1, 1), y: 345 },
+                                { x: new Date(1997, 1, 1), y: 515 }
+                            ]}
                             size={5}
                             style={{
                                 data: { fill: "#c43a31" }
                             }}
-                            
+                            labels={({ datum }) => datum.y}
                         />
+
 
                     </VictoryChart>
 
+                </View>
+
+                <View>
                     <View style={styles.cardview}>
                         <View style={styles.displayincard}>
                             <Text>เปิด</Text>
@@ -170,7 +198,6 @@ export class GraphPage extends Component {
                         </TouchableOpacity>
 
                     </View>
-
                 </View>
 
 
@@ -189,14 +216,32 @@ export class GraphPage extends Component {
                             />
                         }
                     >
-                        <VictoryLine data={data}
+                        <VictoryLine data={[
+                            { x: new Date(1982, 1, 1), y: 125 },
+                            { x: new Date(1987, 1, 1), y: 257 },
+                            { x: new Date(1993, 1, 1), y: 345 },
+                            { x: new Date(1997, 1, 1), y: 515 },
+                            { x: new Date(2001, 1, 1), y: 132 },
+                            { x: new Date(2005, 1, 1), y: 305 },
+                            { x: new Date(2011, 1, 1), y: 270 },
+                            { x: new Date(2015, 1, 1), y: 470 }
+                        ]}
                             style={{
                                 data: { stroke: "tomato" }
                             }}
 
                         />
 
-                        <VictoryScatter data={data}
+                        <VictoryScatter data={[
+                            { x: new Date(1982, 1, 1), y: 125 },
+                            { x: new Date(1987, 1, 1), y: 257 },
+                            { x: new Date(1993, 1, 1), y: 345 },
+                            { x: new Date(1997, 1, 1), y: 515 },
+                            { x: new Date(2001, 1, 1), y: 132 },
+                            { x: new Date(2005, 1, 1), y: 305 },
+                            { x: new Date(2011, 1, 1), y: 270 },
+                            { x: new Date(2015, 1, 1), y: 470 }
+                        ]}
                             size={5}
                             style={{ data: { fill: "#c43a31" } }}
                         />
@@ -272,7 +317,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '100%',
         height: '100%',
-        // backgroundColor: '#01273C'
+        //backgroundColor: '#01273C'
     },
     setbtnvoice: {
         width: 130,

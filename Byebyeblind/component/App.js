@@ -20,7 +20,6 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { GraphPage } from './GraphPage';
 import { Loginfb } from './Loginfb';
 import { FavoritePage } from './FavoritePage';
-import { Testpage } from './Testpage';
 
 
 class HomeScreen extends React.Component {
@@ -123,10 +122,8 @@ class HomeScreen extends React.Component {
           <Loginfb></Loginfb>
         </View> */}
         
-        {/* <GraphPage/> */}
+        <GraphPage/>
         {/* <FavoritePage/> */}
-
-        <Testpage/>
         
       </View>
     );
