@@ -13,6 +13,29 @@ import {
 } from "victory-native";
 import { RGBA_ASTC_10x5_Format, Line } from 'three';
 
+const dataTest =
+    [
+        { x: new Date(2000, 1, 10), y: 125 },
+        { x: new Date(2001, 2, 11), y: 257 },
+        { x: new Date(2002, 3, 15), y: 345 },
+        { x: new Date(2003, 4, 16), y: 515 },
+        { x: new Date(2004, 2, 24), y: 200 },
+        { x: new Date(2005, 8, 1), y: 100 },
+        { x: new Date(2006, 9, 2), y: 123 },
+        { x: new Date(2007, 11, 3), y: 191 },
+        { x: new Date(2008, 12, 4), y: 555 },
+        { x: new Date(2009, 5, 7), y: 632 },
+        { x: new Date(2010, 6, 20), y: 112 },
+        { x: new Date(2015, 7, 22), y: 90 },
+        { x: new Date(2016, 8, 21), y: 175 },
+        { x: new Date(2017, 3, 26), y: 189 },
+        { x: new Date(2018, 4, 30), y: 344 },
+        { x: new Date(2019, 8, 24), y: 349 },
+        { x: new Date(2020, 1, 11), y: 178 },
+        { x: new Date(2020, 2, 12), y: 231 }
+    ]
+
+
 export class GraphPage extends Component {
     constructor() {
         super();
@@ -106,19 +129,22 @@ export class GraphPage extends Component {
                                 }
                             }
                         }]}
-                        padding={{ top: 22, bottom: 10, left: 45, right: 11 }}
+                        padding={{ top: 22, bottom: 30, left: 45, right: 11 }}
                         width={700}
                         height={205}
+                        scale={{ x: "time" }}
+                        containerComponent={
+                            <VictoryZoomContainer responsive={false}
+                                zoomDimension="x"
+                                zoomDomain={this.state.zoomDomain}
+                                onZoomDomainChange={this.handleZoom.bind(this)}
+                            />
+                        }
                     >
 
                         <VictoryLine
                             name="line"
-                            data={[
-                                { x: new Date(1982, 1, 1), y: 125 },
-                                { x: new Date(1987, 1, 1), y: 257 },
-                                { x: new Date(1993, 1, 1), y: 345 },
-                                { x: new Date(1997, 1, 1), y: 515 }
-                            ]}
+                            data={dataTest}
                             style={{
                                 data: { stroke: "tomato" }
                             }}
@@ -138,12 +164,7 @@ export class GraphPage extends Component {
 
                         <VictoryScatter
                             name="scatter"
-                            data={[
-                                { x: new Date(1982, 1, 1), y: 125 },
-                                { x: new Date(1987, 1, 1), y: 257 },
-                                { x: new Date(1993, 1, 1), y: 345 },
-                                { x: new Date(1997, 1, 1), y: 515 }
-                            ]}
+                            data={dataTest}
                             size={5}
                             style={{
                                 data: { fill: "#c43a31" }
@@ -199,94 +220,6 @@ export class GraphPage extends Component {
 
                     </View>
                 </View>
-
-
-
-
-
-
-                {/* Not get position X,Y */}
-                {/* <View>
-                    <VictoryChart width={600} height={350} scale={{ x: "time" }}
-                        containerComponent={
-                            <VictoryZoomContainer responsive={false}
-                                zoomDimension="x"
-                                zoomDomain={this.state.zoomDomain}
-                                onZoomDomainChange={this.handleZoom.bind(this)}
-                            />
-                        }
-                    >
-                        <VictoryLine data={[
-                            { x: new Date(1982, 1, 1), y: 125 },
-                            { x: new Date(1987, 1, 1), y: 257 },
-                            { x: new Date(1993, 1, 1), y: 345 },
-                            { x: new Date(1997, 1, 1), y: 515 },
-                            { x: new Date(2001, 1, 1), y: 132 },
-                            { x: new Date(2005, 1, 1), y: 305 },
-                            { x: new Date(2011, 1, 1), y: 270 },
-                            { x: new Date(2015, 1, 1), y: 470 }
-                        ]}
-                            style={{
-                                data: { stroke: "tomato" }
-                            }}
-
-                        />
-
-                        <VictoryScatter data={[
-                            { x: new Date(1982, 1, 1), y: 125 },
-                            { x: new Date(1987, 1, 1), y: 257 },
-                            { x: new Date(1993, 1, 1), y: 345 },
-                            { x: new Date(1997, 1, 1), y: 515 },
-                            { x: new Date(2001, 1, 1), y: 132 },
-                            { x: new Date(2005, 1, 1), y: 305 },
-                            { x: new Date(2011, 1, 1), y: 270 },
-                            { x: new Date(2015, 1, 1), y: 470 }
-                        ]}
-                            size={5}
-                            style={{ data: { fill: "#c43a31" } }}
-                        />
-
-                    </VictoryChart>
-
-                    <VictoryChart
-                        padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
-                        width={600} height={90} scale={{ x: "time" }}
-                        containerComponent={
-                            <VictoryBrushContainer responsive={false}
-                                brushDimension="x"
-                                brushDomain={this.state.selectedDomain}
-                                onBrushDomainChange={this.handleBrush.bind(this)}
-                            />
-                        }
-                    >
-                        <VictoryAxis
-                            tickValues={[
-                                new Date(1985, 1, 1),
-                                new Date(1990, 1, 1),
-                                new Date(1995, 1, 1),
-                                new Date(2000, 1, 1),
-                                new Date(2005, 1, 1),
-                                new Date(2010, 1, 1)
-                            ]}
-                            tickFormat={(x) => new Date(x).getFullYear()}
-                        />
-                        <VictoryLine
-                            style={{
-                                data: { stroke: "tomato" }
-                            }}
-                            data={[
-                                { x: new Date(1982, 1, 1), y: 125 },
-                                { x: new Date(1987, 1, 1), y: 257 },
-                                { x: new Date(1993, 1, 1), y: 345 },
-                                { x: new Date(1997, 1, 1), y: 515 },
-                                { x: new Date(2001, 1, 1), y: 132 },
-                                { x: new Date(2005, 1, 1), y: 305 },
-                                { x: new Date(2011, 1, 1), y: 270 },
-                                { x: new Date(2015, 1, 1), y: 470 }
-                            ]}
-                        />
-                    </VictoryChart>
-                </View> */}
             </View>
         );
     }
