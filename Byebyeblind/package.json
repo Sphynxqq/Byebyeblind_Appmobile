@@ -10,19 +10,19 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-navigation/native": "^5.2.3",
+    "@react-navigation/stack": "^5.2.18",
     "react": "16.13.1",
     "react-native": "^0.62.2",
     "react-native-svg": "^12.1.0",
     "react-native-tts": "^3.1.1",
     "react-native-voice": "^0.3.0",
-    "react-navigation": "^4.3.9",
-    "react-navigation-stack": "^2.4.0",
     "victory-native": "^34.1.0"
   },
   "devDependencies": {
-    "@babel/core": "7.7.2",
-    "@babel/runtime": "7.7.2",
-    "@react-native-community/eslint-config": "0.0.5",
+    "@babel/core": "^7.9.6",
+    "@babel/runtime": "^7.9.6",
+    "@react-native-community/eslint-config": "^1.1.0",
     "babel-jest": "24.9.0",
     "eslint": "6.6.0",
     "jest": "24.9.0",

@@ -1,9 +1,11 @@
 import React from 'react';
-import {StyleSheet, View, Alert} from 'react-native';
-
+import {View, Alert} from 'react-native';
 import Tts from 'react-native-tts';
 import Voice from 'react-native-voice';
-import {createAppContainer, createSwitchNavigator} from 'react-navigation';
+
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+
 import {GraphPage} from './GraphPage';
 import {FavoritePage} from './FavoritePage';
 
@@ -111,22 +113,15 @@ class HomeScreen extends React.Component {
     );
   }
 }
-const RootStack = createSwitchNavigator(
-  {
-    Home: HomeScreen,
-    Graph: GraphPage,
-    Favorite: FavoritePage,
-  },
 
-  {
-    initialRouteName: 'Home',
-  },
-);
+const Stack = createStackNavigator();
 
-const AppContainer = createAppContainer(RootStack);
-
-export default class App extends React.Component {
-  render() {
-    return <AppContainer />;
-  }
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
