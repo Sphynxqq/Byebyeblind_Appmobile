@@ -62,14 +62,6 @@ export class GraphPage extends Component {
     };
   }
 
-  handleZoom(domain) {
-    this.setState({selectedDomain: domain});
-  }
-
-  handleBrush(domain) {
-    this.setState({zoomDomain: domain});
-  }
-
   componentWillMount() {
     this._panResponder = PanResponder.create({
       // onStartShouldSetResponder: (ev, gs) => true,
@@ -116,18 +108,31 @@ export class GraphPage extends Component {
             },
           },
         ]}
+        events={[
+          {
+            childName: 'scatter',
+            target: 'data',
+            eventHandlers: {
+              onPress: () => {
+                console.log('touch scatter');
+                return [
+                  {
+                    childName: 'scatter',
+                    mutation: (props) => {
+                      const fill = props.style.fill;
+                      return fill === '#030303'
+                        ? null
+                        : {style: {fill: '#030303'}};
+                    },
+                  },
+                ];
+              },
+            },
+          },
+        ]}
         padding={{top: 22, bottom: 10, left: 45, right: 11}}
         width={700}
-        height={205}
-        scale={{x: 'time'}}
-        containerComponent={
-          <VictoryZoomContainer
-            responsive={false}
-            zoomDimension="x"
-            zoomDomain={this.state.zoomDomain}
-            onZoomDomainChange={this.handleZoom.bind(this)}
-          />
-        }>
+        height={205}>
         <VictoryLine
           name="line"
           data={this.state.data}
@@ -147,15 +152,19 @@ export class GraphPage extends Component {
           size={5}
           style={{
             data: {fill: '#c43a31'},
+            labels: {
+              fill: ({datum}) => datum.x === '#FFFFFF',
+            },
           }}
           labels={({datum}) => datum.y}
         />
       </VictoryChart>
     );
     return (
-      <View>
+      <View style={styles.setBg}>
         <View style={styles.setBtnDate}>
           <Button
+            color="#FBD1A7"
             onPress={() => {
               this.setState(() => ({data: generateSampleData_DAY()}));
             }}
@@ -163,6 +172,7 @@ export class GraphPage extends Component {
           />
 
           <Button
+            color="#FBD1A7"
             onPress={() => {
               this.setState(() => ({data: generateSampleData_WEEK()}));
             }}
@@ -170,12 +180,12 @@ export class GraphPage extends Component {
           />
 
           <Button
+            color="#FBD1A7"
             onPress={() => {
               this.setState(() => ({data: generateSampleData_1MONTH()}));
             }}
             title="MONTH"
           />
-          <Text>{this.props.answer}</Text>
         </View>
 
         <View
@@ -189,7 +199,13 @@ export class GraphPage extends Component {
           // // onResponderTerminationRequest={(ev) => true}
           // // onResponderTerminate={this.onTouchEvent.bind(this, "onResponderTerminate")}
         >
-          {Platform.OS === 'ios' ? chart : <Svg>{chart}</Svg>}
+          {Platform.OS === 'ios' ? (
+            chart
+          ) : (
+            <Svg width="700" height="205">
+              {chart}
+            </Svg>
+          )}
         </View>
 
         <View>
@@ -245,6 +261,9 @@ export class GraphPage extends Component {
 }
 
 const styles = StyleSheet.create({
+  setBg: {
+    backgroundColor: '#01273C',
+  },
   setBtnDate: {
     flexDirection: 'row',
     marginTop: 10,
@@ -255,7 +274,9 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     width: 670,
     height: 55,
-    backgroundColor: '#85C1E9',
+    backgroundColor: '#FBD1A7',
+    borderRadius: 10,
+    elevation: 5,
   },
   displayincard: {
     flexDirection: 'row',
@@ -268,7 +289,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     height: '100%',
-    //backgroundColor: '#01273C'
+    justifyContent: 'space-around',
   },
   setbtnvoice: {
     width: 130,

@@ -110,7 +110,7 @@ class HomeScreen extends React.Component {
     return (
       <View>
         <GraphPage />
-        {/* <FavoritePage/> */}
+        {/* <FavoritePage /> */}
       </View>
     );
   }
