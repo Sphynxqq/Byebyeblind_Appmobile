@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,18 +19,114 @@ import {
   round,
 } from 'victory-native';
 
+function generateSampleData_DAY() {
+  const data = [];
+  const tNow = new Date();
+  while (tNow.getHours() > 0) {
+    data.push({ x: new Date(tNow), y: Math.floor(Math.random() * 500) });
+    tNow.setHours(tNow.getHours() - 1);
+  }
+
+  return data;
+}
+
+function generateSampleData_WEEK() {
+  const data = [];
+  const tNow = new Date();
+  while (tNow.getDay() > 0) {
+    data.push({ x: new Date(tNow), y: Math.floor(Math.random() * 500) });
+    tNow.setDate(tNow.getDate() - 1);
+  }
+
+  return data;
+}
+
+function generateSampleData_1MONTH() {
+  const data = [];
+  const tNow = new Date();
+  let d = 30;
+  while (d--) {
+    data.push({ x: new Date(tNow), y: Math.floor(Math.random() * 500) });
+    tNow.setDate(tNow.getDate() - 1);
+  }
+
+  return data;
+}
+
 export class GraphPage extends Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      check: true,
+      name: [],
+      open7up: [],
+      contentOpen: 0,
+      contentHigh: 0,
+      contentLow: 0,
+      contentClose: 0,
+      contentVol: 0,
+      open7upmore: [],
+      high7upmore: [],
+      low7upmore: [],
+      close7upmore: [],
+      vol7upmore: [],
+      volGraph: [],
+
+    }
   }
 
-  handleZoom(domain) {
-    this.setState({selectedDomain: domain});
-  }
+  componentDidMount() {
+    const { navigation } = this.props;
+    const Data = (navigation.getParam('key', 'Empty'));
+    this.setState({ Keyword: Data });
 
-  handleBrush(domain) {
-    this.setState({zoomDomain: domain});
+    fetch('http://192.168.1.37:3000/7up')
+      .then(response => response.json())
+      .then(open => {
+        this.state.open7up = Object.keys(open).map(key => (open[key]))
+        this.setState({ contentOpen: this.state.open7up[0].OPEN })
+        console.log(this.state.open7up[0].OPEN);
+
+      })
+
+    fetch('http://192.168.1.37:3000/7upmore')
+      .then(response => response.json())
+      .then(high => {
+        this.state.high7upmore = Object.keys(high).map(key => (high[key]))
+
+        this.setState({ contentHigh: this.state.high7upmore[0].HIGH })
+        console.log("HIGH : " + this.state.high7upmore[0].HIGH);
+
+      })
+
+    fetch('http://192.168.1.37:3000/7upmore')
+      .then(response => response.json())
+      .then(low => {
+        this.state.low7upmore = Object.keys(low).map(key => (low[key]))
+        this.setState({ contentLow: this.state.low7upmore[0].LOW })
+        console.log("LOW : " + this.state.low7upmore[0].LOW);
+      })
+
+    fetch('http://192.168.1.37:3000/7upmore')
+      .then(response => response.json())
+      .then(close => {
+        this.state.close7upmore = Object.keys(close).map(key => (close[key]))
+        this.setState({ contentClose: this.state.close7upmore[0].CLOSE })
+        console.log("CLOSE : " + this.state.close7upmore[0].CLOSE);
+      })
+
+    fetch('http://192.168.1.37:3000/7upmore')
+      .then(response => response.json())
+      .then(vol => {
+        this.state.vol7upmore = Object.keys(vol).map(key => (vol[key]))
+        this.setState({ contentVol: this.state.vol7upmore[0].VOL })
+        console.log("VOL : " + this.state.vol7upmore[0].VOL);
+        // for (let i = 0; i < 8; i++) {
+        //     this.state.volGraph.push(this.state.vol7upmore[i].VOL);
+        //     console.log("vol7upmore[i] : " + this.state.volGraph[i]);
+        // }
+
+      })
   }
 
   UNSAFE_componentWillMount() {
@@ -55,12 +151,6 @@ export class GraphPage extends Component {
 
   //ขนาดหน้าจอโทรศัพท์ที่ใช้เทส width:731, height:411
   render() {
-    const sampleData = [
-      {x: new Date(1982, 1, 1), y: 125},
-      {x: new Date(1987, 1, 1), y: 257},
-      {x: new Date(1993, 1, 1), y: 345},
-      {x: new Date(1997, 1, 1), y: 515},
-    ];
     const chart = (
       <VictoryChart
         events={[
@@ -69,6 +159,7 @@ export class GraphPage extends Component {
             target: 'data',
             eventHandlers: {
               onPress: () => {
+                console.log('touch line');
                 return [
                   {
                     childName: 'line',
@@ -76,7 +167,7 @@ export class GraphPage extends Component {
                       const fill = props.style.fill;
                       return fill === '#030303'
                         ? null
-                        : {style: {fill: '#030303'}};
+                        : { style: { fill: '#030303' } };
                     },
                   },
                 ];
@@ -84,97 +175,122 @@ export class GraphPage extends Component {
             },
           },
         ]}
-        padding={{top: 22, bottom: 10, left: 45, right: 11}}
+        events={[
+          {
+            childName: 'scatter',
+            target: 'data',
+            eventHandlers: {
+              onPress: () => {
+                console.log('touch scatter');
+                return [
+                  {
+                    childName: 'scatter',
+                    mutation: (props) => {
+                      const fill = props.style.fill;
+                      return fill === '#030303'
+                        ? null
+                        : { style: { fill: '#030303' } };
+                    },
+                  },
+                ];
+              },
+            },
+          },
+        ]}
+        padding={{ top: 22, bottom: 10, left: 45, right: 11 }}
         width={700}
         height={205}>
         <VictoryLine
           name="line"
-          data={sampleData}
+          data={this.state.data}
           style={{
-            data: {stroke: 'tomato'},
+            data: { stroke: 'tomato' },
           }}
           animate={{
             duration: 2000,
-            onLoad: {duration: 1000},
+            onLoad: { duration: 1000 },
           }}
           interpolation="linear"
-          containerComponent={
-            <VictoryCursorContainer
-              cursorDimension="x"
-              cursorLabel={({datum}) =>
-                `${round(datum.x, 2)}, ${round(datum.y, 2)}`
-              }
-            />
-          }
         />
 
         <VictoryScatter
           name="scatter"
-          data={sampleData}
+          data={this.state.data}
           size={5}
           style={{
-            data: {fill: '#c43a31'},
+            data: { fill: '#c43a31' },
+            labels: {
+              fill: ({ datum }) => datum.x === '#FFFFFF',
+            },
           }}
-          labels={({datum}) => datum.y}
+          labels={({ datum }) => datum.y}
         />
       </VictoryChart>
     );
     return (
-      <View>
+      <View style={styles.setBg}>
         <View style={styles.setBtnDate}>
           <Button
+            color="#FBD1A7"
             onPress={() => {
-              alert('You tapped the button DAY');
+              this.setState(() => ({ data: generateSampleData_DAY() }));
             }}
             title="DAY"
           />
 
           <Button
+            color="#FBD1A7"
             onPress={() => {
-              alert('You tapped the button WEEK');
+              this.setState(() => ({ data: generateSampleData_WEEK() }));
             }}
             title="WEEK"
           />
 
           <Button
+            color="#FBD1A7"
             onPress={() => {
-              alert('You tapped the MONTH');
+              this.setState(() => ({ data: generateSampleData_1MONTH() }));
             }}
             title="MONTH"
           />
-          <Text>{this.props.answer}</Text>
         </View>
 
         <View
           {...this._panResponder.panHandlers}
-          //     onStartShouldSetResponder={(ev) => true}
-          //     // onMoveShouldSetResponder={(ev) => false}
-          //     onResponderGrant={this.onTouchEvent.bind(this, "onResponderGrant")}
-          //     // onResponderReject={this.onTouchEvent.bind(this, "onResponderReject")}
-          //     onResponderMove={this.onTouchEvent.bind(this, "onResponderMove")}
-          // // onResponderRelease={this.onTouchEvent.bind(this, "onResponderRelease")}
-          // // onResponderTerminationRequest={(ev) => true}
-          // // onResponderTerminate={this.onTouchEvent.bind(this, "onResponderTerminate")}
+        //     onStartShouldSetResponder={(ev) => true}
+        //     // onMoveShouldSetResponder={(ev) => false}
+        //     onResponderGrant={this.onTouchEvent.bind(this, "onResponderGrant")}
+        //     // onResponderReject={this.onTouchEvent.bind(this, "onResponderReject")}
+        //     onResponderMove={this.onTouchEvent.bind(this, "onResponderMove")}
+        // // onResponderRelease={this.onTouchEvent.bind(this, "onResponderRelease")}
+        // // onResponderTerminationRequest={(ev) => true}
+        // // onResponderTerminate={this.onTouchEvent.bind(this, "onResponderTerminate")}
         >
-          {Platform.OS === 'ios' ? chart : <Svg>{chart}</Svg>}
+          {Platform.OS === 'ios' ? (
+            chart
+          ) : (
+              <Svg width="700" height="205">
+                {chart}
+              </Svg>
+            )}
         </View>
 
         <View>
           <View style={styles.cardview}>
             <View style={styles.displayincard}>
-              <Text>เปิด</Text>
-              <Text>สูงสุด</Text>
+              <Text>เปิด {this.state.contentOpen}</Text>
+              <Text>สูงสุด {this.state.contentHigh}</Text>
               <Text>ล่าสุด</Text>
             </View>
 
             <View style={styles.displayincard}>
-              <Text>ราคาปิด</Text>
-              <Text>ต่ำสุด</Text>
-              <Text>VOL</Text>
+              <Text>ราคาปิด {this.state.contentClose}</Text>
+              <Text>ต่ำสุด {this.state.contentLow}</Text>
+              <Text>VOL {this.state.contentVol}</Text>
             </View>
 
             <View style={styles.displaynamebank}>
-              <Text>Bangkok Bank</Text>
+              <Text>{this.state.Keyword}</Text>
             </View>
           </View>
 
@@ -206,95 +322,15 @@ export class GraphPage extends Component {
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* Not get position X,Y */}
-        {/* <View>
-                    <VictoryChart width={600} height={350} scale={{ x: "time" }}
-                        containerComponent={
-                            <VictoryZoomContainer responsive={false}
-                                zoomDimension="x"
-                                zoomDomain={this.state.zoomDomain}
-                                onZoomDomainChange={this.handleZoom.bind(this)}
-                            />
-                        }
-                    >
-                        <VictoryLine data={[
-                            { x: new Date(1982, 1, 1), y: 125 },
-                            { x: new Date(1987, 1, 1), y: 257 },
-                            { x: new Date(1993, 1, 1), y: 345 },
-                            { x: new Date(1997, 1, 1), y: 515 },
-                            { x: new Date(2001, 1, 1), y: 132 },
-                            { x: new Date(2005, 1, 1), y: 305 },
-                            { x: new Date(2011, 1, 1), y: 270 },
-                            { x: new Date(2015, 1, 1), y: 470 }
-                        ]}
-                            style={{
-                                data: { stroke: "tomato" }
-                            }}
-
-                        />
-
-                        <VictoryScatter data={[
-                            { x: new Date(1982, 1, 1), y: 125 },
-                            { x: new Date(1987, 1, 1), y: 257 },
-                            { x: new Date(1993, 1, 1), y: 345 },
-                            { x: new Date(1997, 1, 1), y: 515 },
-                            { x: new Date(2001, 1, 1), y: 132 },
-                            { x: new Date(2005, 1, 1), y: 305 },
-                            { x: new Date(2011, 1, 1), y: 270 },
-                            { x: new Date(2015, 1, 1), y: 470 }
-                        ]}
-                            size={5}
-                            style={{ data: { fill: "#c43a31" } }}
-                        />
-
-                    </VictoryChart>
-
-                    <VictoryChart
-                        padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
-                        width={600} height={90} scale={{ x: "time" }}
-                        containerComponent={
-                            <VictoryBrushContainer responsive={false}
-                                brushDimension="x"
-                                brushDomain={this.state.selectedDomain}
-                                onBrushDomainChange={this.handleBrush.bind(this)}
-                            />
-                        }
-                    >
-                        <VictoryAxis
-                            tickValues={[
-                                new Date(1985, 1, 1),
-                                new Date(1990, 1, 1),
-                                new Date(1995, 1, 1),
-                                new Date(2000, 1, 1),
-                                new Date(2005, 1, 1),
-                                new Date(2010, 1, 1)
-                            ]}
-                            tickFormat={(x) => new Date(x).getFullYear()}
-                        />
-                        <VictoryLine
-                            style={{
-                                data: { stroke: "tomato" }
-                            }}
-                            data={[
-                                { x: new Date(1982, 1, 1), y: 125 },
-                                { x: new Date(1987, 1, 1), y: 257 },
-                                { x: new Date(1993, 1, 1), y: 345 },
-                                { x: new Date(1997, 1, 1), y: 515 },
-                                { x: new Date(2001, 1, 1), y: 132 },
-                                { x: new Date(2005, 1, 1), y: 305 },
-                                { x: new Date(2011, 1, 1), y: 270 },
-                                { x: new Date(2015, 1, 1), y: 470 }
-                            ]}
-                        />
-                    </VictoryChart>
-                </View> */}
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  setBg: {
+    backgroundColor: '#01273C',
+  },
   setBtnDate: {
     flexDirection: 'row',
     marginTop: 10,
@@ -305,7 +341,9 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     width: 670,
     height: 55,
-    backgroundColor: '#85C1E9',
+    backgroundColor: '#FBD1A7',
+    borderRadius: 10,
+    elevation: 5,
   },
   displayincard: {
     flexDirection: 'row',
@@ -318,7 +356,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     height: '100%',
-    //backgroundColor: '#01273C'
+    justifyContent: 'space-around',
   },
   setbtnvoice: {
     width: 130,
