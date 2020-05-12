@@ -33,7 +33,7 @@ export class GraphPage extends Component {
     this.setState({zoomDomain: domain});
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this._panResponder = PanResponder.create({
       // onStartShouldSetResponder: (ev, gs) => true,
       // onResponderGrant: (ev, gs) => true,

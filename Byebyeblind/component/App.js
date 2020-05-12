@@ -22,7 +22,7 @@ class HomeScreen extends React.Component {
 
   componentDidMount() {
     console.log('start');
-    fetch('http://10.90.3.75/ticker_name')
+    fetch('http://192.168.1.37:3000/ticker_name')
       .then((response) => response.json())
       .then((ticker_name) => {
         this.state.name = Object.keys(ticker_name).map(
