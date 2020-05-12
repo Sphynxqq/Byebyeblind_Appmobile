@@ -17,20 +17,49 @@ import {
   VictoryScatter,
   VictoryCursorContainer,
   round,
+  VictoryZoomContainer,
 } from 'victory-native';
+
+function generateSampleData_DAY() {
+  const data = [];
+  const tNow = new Date();
+  while (tNow.getHours() > 0) {
+    data.push({x: new Date(tNow), y: Math.floor(Math.random() * 500)});
+    tNow.setHours(tNow.getHours() - 1);
+  }
+
+  return data;
+}
+
+function generateSampleData_WEEK() {
+  const data = [];
+  const tNow = new Date();
+  while (tNow.getDay() > 0) {
+    data.push({x: new Date(tNow), y: Math.floor(Math.random() * 500)});
+    tNow.setDate(tNow.getDate() - 1);
+  }
+
+  return data;
+}
+
+function generateSampleData_1MONTH() {
+  const data = [];
+  const tNow = new Date();
+  let d = 30;
+  while (d--) {
+    data.push({x: new Date(tNow), y: Math.floor(Math.random() * 500)});
+    tNow.setDate(tNow.getDate() - 1);
+  }
+
+  return data;
+}
 
 export class GraphPage extends Component {
   constructor() {
     super();
-    this.state = {};
-  }
-
-  handleZoom(domain) {
-    this.setState({selectedDomain: domain});
-  }
-
-  handleBrush(domain) {
-    this.setState({zoomDomain: domain});
+    this.state = {
+      data: generateSampleData_DAY(),
+    };
   }
 
   componentWillMount() {
@@ -55,12 +84,6 @@ export class GraphPage extends Component {
 
   //ขนาดหน้าจอโทรศัพท์ที่ใช้เทส width:731, height:411
   render() {
-    const sampleData = [
-      {x: new Date(1982, 1, 1), y: 125},
-      {x: new Date(1987, 1, 1), y: 257},
-      {x: new Date(1993, 1, 1), y: 345},
-      {x: new Date(1997, 1, 1), y: 515},
-    ];
     const chart = (
       <VictoryChart
         events={[
@@ -69,9 +92,32 @@ export class GraphPage extends Component {
             target: 'data',
             eventHandlers: {
               onPress: () => {
+                console.log('touch line');
                 return [
                   {
                     childName: 'line',
+                    mutation: (props) => {
+                      const fill = props.style.fill;
+                      return fill === '#030303'
+                        ? null
+                        : {style: {fill: '#030303'}};
+                    },
+                  },
+                ];
+              },
+            },
+          },
+        ]}
+        events={[
+          {
+            childName: 'scatter',
+            target: 'data',
+            eventHandlers: {
+              onPress: () => {
+                console.log('touch scatter');
+                return [
+                  {
+                    childName: 'scatter',
                     mutation: (props) => {
                       const fill = props.style.fill;
                       return fill === '#030303'
@@ -89,7 +135,7 @@ export class GraphPage extends Component {
         height={205}>
         <VictoryLine
           name="line"
-          data={sampleData}
+          data={this.state.data}
           style={{
             data: {stroke: 'tomato'},
           }}
@@ -98,51 +144,48 @@ export class GraphPage extends Component {
             onLoad: {duration: 1000},
           }}
           interpolation="linear"
-          containerComponent={
-            <VictoryCursorContainer
-              cursorDimension="x"
-              cursorLabel={({datum}) =>
-                `${round(datum.x, 2)}, ${round(datum.y, 2)}`
-              }
-            />
-          }
         />
 
         <VictoryScatter
           name="scatter"
-          data={sampleData}
+          data={this.state.data}
           size={5}
           style={{
             data: {fill: '#c43a31'},
+            labels: {
+              fill: ({datum}) => datum.x === '#FFFFFF',
+            },
           }}
           labels={({datum}) => datum.y}
         />
       </VictoryChart>
     );
     return (
-      <View>
+      <View style={styles.setBg}>
         <View style={styles.setBtnDate}>
           <Button
+            color="#FBD1A7"
             onPress={() => {
-              alert('You tapped the button DAY');
+              this.setState(() => ({data: generateSampleData_DAY()}));
             }}
             title="DAY"
           />
 
           <Button
+            color="#FBD1A7"
             onPress={() => {
-              alert('You tapped the button WEEK');
+              this.setState(() => ({data: generateSampleData_WEEK()}));
             }}
             title="WEEK"
           />
 
           <Button
+            color="#FBD1A7"
             onPress={() => {
-              alert('You tapped the MONTH');
+              this.setState(() => ({data: generateSampleData_1MONTH()}));
             }}
             title="MONTH"
           />
-          <Text>{this.props.answer}</Text>
         </View>
 
         <View
@@ -156,7 +199,13 @@ export class GraphPage extends Component {
           // // onResponderTerminationRequest={(ev) => true}
           // // onResponderTerminate={this.onTouchEvent.bind(this, "onResponderTerminate")}
         >
-          {Platform.OS === 'ios' ? chart : <Svg>{chart}</Svg>}
+          {Platform.OS === 'ios' ? (
+            chart
+          ) : (
+            <Svg width="700" height="205">
+              {chart}
+            </Svg>
+          )}
         </View>
 
         <View>
@@ -206,95 +255,15 @@ export class GraphPage extends Component {
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* Not get position X,Y */}
-        {/* <View>
-                    <VictoryChart width={600} height={350} scale={{ x: "time" }}
-                        containerComponent={
-                            <VictoryZoomContainer responsive={false}
-                                zoomDimension="x"
-                                zoomDomain={this.state.zoomDomain}
-                                onZoomDomainChange={this.handleZoom.bind(this)}
-                            />
-                        }
-                    >
-                        <VictoryLine data={[
-                            { x: new Date(1982, 1, 1), y: 125 },
-                            { x: new Date(1987, 1, 1), y: 257 },
-                            { x: new Date(1993, 1, 1), y: 345 },
-                            { x: new Date(1997, 1, 1), y: 515 },
-                            { x: new Date(2001, 1, 1), y: 132 },
-                            { x: new Date(2005, 1, 1), y: 305 },
-                            { x: new Date(2011, 1, 1), y: 270 },
-                            { x: new Date(2015, 1, 1), y: 470 }
-                        ]}
-                            style={{
-                                data: { stroke: "tomato" }
-                            }}
-
-                        />
-
-                        <VictoryScatter data={[
-                            { x: new Date(1982, 1, 1), y: 125 },
-                            { x: new Date(1987, 1, 1), y: 257 },
-                            { x: new Date(1993, 1, 1), y: 345 },
-                            { x: new Date(1997, 1, 1), y: 515 },
-                            { x: new Date(2001, 1, 1), y: 132 },
-                            { x: new Date(2005, 1, 1), y: 305 },
-                            { x: new Date(2011, 1, 1), y: 270 },
-                            { x: new Date(2015, 1, 1), y: 470 }
-                        ]}
-                            size={5}
-                            style={{ data: { fill: "#c43a31" } }}
-                        />
-
-                    </VictoryChart>
-
-                    <VictoryChart
-                        padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
-                        width={600} height={90} scale={{ x: "time" }}
-                        containerComponent={
-                            <VictoryBrushContainer responsive={false}
-                                brushDimension="x"
-                                brushDomain={this.state.selectedDomain}
-                                onBrushDomainChange={this.handleBrush.bind(this)}
-                            />
-                        }
-                    >
-                        <VictoryAxis
-                            tickValues={[
-                                new Date(1985, 1, 1),
-                                new Date(1990, 1, 1),
-                                new Date(1995, 1, 1),
-                                new Date(2000, 1, 1),
-                                new Date(2005, 1, 1),
-                                new Date(2010, 1, 1)
-                            ]}
-                            tickFormat={(x) => new Date(x).getFullYear()}
-                        />
-                        <VictoryLine
-                            style={{
-                                data: { stroke: "tomato" }
-                            }}
-                            data={[
-                                { x: new Date(1982, 1, 1), y: 125 },
-                                { x: new Date(1987, 1, 1), y: 257 },
-                                { x: new Date(1993, 1, 1), y: 345 },
-                                { x: new Date(1997, 1, 1), y: 515 },
-                                { x: new Date(2001, 1, 1), y: 132 },
-                                { x: new Date(2005, 1, 1), y: 305 },
-                                { x: new Date(2011, 1, 1), y: 270 },
-                                { x: new Date(2015, 1, 1), y: 470 }
-                            ]}
-                        />
-                    </VictoryChart>
-                </View> */}
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  setBg: {
+    backgroundColor: '#01273C',
+  },
   setBtnDate: {
     flexDirection: 'row',
     marginTop: 10,
@@ -305,7 +274,9 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     width: 670,
     height: 55,
-    backgroundColor: '#85C1E9',
+    backgroundColor: '#FBD1A7',
+    borderRadius: 10,
+    elevation: 5,
   },
   displayincard: {
     flexDirection: 'row',
@@ -318,7 +289,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     height: '100%',
-    //backgroundColor: '#01273C'
+    justifyContent: 'space-around',
   },
   setbtnvoice: {
     width: 130,
