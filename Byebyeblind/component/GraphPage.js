@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,11 +19,15 @@ import {
   round,
 } from 'victory-native';
 
+import Tts from 'react-native-tts';
+
+import Voice from 'react-native-voice';
+
 function generateSampleData_DAY() {
   const data = [];
   const tNow = new Date();
   while (tNow.getHours() > 0) {
-    data.push({ x: new Date(tNow), y: Math.floor(Math.random() * 500) });
+    data.push({x: new Date(tNow), y: Math.floor(Math.random() * 500)});
     tNow.setHours(tNow.getHours() - 1);
   }
 
@@ -34,7 +38,7 @@ function generateSampleData_WEEK() {
   const data = [];
   const tNow = new Date();
   while (tNow.getDay() > 0) {
-    data.push({ x: new Date(tNow), y: Math.floor(Math.random() * 500) });
+    data.push({x: new Date(tNow), y: Math.floor(Math.random() * 500)});
     tNow.setDate(tNow.getDate() - 1);
   }
 
@@ -46,7 +50,7 @@ function generateSampleData_1MONTH() {
   const tNow = new Date();
   let d = 30;
   while (d--) {
-    data.push({ x: new Date(tNow), y: Math.floor(Math.random() * 500) });
+    data.push({x: new Date(tNow), y: Math.floor(Math.random() * 500)});
     tNow.setDate(tNow.getDate() - 1);
   }
 
@@ -71,62 +75,58 @@ export class GraphPage extends Component {
       close7upmore: [],
       vol7upmore: [],
       volGraph: [],
-
-    }
+    };
   }
 
   componentDidMount() {
-    const { navigation } = this.props;
-    const Data = (navigation.getParam('key', 'Empty'));
-    this.setState({ Keyword: Data });
+    const {navigation} = this.props;
+    const Data = navigation.getParam('key', 'Empty');
+    this.setState({Keyword: Data});
 
     fetch('http://192.168.1.37:3000/7up')
-      .then(response => response.json())
-      .then(open => {
-        this.state.open7up = Object.keys(open).map(key => (open[key]))
-        this.setState({ contentOpen: this.state.open7up[0].OPEN })
+      .then((response) => response.json())
+      .then((open) => {
+        this.state.open7up = Object.keys(open).map((key) => open[key]);
+        this.setState({contentOpen: this.state.open7up[0].OPEN});
         console.log(this.state.open7up[0].OPEN);
-
-      })
-
-    fetch('http://192.168.1.37:3000/7upmore')
-      .then(response => response.json())
-      .then(high => {
-        this.state.high7upmore = Object.keys(high).map(key => (high[key]))
-
-        this.setState({ contentHigh: this.state.high7upmore[0].HIGH })
-        console.log("HIGH : " + this.state.high7upmore[0].HIGH);
-
-      })
+      });
 
     fetch('http://192.168.1.37:3000/7upmore')
-      .then(response => response.json())
-      .then(low => {
-        this.state.low7upmore = Object.keys(low).map(key => (low[key]))
-        this.setState({ contentLow: this.state.low7upmore[0].LOW })
-        console.log("LOW : " + this.state.low7upmore[0].LOW);
-      })
+      .then((response) => response.json())
+      .then((high) => {
+        this.state.high7upmore = Object.keys(high).map((key) => high[key]);
+
+        this.setState({contentHigh: this.state.high7upmore[0].HIGH});
+        console.log('HIGH : ' + this.state.high7upmore[0].HIGH);
+      });
 
     fetch('http://192.168.1.37:3000/7upmore')
-      .then(response => response.json())
-      .then(close => {
-        this.state.close7upmore = Object.keys(close).map(key => (close[key]))
-        this.setState({ contentClose: this.state.close7upmore[0].CLOSE })
-        console.log("CLOSE : " + this.state.close7upmore[0].CLOSE);
-      })
+      .then((response) => response.json())
+      .then((low) => {
+        this.state.low7upmore = Object.keys(low).map((key) => low[key]);
+        this.setState({contentLow: this.state.low7upmore[0].LOW});
+        console.log('LOW : ' + this.state.low7upmore[0].LOW);
+      });
 
     fetch('http://192.168.1.37:3000/7upmore')
-      .then(response => response.json())
-      .then(vol => {
-        this.state.vol7upmore = Object.keys(vol).map(key => (vol[key]))
-        this.setState({ contentVol: this.state.vol7upmore[0].VOL })
-        console.log("VOL : " + this.state.vol7upmore[0].VOL);
+      .then((response) => response.json())
+      .then((close) => {
+        this.state.close7upmore = Object.keys(close).map((key) => close[key]);
+        this.setState({contentClose: this.state.close7upmore[0].CLOSE});
+        console.log('CLOSE : ' + this.state.close7upmore[0].CLOSE);
+      });
+
+    fetch('http://192.168.1.37:3000/7upmore')
+      .then((response) => response.json())
+      .then((vol) => {
+        this.state.vol7upmore = Object.keys(vol).map((key) => vol[key]);
+        this.setState({contentVol: this.state.vol7upmore[0].VOL});
+        console.log('VOL : ' + this.state.vol7upmore[0].VOL);
         // for (let i = 0; i < 8; i++) {
         //     this.state.volGraph.push(this.state.vol7upmore[i].VOL);
         //     console.log("vol7upmore[i] : " + this.state.volGraph[i]);
         // }
-
-      })
+      });
   }
 
   UNSAFE_componentWillMount() {
@@ -149,6 +149,18 @@ export class GraphPage extends Component {
     });
   }
 
+  speechFristData(data) {
+    console.log('This in speechFristData and data X is : ', data[0].x);
+    console.log('This in speechFristData and data Y is : ', data[0].y);
+    Tts.speak('Today is' + data + 'And Vaule is' + data, {
+      androidParams: {
+        KEY_PARAM_PAN: -1,
+        KEY_PARAM_VOLUME: 1.0,
+        KEY_PARAM_STREAM: 'STREAM_MUSIC',
+      },
+    });
+  }
+
   //ขนาดหน้าจอโทรศัพท์ที่ใช้เทส width:731, height:411
   render() {
     const chart = (
@@ -167,7 +179,7 @@ export class GraphPage extends Component {
                       const fill = props.style.fill;
                       return fill === '#030303'
                         ? null
-                        : { style: { fill: '#030303' } };
+                        : {style: {fill: '#030303'}};
                     },
                   },
                 ];
@@ -189,7 +201,7 @@ export class GraphPage extends Component {
                       const fill = props.style.fill;
                       return fill === '#030303'
                         ? null
-                        : { style: { fill: '#030303' } };
+                        : {style: {fill: '#030303'}};
                     },
                   },
                 ];
@@ -197,18 +209,18 @@ export class GraphPage extends Component {
             },
           },
         ]}
-        padding={{ top: 22, bottom: 10, left: 45, right: 11 }}
+        padding={{top: 22, bottom: 10, left: 45, right: 11}}
         width={700}
         height={205}>
         <VictoryLine
           name="line"
           data={this.state.data}
           style={{
-            data: { stroke: 'tomato' },
+            data: {stroke: 'tomato'},
           }}
           animate={{
             duration: 2000,
-            onLoad: { duration: 1000 },
+            onLoad: {duration: 1000},
           }}
           interpolation="linear"
         />
@@ -218,12 +230,12 @@ export class GraphPage extends Component {
           data={this.state.data}
           size={5}
           style={{
-            data: { fill: '#c43a31' },
+            data: {fill: '#c43a31'},
             labels: {
-              fill: ({ datum }) => datum.x === '#FFFFFF',
+              fill: ({datum}) => datum.x === '#FFFFFF',
             },
           }}
-          labels={({ datum }) => datum.y}
+          labels={({datum}) => datum.y}
         />
       </VictoryChart>
     );
@@ -233,7 +245,9 @@ export class GraphPage extends Component {
           <Button
             color="#FBD1A7"
             onPress={() => {
-              this.setState(() => ({ data: generateSampleData_DAY() }));
+              const data = generateSampleData_DAY();
+              this.setState(() => ({data}));
+              this.speechFristData({data});
             }}
             title="DAY"
           />
@@ -241,7 +255,7 @@ export class GraphPage extends Component {
           <Button
             color="#FBD1A7"
             onPress={() => {
-              this.setState(() => ({ data: generateSampleData_WEEK() }));
+              this.setState(() => ({data: generateSampleData_WEEK()}));
             }}
             title="WEEK"
           />
@@ -249,7 +263,7 @@ export class GraphPage extends Component {
           <Button
             color="#FBD1A7"
             onPress={() => {
-              this.setState(() => ({ data: generateSampleData_1MONTH() }));
+              this.setState(() => ({data: generateSampleData_1MONTH()}));
             }}
             title="MONTH"
           />
@@ -257,22 +271,22 @@ export class GraphPage extends Component {
 
         <View
           {...this._panResponder.panHandlers}
-        //     onStartShouldSetResponder={(ev) => true}
-        //     // onMoveShouldSetResponder={(ev) => false}
-        //     onResponderGrant={this.onTouchEvent.bind(this, "onResponderGrant")}
-        //     // onResponderReject={this.onTouchEvent.bind(this, "onResponderReject")}
-        //     onResponderMove={this.onTouchEvent.bind(this, "onResponderMove")}
-        // // onResponderRelease={this.onTouchEvent.bind(this, "onResponderRelease")}
-        // // onResponderTerminationRequest={(ev) => true}
-        // // onResponderTerminate={this.onTouchEvent.bind(this, "onResponderTerminate")}
+          //     onStartShouldSetResponder={(ev) => true}
+          //     // onMoveShouldSetResponder={(ev) => false}
+          //     onResponderGrant={this.onTouchEvent.bind(this, "onResponderGrant")}
+          //     // onResponderReject={this.onTouchEvent.bind(this, "onResponderReject")}
+          //     onResponderMove={this.onTouchEvent.bind(this, "onResponderMove")}
+          // // onResponderRelease={this.onTouchEvent.bind(this, "onResponderRelease")}
+          // // onResponderTerminationRequest={(ev) => true}
+          // // onResponderTerminate={this.onTouchEvent.bind(this, "onResponderTerminate")}
         >
           {Platform.OS === 'ios' ? (
             chart
           ) : (
-              <Svg width="700" height="205">
-                {chart}
-              </Svg>
-            )}
+            <Svg width="700" height="205">
+              {chart}
+            </Svg>
+          )}
         </View>
 
         <View>

@@ -9,7 +9,7 @@ const connection = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'byebyeblind'
+  database: 'byebyeblind',
 });
 
 // We're still in routes.js! Right below everything else.
@@ -23,14 +23,19 @@ app.use(cors());
 app.get('/ticker_name', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
-
     // Executing the MySQL query (select all data from the 'users' table).
-    connection.query('SELECT TICKER FROM ticker_name', function (error, result, fields) {
+    connection.query('SELECT TICKER FROM ticker_name', function (
+      error,
+      result,
+      fields,
+    ) {
       // If some error occurs, we throw an error.
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
       // Getting the 'response' from the database and sending it to our route. This is were the data is.
-      res.send(result)
+      res.send(result);
     });
   });
 });
@@ -38,14 +43,15 @@ app.get('/ticker_name', function (req, res) {
 app.get('/7up', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
-
     // Executing the MySQL query (select all data from the 'users' table).
     connection.query('SELECT * FROM 7UP', function (error, result, fields) {
       // If some error occurs, we throw an error.
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
       // Getting the 'response' from the database and sending it to our route. This is were the data is.
-      res.send(result)
+      res.send(result);
     });
   });
 });
@@ -53,14 +59,15 @@ app.get('/7up', function (req, res) {
 app.get('/7upmore', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
-
     // Executing the MySQL query (select all data from the 'users' table).
     connection.query('SELECT * FROM 7UP', function (error, result, fields) {
       // If some error occurs, we throw an error.
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
       // Getting the 'response' from the database and sending it to our route. This is were the data is.
-      res.send(result)
+      res.send(result);
     });
   });
 });
@@ -83,5 +90,7 @@ app.get('/7upmore', function (req, res) {
 
 // Starting our server.
 app.listen(3000, () => {
-  console.log('Go to http://localhost:3000/ticker_name so you can see the data.');
+  console.log(
+    'Go to http://localhost:3000/ticker_name so you can see the data.',
+  );
 });
