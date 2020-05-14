@@ -150,9 +150,8 @@ export class GraphPage extends Component {
   }
 
   speechFristData(data) {
-    console.log('This in speechFristData and data X is : ', data[0].x);
-    console.log('This in speechFristData and data Y is : ', data[0].y);
-    Tts.speak('Today is' + data + 'And Vaule is' + data, {
+    console.log('Today is ' + data[20].x + 'And Vaule is ' + data[20].y);
+    Tts.speak('Today is ' + data[20].x + 'And Vaule is ' + data[20].y, {
       androidParams: {
         KEY_PARAM_PAN: -1,
         KEY_PARAM_VOLUME: 1.0,
@@ -247,7 +246,7 @@ export class GraphPage extends Component {
             onPress={() => {
               const data = generateSampleData_DAY();
               this.setState(() => ({data}));
-              this.speechFristData({data});
+              this.speechFristData(data);
             }}
             title="DAY"
           />
