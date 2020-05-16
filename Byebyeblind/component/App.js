@@ -1,30 +1,25 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
-  StatusBar,
   TouchableOpacity,
-  TextInput,
   Image,
-  ImageBackground,
   Alert,
 } from 'react-native';
 
-import Tts from 'react-native-tts';
 import Voice from 'react-native-voice';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
+import {isSymbolExist} from '../service/graph';
+import {speak} from '../service/speech';
 import {GraphPage} from './GraphPage';
-// import {Loginfb} from './Loginfb';
 import {FavoritePage} from './FavoritePage';
+// import {Loginfb} from './Loginfb';
 
 class HomeScreen extends React.Component {
   constructor() {
     super();
-    this.speech();
+    speak('Welcome to Bye Bye Blind');
 
     this.state = {
       check: true,
@@ -47,7 +42,7 @@ class HomeScreen extends React.Component {
 
     Voice.onSpeechResults = (res) => {
       const key = res.value[0];
-      this.speech2(res.value[0]);
+      speak(res.value[0] + ' Confirm');
       Alert.alert(
         'ยืนยัน',
         res.value[0],
@@ -61,13 +56,13 @@ class HomeScreen extends React.Component {
           {
             text: 'ตกลง',
             onPress: async () => {
-              if (key != 'favorite') {
+              if (key !== 'favorite') {
                 this.stock_check(key);
                 alert(this.state.check);
-                if (this.state.check == true) {
+                if (this.state.check === true) {
                   this.props.navigation.navigate('Graph', {key});
                 } else {
-                  this.speech3();
+                  speak('We dont have a stock');
                 }
               } else {
                 this.props.navigation.navigate('Favorite', {key});
@@ -80,9 +75,14 @@ class HomeScreen extends React.Component {
     };
   }
 
-  go_graph(key) {
-    console.log('key is : ' + key);
-    this.props.navigation.navigate('Graph', {key});
+  go_graph(symbol) {
+    isSymbolExist(symbol).then((exist) => {
+      if (exist) {
+        this.props.navigation.navigate('Graph', {symbol});
+      } else {
+        alert('Symbol does not exist');
+      }
+    });
   }
 
   stock_check(key) {
@@ -96,7 +96,7 @@ class HomeScreen extends React.Component {
     console.log('stock check');
     for (let i = 0; i < this.state.name.length; i++) {
       console.log(this.state.name[i].TICKER);
-      if (this.state.name[i].TICKER == key) {
+      if (this.state.name[i].TICKER === key) {
         console.log('check : ' + this.state.name[i].TICKER);
         this.setState({check: true});
         break;
@@ -104,36 +104,6 @@ class HomeScreen extends React.Component {
         this.setState({check: false});
       }
     }
-  }
-
-  speech() {
-    Tts.speak('Welcome to Bye Bye Blind', {
-      androidParams: {
-        KEY_PARAM_PAN: -1,
-        KEY_PARAM_VOLUME: 1.0,
-        KEY_PARAM_STREAM: 'STREAM_MUSIC',
-      },
-    });
-  }
-
-  speech2(res) {
-    Tts.speak(res + 'Confirm', {
-      androidParams: {
-        KEY_PARAM_PAN: -1,
-        KEY_PARAM_VOLUME: 1.0,
-        KEY_PARAM_STREAM: 'STREAM_MUSIC',
-      },
-    });
-  }
-
-  speech3() {
-    Tts.speak('We dont have a stock', {
-      androidParams: {
-        KEY_PARAM_PAN: -1,
-        KEY_PARAM_VOLUME: 1.0,
-        KEY_PARAM_STREAM: 'STREAM_MUSIC',
-      },
-    });
   }
 
   render() {
@@ -155,6 +125,7 @@ class HomeScreen extends React.Component {
     );
   }
 }
+
 const RootStack = createSwitchNavigator(
   {
     Home: HomeScreen,

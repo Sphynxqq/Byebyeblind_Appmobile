@@ -19,21 +19,17 @@ import Voice from 'react-native-voice';
 import {getGraph} from '../service/graph';
 
 export class GraphPage extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       check: true,
-      name: [],
+      symbol: props.navigation.getParam('symbol', '-'),
       symbolData: [],
       displayData: [],
     };
   }
 
   componentDidMount() {
-    const {navigation} = this.props;
-    const Data = navigation.getParam('key', 'Empty');
-    this.setState({Keyword: Data});
-
     getGraph('7up').then((data) => {
       const chartData = data.map((d) => {
         return {x: d.date, y: d.close};
@@ -66,18 +62,19 @@ export class GraphPage extends Component {
   }
 
   speechFirstData() {
+    const firstData = this.state.symbolData[0] ?? {};
     console.log(
       'Today is ' +
-        this.state.data[0].date +
+        (firstData.date ?? new Date()) +
         'And Vaule is ' +
-        this.state.data[0].close,
+        (firstData.close ?? 0),
     );
 
     Tts.speak(
       'Today is ' +
-        this.state.data[0].date +
+        (firstData.date ?? new Date()) +
         'And Vaule is ' +
-        this.state.data[0].close,
+        (firstData.close ?? 0),
       {
         androidParams: {
           KEY_PARAM_PAN: -1,
@@ -90,6 +87,8 @@ export class GraphPage extends Component {
 
   //ขนาดหน้าจอโทรศัพท์ที่ใช้เทส width:731, height:411
   render() {
+    const firstPoint = this.state.symbolData[0];
+
     const chart = (
       <VictoryChart
         events={[
@@ -183,19 +182,19 @@ export class GraphPage extends Component {
         <View>
           <View style={styles.cardview}>
             <View style={styles.displayincard}>
-              <Text>เปิด {this.state.contentOpen}</Text>
-              <Text>สูงสุด {this.state.contentHigh}</Text>
+              <Text>เปิด {firstPoint?.open}</Text>
+              <Text>สูงสุด {firstPoint?.high}</Text>
               <Text>ล่าสุด</Text>
             </View>
 
             <View style={styles.displayincard}>
-              <Text>ราคาปิด {this.state.contentClose}</Text>
-              <Text>ต่ำสุด {this.state.contentLow}</Text>
-              <Text>VOL {this.state.contentVol}</Text>
+              <Text>ราคาปิด {firstPoint?.close}</Text>
+              <Text>ต่ำสุด {firstPoint?.low}</Text>
+              <Text>VOL {firstPoint?.vol}</Text>
             </View>
 
             <View style={styles.displaynamebank}>
-              <Text>{this.state.Keyword}</Text>
+              <Text>{this.state.symbol}</Text>
             </View>
           </View>
 
