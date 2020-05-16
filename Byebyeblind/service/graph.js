@@ -13,26 +13,29 @@ export async function getGraph(symbolName) {
 ]
   */
   try {
-    const raw = await fetch('http://192.168.1.37:3000/' + symbolName);
-    return raw.json().map(({OPEN, CLOSE, HIGH, LOW, VOL, DATE}) => {
-      const year = Number.parseInt(DATE.slice(0, 4));
-      const month = Number.parseInt(DATE.slice(4, 6));
-      const date = Number.parseInt(DATE.slice(6, 8));
-      return {
-        open: Number.parseFloat(OPEN),
-        close: Number.parseFloat(CLOSE),
-        high: Number.parseFloat(HIGH),
-        low: Number.parseFloat(LOW),
-        vol: Number.parseFloat(VOL),
-        date: new Date(year, month - 1, date),
-      };
-    });
+    const raw = (await fetch('http://192.168.1.37:3000/' + symbolName)).json();
+    // const raw = generateSampleData();
+    return raw
+      .map(({OPEN, CLOSE, HIGH, LOW, VOL, DATE}) => {
+        const year = Number.parseInt(DATE.slice(0, 4), 10);
+        const month = Number.parseInt(DATE.slice(4, 6), 10);
+        const date = Number.parseInt(DATE.slice(6, 8), 10);
+        return {
+          open: Number.parseFloat(OPEN),
+          close: Number.parseFloat(CLOSE),
+          high: Number.parseFloat(HIGH),
+          low: Number.parseFloat(LOW),
+          vol: Number.parseFloat(VOL),
+          date: new Date(year, month - 1, date),
+        };
+      })
+      .slice(-10);
   } catch (error) {
     console.error('Request failed.', error);
-    throw error;
+    return [];
   }
   /*
-  Return data format
+  Return symbolData format
   [
     {
       open: 1, // float

@@ -11,51 +11,12 @@ import {
 } from 'react-native';
 import Svg from 'react-native-svg';
 
-import {
-  VictoryChart,
-  VictoryLine,
-  VictoryScatter,
-  VictoryCursorContainer,
-  round,
-} from 'victory-native';
+import {VictoryChart, VictoryLine, VictoryScatter} from 'victory-native';
 
 import Tts from 'react-native-tts';
 
 import Voice from 'react-native-voice';
-
-function generateSampleData_DAY() {
-  const data = [];
-  const tNow = new Date();
-  while (tNow.getHours() > 0) {
-    data.push({x: new Date(tNow), y: Math.floor(Math.random() * 500)});
-    tNow.setHours(tNow.getHours() - 1);
-  }
-
-  return data;
-}
-
-function generateSampleData_WEEK() {
-  const data = [];
-  const tNow = new Date();
-  while (tNow.getDay() > 0) {
-    data.push({x: new Date(tNow), y: Math.floor(Math.random() * 500)});
-    tNow.setDate(tNow.getDate() - 1);
-  }
-
-  return data;
-}
-
-function generateSampleData_1MONTH() {
-  const data = [];
-  const tNow = new Date();
-  let d = 30;
-  while (d--) {
-    data.push({x: new Date(tNow), y: Math.floor(Math.random() * 500)});
-    tNow.setDate(tNow.getDate() - 1);
-  }
-
-  return data;
-}
+import {getGraph} from '../service/graph';
 
 export class GraphPage extends Component {
   constructor() {
@@ -63,18 +24,8 @@ export class GraphPage extends Component {
     this.state = {
       check: true,
       name: [],
-      open7up: [],
-      contentOpen: 0,
-      contentHigh: 0,
-      contentLow: 0,
-      contentClose: 0,
-      contentVol: 0,
-      open7upmore: [],
-      high7upmore: [],
-      low7upmore: [],
-      close7upmore: [],
-      vol7upmore: [],
-      volGraph: [],
+      symbolData: [],
+      displayData: [],
     };
   }
 
@@ -83,50 +34,15 @@ export class GraphPage extends Component {
     const Data = navigation.getParam('key', 'Empty');
     this.setState({Keyword: Data});
 
-    fetch('http://192.168.1.37:3000/7up')
-      .then((response) => response.json())
-      .then((open) => {
-        this.state.open7up = Object.keys(open).map((key) => open[key]);
-        this.setState({contentOpen: this.state.open7up[0].OPEN});
-        console.log(this.state.open7up[0].OPEN);
+    getGraph('7up').then((data) => {
+      const chartData = data.map((d) => {
+        return {x: d.date, y: d.close};
       });
 
-    fetch('http://192.168.1.37:3000/7upmore')
-      .then((response) => response.json())
-      .then((high) => {
-        this.state.high7upmore = Object.keys(high).map((key) => high[key]);
-
-        this.setState({contentHigh: this.state.high7upmore[0].HIGH});
-        console.log('HIGH : ' + this.state.high7upmore[0].HIGH);
+      this.setState(() => {
+        return {symbolData: data, chartData: chartData};
       });
-
-    fetch('http://192.168.1.37:3000/7upmore')
-      .then((response) => response.json())
-      .then((low) => {
-        this.state.low7upmore = Object.keys(low).map((key) => low[key]);
-        this.setState({contentLow: this.state.low7upmore[0].LOW});
-        console.log('LOW : ' + this.state.low7upmore[0].LOW);
-      });
-
-    fetch('http://192.168.1.37:3000/7upmore')
-      .then((response) => response.json())
-      .then((close) => {
-        this.state.close7upmore = Object.keys(close).map((key) => close[key]);
-        this.setState({contentClose: this.state.close7upmore[0].CLOSE});
-        console.log('CLOSE : ' + this.state.close7upmore[0].CLOSE);
-      });
-
-    fetch('http://192.168.1.37:3000/7upmore')
-      .then((response) => response.json())
-      .then((vol) => {
-        this.state.vol7upmore = Object.keys(vol).map((key) => vol[key]);
-        this.setState({contentVol: this.state.vol7upmore[0].VOL});
-        console.log('VOL : ' + this.state.vol7upmore[0].VOL);
-        // for (let i = 0; i < 8; i++) {
-        //     this.state.volGraph.push(this.state.vol7upmore[i].VOL);
-        //     console.log("vol7upmore[i] : " + this.state.volGraph[i]);
-        // }
-      });
+    });
   }
 
   UNSAFE_componentWillMount() {
@@ -149,15 +65,27 @@ export class GraphPage extends Component {
     });
   }
 
-  speechFristData(data) {
-    console.log('Today is ' + data[13].x + 'And Vaule is ' + data[13].y);
-    Tts.speak('Today is ' + data[13].x + 'And Vaule is ' + data[13].y, {
-      androidParams: {
-        KEY_PARAM_PAN: -1,
-        KEY_PARAM_VOLUME: 1.0,
-        KEY_PARAM_STREAM: 'STREAM_MUSIC',
+  speechFirstData() {
+    console.log(
+      'Today is ' +
+        this.state.data[0].date +
+        'And Vaule is ' +
+        this.state.data[0].close,
+    );
+
+    Tts.speak(
+      'Today is ' +
+        this.state.data[0].date +
+        'And Vaule is ' +
+        this.state.data[0].close,
+      {
+        androidParams: {
+          KEY_PARAM_PAN: -1,
+          KEY_PARAM_VOLUME: 1.0,
+          KEY_PARAM_STREAM: 'STREAM_MUSIC',
+        },
       },
-    });
+    );
   }
 
   //ขนาดหน้าจอโทรศัพท์ที่ใช้เทส width:731, height:411
@@ -191,7 +119,7 @@ export class GraphPage extends Component {
         height={205}>
         <VictoryLine
           name="line"
-          data={this.state.data}
+          data={this.state.chartData}
           style={{
             data: {stroke: 'tomato'},
           }}
@@ -204,7 +132,7 @@ export class GraphPage extends Component {
 
         <VictoryScatter
           name="scatter"
-          data={this.state.data}
+          data={this.state.chartData}
           size={5}
           style={{
             data: {fill: '#c43a31'},
@@ -222,28 +150,14 @@ export class GraphPage extends Component {
           <Button
             color="#FBD1A7"
             onPress={() => {
-              const data = generateSampleData_DAY();
-              this.setState(() => ({data}));
-              this.speechFristData(data);
+              this.speechFirstData();
             }}
             title="DAY"
           />
 
-          <Button
-            color="#FBD1A7"
-            onPress={() => {
-              this.setState(() => ({data: generateSampleData_WEEK()}));
-            }}
-            title="WEEK"
-          />
+          <Button color="#FBD1A7" onPress={() => {}} title="WEEK" />
 
-          <Button
-            color="#FBD1A7"
-            onPress={() => {
-              this.setState(() => ({data: generateSampleData_1MONTH()}));
-            }}
-            title="MONTH"
-          />
+          <Button color="#FBD1A7" onPress={() => {}} title="MONTH" />
         </View>
 
         <View
