@@ -150,8 +150,8 @@ export class GraphPage extends Component {
   }
 
   speechFristData(data) {
-    console.log('Today is ' + data[20].x + 'And Vaule is ' + data[20].y);
-    Tts.speak('Today is ' + data[20].x + 'And Vaule is ' + data[20].y, {
+    console.log('Today is ' + data[13].x + 'And Vaule is ' + data[13].y);
+    Tts.speak('Today is ' + data[13].x + 'And Vaule is ' + data[13].y, {
       androidParams: {
         KEY_PARAM_PAN: -1,
         KEY_PARAM_VOLUME: 1.0,
@@ -166,36 +166,14 @@ export class GraphPage extends Component {
       <VictoryChart
         events={[
           {
-            childName: 'line',
+            childName: ['line', 'scatter'],
             target: 'data',
             eventHandlers: {
               onPress: () => {
-                console.log('touch line');
+                console.log('touch event');
                 return [
                   {
-                    childName: 'line',
-                    mutation: (props) => {
-                      const fill = props.style.fill;
-                      return fill === '#030303'
-                        ? null
-                        : {style: {fill: '#030303'}};
-                    },
-                  },
-                ];
-              },
-            },
-          },
-        ]}
-        events={[
-          {
-            childName: 'scatter',
-            target: 'data',
-            eventHandlers: {
-              onPress: () => {
-                console.log('touch scatter');
-                return [
-                  {
-                    childName: 'scatter',
+                    childName: ['line', 'scatter'],
                     mutation: (props) => {
                       const fill = props.style.fill;
                       return fill === '#030303'
