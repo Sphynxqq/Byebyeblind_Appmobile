@@ -24,7 +24,8 @@ export async function getGraph(symbolName) {
 ]
   */
   try {
-    // const raw = (await fetch('http://192.168.1.37:3000/' + symbolName)).json();
+    // const raw = await fetch('http://192.168.0.101:3000/' + symbolName);
+    // console.log(raw);
     const raw = generateSampleData();
     return raw
       .map(({OPEN, CLOSE, HIGH, LOW, VOL, DATE}) => {
@@ -42,7 +43,7 @@ export async function getGraph(symbolName) {
       })
       .slice(-10);
   } catch (error) {
-    console.error('Request failed.', error);
+    console.warn('Request failed.', error);
     return [];
   }
   /*

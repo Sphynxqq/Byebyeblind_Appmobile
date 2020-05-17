@@ -8,6 +8,7 @@ import {
   PanResponder,
   Button,
   Platform,
+  Alert,
 } from 'react-native';
 import Svg from 'react-native-svg';
 
@@ -17,6 +18,8 @@ import Tts from 'react-native-tts';
 
 import Voice from 'react-native-voice';
 import {getGraph} from '../service/graph';
+import {ButtonGraph} from './ButtonGraph';
+import {speak} from '../service/speech';
 
 export class GraphPage extends Component {
   constructor(props) {
@@ -149,14 +152,84 @@ export class GraphPage extends Component {
           <Button
             color="#FBD1A7"
             onPress={() => {
+              speak('This is button Day');
+              Alert.alert(
+                'ยืนยัน',
+                'Day',
+                [
+                  {
+                    text: 'ยกเลิก',
+                    onPress: () => {
+                      console.log('ยกเลิก');
+                    },
+                  },
+                  {
+                    text: 'ตกลง',
+                    onPress: async () => {
+                      console.log('ตกลง');
+                    },
+                  },
+                ],
+                {cancelable: false},
+              );
               this.speechFirstData();
             }}
             title="DAY"
           />
 
-          <Button color="#FBD1A7" onPress={() => {}} title="WEEK" />
+          <Button
+            color="#FBD1A7"
+            onPress={() => {
+              speak('This is button Week');
+              Alert.alert(
+                'ยืนยัน',
+                'Week',
+                [
+                  {
+                    text: 'ยกเลิก',
+                    onPress: () => {
+                      console.log('ยกเลิก');
+                    },
+                  },
+                  {
+                    text: 'ตกลง',
+                    onPress: async () => {
+                      console.log('ตกลง');
+                    },
+                  },
+                ],
+                {cancelable: false},
+              );
+            }}
+            title="WEEK"
+          />
 
-          <Button color="#FBD1A7" onPress={() => {}} title="MONTH" />
+          <Button
+            color="#FBD1A7"
+            onPress={() => {
+              speak('This is button Month');
+              Alert.alert(
+                'ยืนยัน',
+                'Month',
+                [
+                  {
+                    text: 'ยกเลิก',
+                    onPress: () => {
+                      console.log('ยกเลิก');
+                    },
+                  },
+                  {
+                    text: 'ตกลง',
+                    onPress: async () => {
+                      console.log('ตกลง');
+                    },
+                  },
+                ],
+                {cancelable: false},
+              );
+            }}
+            title="MONTH"
+          />
         </View>
 
         <View
@@ -197,34 +270,7 @@ export class GraphPage extends Component {
               <Text>{this.state.symbol}</Text>
             </View>
           </View>
-
-          <View style={styles.seticonbtn}>
-            <TouchableOpacity
-              onPress={() => {
-                alert('You tapped the button Voice');
-              }}>
-              <View style={styles.setbtnvoice}>
-                <Image
-                  style={styles.sizeImgbtn}
-                  source={require('../assets/microphone.png')}
-                />
-                <Text style={styles.btnfont}>Voice</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                alert('You tapped the button Favorite');
-              }}>
-              <View style={styles.setbtnfavorite}>
-                <Image
-                  style={styles.sizeImgbtn}
-                  source={require('../assets/star.png')}
-                />
-                <Text style={styles.btnfont}>Favorite</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          <ButtonGraph />
         </View>
       </View>
     );
@@ -255,44 +301,5 @@ const styles = StyleSheet.create({
   },
   displaynamebank: {
     alignItems: 'center',
-  },
-  seticonbtn: {
-    flexDirection: 'row',
-    width: '100%',
-    height: '100%',
-    justifyContent: 'space-around',
-  },
-  setbtnvoice: {
-    width: 130,
-    height: 70,
-    backgroundColor: '#FBD1A7',
-    marginTop: 10,
-    borderRadius: 30,
-    marginBottom: 10,
-    flexDirection: 'row',
-  },
-  sizeImgbtn: {
-    width: 45,
-    height: 45,
-    marginLeft: 5,
-    marginTop: 10,
-  },
-  btnfont: {
-    width: 130,
-    height: 70,
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginLeft: 2,
-  },
-  setbtnfavorite: {
-    width: 130,
-    height: 70,
-    backgroundColor: '#FBD1A7',
-    marginTop: 10,
-    borderRadius: 30,
-    marginBottom: 10,
-    flexDirection: 'row',
-    marginLeft: 400,
   },
 });
