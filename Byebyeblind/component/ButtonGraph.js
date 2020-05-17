@@ -9,6 +9,7 @@ import {
   Button,
   Platform,
 } from 'react-native';
+import {speak} from '../service/speech';
 
 export class ButtonGraph extends Component {
   constructor() {
@@ -22,6 +23,7 @@ export class ButtonGraph extends Component {
         <View style={styles.seticonbtn}>
           <TouchableOpacity
             onPress={() => {
+              speak('This is button Voice');
               alert('You tapped the button Voice');
             }}>
             <View style={styles.setbtnvoice}>
@@ -35,6 +37,7 @@ export class ButtonGraph extends Component {
 
           <TouchableOpacity
             onPress={() => {
+              speak('This is button Favorite');
               alert('You tapped the button Favorite');
             }}>
             <View style={styles.setbtnfavorite}>
