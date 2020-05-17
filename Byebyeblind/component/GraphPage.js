@@ -149,87 +149,93 @@ export class GraphPage extends Component {
     return (
       <View style={styles.setBg}>
         <View style={styles.setBtnDate}>
-          <Button
-            color="#FBD1A7"
-            onPress={() => {
-              speak('This is button Day');
-              Alert.alert(
-                'ยืนยัน',
-                'Day',
-                [
-                  {
-                    text: 'ยกเลิก',
-                    onPress: () => {
-                      console.log('ยกเลิก');
+          <View>
+            <Button
+              color="#FBD1A7"
+              onPress={() => {
+                speak('This is button Day');
+                Alert.alert(
+                  'ยืนยัน',
+                  'Day',
+                  [
+                    {
+                      text: 'ยกเลิก',
+                      onPress: () => {
+                        console.log('ยกเลิก');
+                      },
                     },
-                  },
-                  {
-                    text: 'ตกลง',
-                    onPress: async () => {
-                      console.log('ตกลง');
+                    {
+                      text: 'ตกลง',
+                      onPress: async () => {
+                        console.log('ตกลง');
+                      },
                     },
-                  },
-                ],
-                {cancelable: false},
-              );
-              this.speechFirstData();
-            }}
-            title="DAY"
-          />
+                  ],
+                  {cancelable: false},
+                );
+                this.speechFirstData();
+              }}
+              title="DAY"
+            />
+          </View>
 
-          <Button
-            color="#FBD1A7"
-            onPress={() => {
-              speak('This is button Week');
-              Alert.alert(
-                'ยืนยัน',
-                'Week',
-                [
-                  {
-                    text: 'ยกเลิก',
-                    onPress: () => {
-                      console.log('ยกเลิก');
+          <View style={styles.btnDateleft}>
+            <Button
+              color="#FBD1A7"
+              onPress={() => {
+                speak('This is button Week');
+                Alert.alert(
+                  'ยืนยัน',
+                  'Week',
+                  [
+                    {
+                      text: 'ยกเลิก',
+                      onPress: () => {
+                        console.log('ยกเลิก');
+                      },
                     },
-                  },
-                  {
-                    text: 'ตกลง',
-                    onPress: async () => {
-                      console.log('ตกลง');
+                    {
+                      text: 'ตกลง',
+                      onPress: async () => {
+                        console.log('ตกลง');
+                      },
                     },
-                  },
-                ],
-                {cancelable: false},
-              );
-            }}
-            title="WEEK"
-          />
+                  ],
+                  {cancelable: false},
+                );
+              }}
+              title="WEEK"
+            />
+          </View>
 
-          <Button
-            color="#FBD1A7"
-            onPress={() => {
-              speak('This is button Month');
-              Alert.alert(
-                'ยืนยัน',
-                'Month',
-                [
-                  {
-                    text: 'ยกเลิก',
-                    onPress: () => {
-                      console.log('ยกเลิก');
+          <View style={styles.btnDateleft}>
+            <Button
+              color="#FBD1A7"
+              onPress={() => {
+                speak('This is button Month');
+                Alert.alert(
+                  'ยืนยัน',
+                  'Month',
+                  [
+                    {
+                      text: 'ยกเลิก',
+                      onPress: () => {
+                        console.log('ยกเลิก');
+                      },
                     },
-                  },
-                  {
-                    text: 'ตกลง',
-                    onPress: async () => {
-                      console.log('ตกลง');
+                    {
+                      text: 'ตกลง',
+                      onPress: async () => {
+                        console.log('ตกลง');
+                      },
                     },
-                  },
-                ],
-                {cancelable: false},
-              );
-            }}
-            title="MONTH"
-          />
+                  ],
+                  {cancelable: false},
+                );
+              }}
+              title="MONTH"
+            />
+          </View>
         </View>
 
         <View
@@ -285,7 +291,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
     borderRadius: 10,
-    justifyContent: 'space-around',
+    justifyContent: 'center',
+  },
+  btnDateleft: {
+    marginLeft: 5,
   },
   cardview: {
     marginLeft: 30,
