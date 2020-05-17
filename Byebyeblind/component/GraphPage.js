@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,125 +8,40 @@ import {
   PanResponder,
   Button,
   Platform,
+  Alert,
 } from 'react-native';
 import Svg from 'react-native-svg';
 
-import {
-  VictoryChart,
-  VictoryLine,
-  VictoryScatter,
-  VictoryCursorContainer,
-  round,
-} from 'victory-native';
+import {VictoryChart, VictoryLine, VictoryScatter} from 'victory-native';
 
-function generateSampleData_DAY() {
-  const data = [];
-  const tNow = new Date();
-  while (tNow.getHours() > 0) {
-    data.push({ x: new Date(tNow), y: Math.floor(Math.random() * 500) });
-    tNow.setHours(tNow.getHours() - 1);
-  }
+import Tts from 'react-native-tts';
 
-  return data;
-}
-
-function generateSampleData_WEEK() {
-  const data = [];
-  const tNow = new Date();
-  while (tNow.getDay() > 0) {
-    data.push({ x: new Date(tNow), y: Math.floor(Math.random() * 500) });
-    tNow.setDate(tNow.getDate() - 1);
-  }
-
-  return data;
-}
-
-function generateSampleData_1MONTH() {
-  const data = [];
-  const tNow = new Date();
-  let d = 30;
-  while (d--) {
-    data.push({ x: new Date(tNow), y: Math.floor(Math.random() * 500) });
-    tNow.setDate(tNow.getDate() - 1);
-  }
-
-  return data;
-}
+import Voice from 'react-native-voice';
+import {getGraph} from '../service/graph';
+import {ButtonGraph} from './ButtonGraph';
+import {speak} from '../service/speech';
 
 export class GraphPage extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       check: true,
-      name: [],
-      open7up: [],
-      contentOpen: 0,
-      contentHigh: 0,
-      contentLow: 0,
-      contentClose: 0,
-      contentVol: 0,
-      open7upmore: [],
-      high7upmore: [],
-      low7upmore: [],
-      close7upmore: [],
-      vol7upmore: [],
-      volGraph: [],
-
-    }
+      symbol: props.navigation.getParam('symbol', '-'),
+      symbolData: [],
+      displayData: [],
+    };
   }
 
   componentDidMount() {
-    const { navigation } = this.props;
-    const Data = (navigation.getParam('key', 'Empty'));
-    this.setState({ Keyword: Data });
+    getGraph('7up').then((data) => {
+      const chartData = data.map((d) => {
+        return {x: d.date, y: d.close};
+      });
 
-    fetch('http://192.168.1.37:3000/7up')
-      .then(response => response.json())
-      .then(open => {
-        this.state.open7up = Object.keys(open).map(key => (open[key]))
-        this.setState({ contentOpen: this.state.open7up[0].OPEN })
-        console.log(this.state.open7up[0].OPEN);
-
-      })
-
-    fetch('http://192.168.1.37:3000/7upmore')
-      .then(response => response.json())
-      .then(high => {
-        this.state.high7upmore = Object.keys(high).map(key => (high[key]))
-
-        this.setState({ contentHigh: this.state.high7upmore[0].HIGH })
-        console.log("HIGH : " + this.state.high7upmore[0].HIGH);
-
-      })
-
-    fetch('http://192.168.1.37:3000/7upmore')
-      .then(response => response.json())
-      .then(low => {
-        this.state.low7upmore = Object.keys(low).map(key => (low[key]))
-        this.setState({ contentLow: this.state.low7upmore[0].LOW })
-        console.log("LOW : " + this.state.low7upmore[0].LOW);
-      })
-
-    fetch('http://192.168.1.37:3000/7upmore')
-      .then(response => response.json())
-      .then(close => {
-        this.state.close7upmore = Object.keys(close).map(key => (close[key]))
-        this.setState({ contentClose: this.state.close7upmore[0].CLOSE })
-        console.log("CLOSE : " + this.state.close7upmore[0].CLOSE);
-      })
-
-    fetch('http://192.168.1.37:3000/7upmore')
-      .then(response => response.json())
-      .then(vol => {
-        this.state.vol7upmore = Object.keys(vol).map(key => (vol[key]))
-        this.setState({ contentVol: this.state.vol7upmore[0].VOL })
-        console.log("VOL : " + this.state.vol7upmore[0].VOL);
-        // for (let i = 0; i < 8; i++) {
-        //     this.state.volGraph.push(this.state.vol7upmore[i].VOL);
-        //     console.log("vol7upmore[i] : " + this.state.volGraph[i]);
-        // }
-
-      })
+      this.setState(() => {
+        return {symbolData: data, chartData: chartData};
+      });
+    });
   }
 
   UNSAFE_componentWillMount() {
@@ -149,25 +64,51 @@ export class GraphPage extends Component {
     });
   }
 
+  speechFirstData() {
+    const firstData = this.state.symbolData[0] ?? {};
+    console.log(
+      'Today is ' +
+        (firstData.date ?? new Date()) +
+        'And Vaule is ' +
+        (firstData.close ?? 0),
+    );
+
+    Tts.speak(
+      'Today is ' +
+        (firstData.date ?? new Date()) +
+        'And Vaule is ' +
+        (firstData.close ?? 0),
+      {
+        androidParams: {
+          KEY_PARAM_PAN: -1,
+          KEY_PARAM_VOLUME: 1.0,
+          KEY_PARAM_STREAM: 'STREAM_MUSIC',
+        },
+      },
+    );
+  }
+
   //ขนาดหน้าจอโทรศัพท์ที่ใช้เทส width:731, height:411
   render() {
+    const firstPoint = this.state.symbolData[0];
+
     const chart = (
       <VictoryChart
         events={[
           {
-            childName: 'line',
+            childName: ['line', 'scatter'],
             target: 'data',
             eventHandlers: {
               onPress: () => {
-                console.log('touch line');
+                console.log('touch event');
                 return [
                   {
-                    childName: 'line',
+                    childName: ['line', 'scatter'],
                     mutation: (props) => {
                       const fill = props.style.fill;
                       return fill === '#030303'
                         ? null
-                        : { style: { fill: '#030303' } };
+                        : {style: {fill: '#030303'}};
                     },
                   },
                 ];
@@ -175,152 +116,167 @@ export class GraphPage extends Component {
             },
           },
         ]}
-        events={[
-          {
-            childName: 'scatter',
-            target: 'data',
-            eventHandlers: {
-              onPress: () => {
-                console.log('touch scatter');
-                return [
-                  {
-                    childName: 'scatter',
-                    mutation: (props) => {
-                      const fill = props.style.fill;
-                      return fill === '#030303'
-                        ? null
-                        : { style: { fill: '#030303' } };
-                    },
-                  },
-                ];
-              },
-            },
-          },
-        ]}
-        padding={{ top: 22, bottom: 10, left: 45, right: 11 }}
+        padding={{top: 22, bottom: 10, left: 45, right: 11}}
         width={700}
         height={205}>
         <VictoryLine
           name="line"
-          data={this.state.data}
+          data={this.state.chartData}
           style={{
-            data: { stroke: 'tomato' },
+            data: {stroke: 'tomato'},
           }}
           animate={{
             duration: 2000,
-            onLoad: { duration: 1000 },
+            onLoad: {duration: 1000},
           }}
           interpolation="linear"
         />
 
         <VictoryScatter
           name="scatter"
-          data={this.state.data}
+          data={this.state.chartData}
           size={5}
           style={{
-            data: { fill: '#c43a31' },
+            data: {fill: '#c43a31'},
             labels: {
-              fill: ({ datum }) => datum.x === '#FFFFFF',
+              fill: ({datum}) => datum.x === '#FFFFFF',
             },
           }}
-          labels={({ datum }) => datum.y}
+          labels={({datum}) => datum.y}
         />
       </VictoryChart>
     );
     return (
       <View style={styles.setBg}>
         <View style={styles.setBtnDate}>
-          <Button
-            color="#FBD1A7"
-            onPress={() => {
-              this.setState(() => ({ data: generateSampleData_DAY() }));
-            }}
-            title="DAY"
-          />
+          <View>
+            <Button
+              color="#FBD1A7"
+              onPress={() => {
+                speak('This is button Day');
+                Alert.alert(
+                  'ยืนยัน',
+                  'Day',
+                  [
+                    {
+                      text: 'ยกเลิก',
+                      onPress: () => {
+                        console.log('ยกเลิก');
+                      },
+                    },
+                    {
+                      text: 'ตกลง',
+                      onPress: async () => {
+                        console.log('ตกลง');
+                      },
+                    },
+                  ],
+                  {cancelable: false},
+                );
+                this.speechFirstData();
+              }}
+              title="DAY"
+            />
+          </View>
 
-          <Button
-            color="#FBD1A7"
-            onPress={() => {
-              this.setState(() => ({ data: generateSampleData_WEEK() }));
-            }}
-            title="WEEK"
-          />
+          <View style={styles.btnDateleft}>
+            <Button
+              color="#FBD1A7"
+              onPress={() => {
+                speak('This is button Week');
+                Alert.alert(
+                  'ยืนยัน',
+                  'Week',
+                  [
+                    {
+                      text: 'ยกเลิก',
+                      onPress: () => {
+                        console.log('ยกเลิก');
+                      },
+                    },
+                    {
+                      text: 'ตกลง',
+                      onPress: async () => {
+                        console.log('ตกลง');
+                      },
+                    },
+                  ],
+                  {cancelable: false},
+                );
+              }}
+              title="WEEK"
+            />
+          </View>
 
-          <Button
-            color="#FBD1A7"
-            onPress={() => {
-              this.setState(() => ({ data: generateSampleData_1MONTH() }));
-            }}
-            title="MONTH"
-          />
+          <View style={styles.btnDateleft}>
+            <Button
+              color="#FBD1A7"
+              onPress={() => {
+                speak('This is button Month');
+                Alert.alert(
+                  'ยืนยัน',
+                  'Month',
+                  [
+                    {
+                      text: 'ยกเลิก',
+                      onPress: () => {
+                        console.log('ยกเลิก');
+                      },
+                    },
+                    {
+                      text: 'ตกลง',
+                      onPress: async () => {
+                        console.log('ตกลง');
+                      },
+                    },
+                  ],
+                  {cancelable: false},
+                );
+              }}
+              title="MONTH"
+            />
+          </View>
         </View>
 
         <View
           {...this._panResponder.panHandlers}
-        //     onStartShouldSetResponder={(ev) => true}
-        //     // onMoveShouldSetResponder={(ev) => false}
-        //     onResponderGrant={this.onTouchEvent.bind(this, "onResponderGrant")}
-        //     // onResponderReject={this.onTouchEvent.bind(this, "onResponderReject")}
-        //     onResponderMove={this.onTouchEvent.bind(this, "onResponderMove")}
-        // // onResponderRelease={this.onTouchEvent.bind(this, "onResponderRelease")}
-        // // onResponderTerminationRequest={(ev) => true}
-        // // onResponderTerminate={this.onTouchEvent.bind(this, "onResponderTerminate")}
+          //     onStartShouldSetResponder={(ev) => true}
+          //     // onMoveShouldSetResponder={(ev) => false}
+          //     onResponderGrant={this.onTouchEvent.bind(this, "onResponderGrant")}
+          //     // onResponderReject={this.onTouchEvent.bind(this, "onResponderReject")}
+          //     onResponderMove={this.onTouchEvent.bind(this, "onResponderMove")}
+          // // onResponderRelease={this.onTouchEvent.bind(this, "onResponderRelease")}
+          // // onResponderTerminationRequest={(ev) => true}
+          // // onResponderTerminate={this.onTouchEvent.bind(this, "onResponderTerminate")}
         >
           {Platform.OS === 'ios' ? (
             chart
           ) : (
-              <Svg width="700" height="205">
-                {chart}
-              </Svg>
-            )}
+            <Svg width="700" height="205">
+              {chart}
+            </Svg>
+          )}
         </View>
 
         <View>
           <View style={styles.cardview}>
             <View style={styles.displayincard}>
-              <Text>เปิด {this.state.contentOpen}</Text>
-              <Text>สูงสุด {this.state.contentHigh}</Text>
+              <Text>เปิด {firstPoint?.open}</Text>
+              <Text>สูงสุด {firstPoint?.high}</Text>
               <Text>ล่าสุด</Text>
             </View>
 
             <View style={styles.displayincard}>
-              <Text>ราคาปิด {this.state.contentClose}</Text>
-              <Text>ต่ำสุด {this.state.contentLow}</Text>
-              <Text>VOL {this.state.contentVol}</Text>
+              <Text>ราคาปิด {firstPoint?.close}</Text>
+              <Text>ต่ำสุด {firstPoint?.low}</Text>
+              <Text>VOL {firstPoint?.vol}</Text>
             </View>
 
             <View style={styles.displaynamebank}>
-              <Text>{this.state.Keyword}</Text>
+              <Text>{this.state.symbol}</Text>
             </View>
           </View>
-
-          <View style={styles.seticonbtn}>
-            <TouchableOpacity
-              onPress={() => {
-                alert('You tapped the button Voice');
-              }}>
-              <View style={styles.setbtnvoice}>
-                <Image
-                  style={styles.sizeImgbtn}
-                  source={require('../assets/microphone.png')}
-                />
-                <Text style={styles.btnfont}>Voice</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                alert('You tapped the button Favorite');
-              }}>
-              <View style={styles.setbtnfavorite}>
-                <Image
-                  style={styles.sizeImgbtn}
-                  source={require('../assets/star.png')}
-                />
-                <Text style={styles.btnfont}>Favorite</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          <ButtonGraph />
         </View>
       </View>
     );
@@ -335,12 +291,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
     borderRadius: 10,
-    justifyContent: 'space-around',
+    justifyContent: 'center',
+  },
+  btnDateleft: {
+    marginLeft: 5,
   },
   cardview: {
     marginLeft: 30,
     width: 670,
-    height: 55,
+    height: 60,
     backgroundColor: '#FBD1A7',
     borderRadius: 10,
     elevation: 5,
@@ -351,44 +310,5 @@ const styles = StyleSheet.create({
   },
   displaynamebank: {
     alignItems: 'center',
-  },
-  seticonbtn: {
-    flexDirection: 'row',
-    width: '100%',
-    height: '100%',
-    justifyContent: 'space-around',
-  },
-  setbtnvoice: {
-    width: 130,
-    height: 70,
-    backgroundColor: '#FBD1A7',
-    marginTop: 10,
-    borderRadius: 30,
-    marginBottom: 10,
-    flexDirection: 'row',
-  },
-  sizeImgbtn: {
-    width: 45,
-    height: 45,
-    marginLeft: 5,
-    marginTop: 10,
-  },
-  btnfont: {
-    width: 130,
-    height: 70,
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginLeft: 2,
-  },
-  setbtnfavorite: {
-    width: 130,
-    height: 70,
-    backgroundColor: '#FBD1A7',
-    marginTop: 10,
-    borderRadius: 30,
-    marginBottom: 10,
-    flexDirection: 'row',
-    marginLeft: 400,
   },
 });
