@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   cardview: {
     marginLeft: 30,
     width: 670,
-    height: 55,
+    height: 60,
     backgroundColor: '#FBD1A7',
     borderRadius: 10,
     elevation: 5,
