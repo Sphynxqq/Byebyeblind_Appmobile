@@ -8,8 +8,44 @@ import {
   PanResponder,
   Button,
   Platform,
+  Alert,
 } from 'react-native';
 import {speak} from '../service/speech';
+import Voice from 'react-native-voice';
+
+Voice.onSpeechResults = (res) => {
+  const key = res.value[0];
+  speak(res.value[0] + ' Confirm');
+  Alert.alert(
+    'ยืนยัน',
+    res.value[0],
+    [
+      {
+        text: 'ยกเลิก',
+        onPress: () => {
+          return null;
+        },
+      },
+      {
+        text: 'ตกลง',
+        onPress: async () => {
+          if (key !== 'favorite') {
+            this.stock_check(key);
+            alert(this.state.check);
+            if (this.state.check === true) {
+              this.props.navigation.navigate('Graph', {key});
+            } else {
+              speak('We dont have a stock');
+            }
+          } else {
+            this.props.navigation.navigate('Favorite', {key});
+          }
+        },
+      },
+    ],
+    {cancelable: false},
+  );
+};
 
 export class ButtonGraph extends Component {
   constructor() {
@@ -23,7 +59,7 @@ export class ButtonGraph extends Component {
         <TouchableOpacity
           onPress={() => {
             speak('This is button Voice');
-            alert('You tapped the button Voice');
+            Voice.start('en-US');
           }}>
           <View style={styles.setbtnvoice}>
             <Image
