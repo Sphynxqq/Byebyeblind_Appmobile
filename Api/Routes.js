@@ -97,6 +97,25 @@ app.get('/checkstock', function (req, res) {
   });
 });
 
+// --------------------------------------------------------------------------------------------------------
+
+app.get('/getStock', function (req, res) {
+  // Connecting to the database.
+  connection.getConnection(function (err, connection) {
+    // var query = ("SELECT * FROM '" + req.body.data.tickername + "' LIMIT 300");
+    // console.log("this is SQL : " + query);
+    connection.query('SELECT * FROM 7UP LIMIT 300', function (error, result, fields) {
+      console.log(result[0]);
+      if (error) {
+        throw error;
+      }
+
+      // Getting the 'response' from the database and sending it to our route. This is were the data is.
+      res.send(result);
+    });
+  });
+});
+
 
 
 // Starting our server.
