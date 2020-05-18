@@ -77,18 +77,27 @@ app.get('/7upmore', function (req, res) {
 
 // --------------------------------------------------------------------------------------------------------
 
-app.post('/checkstock', function (req, res) {
+app.get('/checkstock', function (req, res) {
 
-  connection.getConnection(function (err, connection) {  
-    var query = ("SELECT COUNT(TICKER) AS 'CHECK' FROM ticker_name WHERE TICKER = '"+ req.body.data.tickername + "'");
-    connection.query(query , function (error, result, fields) {
-      console.log(result[0].CHECK);
+  connection.getConnection(function (err, connection) {   
+    // var query = ("SELECT COUNT(TICKER) AS 'CHECK' FROM ticker_name WHERE TICKER = '"+ req.body.data.tickername + "'");
+    // console.log("this is name : " + req.body.data.tickername);
+    // console.log("this is SQL : " + query);
+    connection.query("SELECT COUNT(TICKER) AS 'CHECK' FROM ticker_name WHERE TICKER = '7UP'", function (error, result, fields) {
+      var check = result[0].CHECK;
+        console.log(check);
+        if(check == 1)
+          check = true;
+        else
+          check = false;
       if (error) throw error;
 
-      res.send(result)
+      res.send(check)
     });
   });
 });
+
+
 
 // Starting our server.
 app.listen(3000, () => {
