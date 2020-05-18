@@ -16,6 +16,8 @@ const connection = mysql.createPool({
 
 // Starting our app.
 const app = express();
+app.use(express.json());
+app.use(cors());
 
 app.use(cors());
 
@@ -45,7 +47,7 @@ app.get('/7up', function (req, res) {
   connection.getConnection(function (err, connection) {
     // Executing the MySQL query (select all data from the 'users' table).
     connection.query('SELECT * FROM 7UP', function (error, result, fields) {
-      // If some error occurs, we throw an error.
+      console.log(result[0].OPEN);
       if (error) {
         throw error;
       }
@@ -72,21 +74,21 @@ app.get('/7upmore', function (req, res) {
   });
 });
 
-// app.get('/checkstock/:key', function (req, res) {
-//   // Connecting to the database.
-//   connection.getConnection(function (err, connection) {
 
-//     // Executing the MySQL query (select all data from the 'users' table).
-//     connection.query('SELECT COUNT(TICKER) AS "CHECK" FROM ticker_name WHERE TICKER = ' + key, function (error, result, fields) {
-//       // If some error occurs, we throw an error.
-//       console.log('SELECT COUNT(TICKER) AS "CHECK" FROM ticker_name WHERE TICKER = ' + key);
-//       if (error) throw error;
+// --------------------------------------------------------------------------------------------------------
 
-//       // Getting the 'response' from the database and sending it to our route. This is were the data is.
-//       res.send(result)
-//     });
-//   });
-// });
+app.post('/checkstock', function (req, res) {
+
+  connection.getConnection(function (err, connection) {  
+    var query = ("SELECT COUNT(TICKER) AS 'CHECK' FROM ticker_name WHERE TICKER = '"+ req.body.data.tickername + "'");
+    connection.query(query , function (error, result, fields) {
+      console.log(result[0].CHECK);
+      if (error) throw error;
+
+      res.send(result)
+    });
+  });
+});
 
 // Starting our server.
 app.listen(3000, () => {
