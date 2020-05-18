@@ -10,7 +10,7 @@ export async function isSymbolExist(symbolName) {
 }
 
 export async function getGraph(symbolName) {
-  /* Data from API format
+  /* Data from API for mat
 [
     {"S_ID":1,
     "TICKER":"7UP",
