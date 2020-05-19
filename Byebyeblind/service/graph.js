@@ -24,11 +24,20 @@ export async function getGraph(symbolName) {
 ]
   */
   try {
+
+
+    let url = 'http://192.168.1.37:3000/getStock/day/' + symbolName;
+    let response = await fetch(url);
+
+    let commits = await response.json(); // read response body and parse as JSON
+    // const temp = ("http://192.168.1.37:3000/getStock/day/" + symbolName);
+    // console.log(temp);
     // const raw = await fetch('http://192.168.1.37:3000/getStock/day/' + symbolName);
-    // console.log(raw);
-    const raw = generateSampleData();
-    return raw
-      .map(({OPEN, CLOSE, HIGH, LOW, VOL, DATE}) => {
+    // let raw2 = raw.json();
+    // const raw = generateSampleData();
+    // console.log(commits);
+    return commits
+      .map(({ OPEN, CLOSE, HIGH, LOW, VOL, DATE }) => {
         const year = Number.parseInt(DATE.slice(0, 4), 10);
         const month = Number.parseInt(DATE.slice(4, 6), 10);
         const date = Number.parseInt(DATE.slice(6, 8), 10);

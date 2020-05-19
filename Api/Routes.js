@@ -106,6 +106,7 @@ app.get('/getStock/day/:name', function (req, res) {
     var query = ("SELECT * FROM " + req.params.name + " LIMIT 300");
     console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
+      console.log(result);
       // console.log(result[0]);
       if (error) {
         throw error;
