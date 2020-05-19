@@ -1,8 +1,8 @@
 export async function isSymbolExist(symbolName) {
   try {
-    // return (await fetch('http://192.168.1.37:3000/' + symbolName)).json();
+    return (await fetch('http://192.168.1.37:3000/checkstock/' + symbolName)).json();
     // return symbolName === '7UP';
-    return true;
+    // return true;
   } catch (error) {
     console.error('Request failed.', error);
     return false;
@@ -24,7 +24,7 @@ export async function getGraph(symbolName) {
 ]
   */
   try {
-    // const raw = await fetch('http://192.168.0.101:3000/' + symbolName);
+    // const raw = await fetch('http://192.168.1.37:3000/getStock/day/' + symbolName);
     // console.log(raw);
     const raw = generateSampleData();
     return raw
