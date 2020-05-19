@@ -77,13 +77,14 @@ app.get('/7upmore', function (req, res) {
 
 // --------------------------------------------------------------------------------------------------------
 
-app.get('/checkstock', function (req, res) {
+app.get('/checkstock/:name', function (req, res) {
 
   connection.getConnection(function (err, connection) {   
-    // var query = ("SELECT COUNT(TICKER) AS 'CHECK' FROM ticker_name WHERE TICKER = '"+ req.body.data.tickername + "'");
-    // console.log("this is name : " + req.body.data.tickername);
-    // console.log("this is SQL : " + query);
-    connection.query("SELECT COUNT(TICKER) AS 'CHECK' FROM ticker_name WHERE TICKER = '7UP'", function (error, result, fields) {
+    // console.log(req.params);
+    var query = ("SELECT COUNT(TICKER) AS 'CHECK' FROM ticker_name WHERE TICKER = '"+ req.params.name + "'");
+    console.log("this is name : " + req.params.name);
+    console.log("this is SQL : " + query);
+    connection.query(query, function (error, result, fields) {
       var check = result[0].CHECK;
         console.log(check);
         if(check == 1)
@@ -99,12 +100,50 @@ app.get('/checkstock', function (req, res) {
 
 // --------------------------------------------------------------------------------------------------------
 
-app.get('/getStock', function (req, res) {
+app.get('/getStock/day/:name', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
-    // var query = ("SELECT * FROM '" + req.body.data.tickername + "' LIMIT 300");
-    // console.log("this is SQL : " + query);
-    connection.query('SELECT * FROM 7UP LIMIT 300', function (error, result, fields) {
+    var query = ("SELECT * FROM " + req.params.name + " LIMIT 300");
+    console.log("this is SQL : " + query);
+    connection.query(query, function (error, result, fields) {
+      // console.log(result[0]);
+      if (error) {
+        throw error;
+      }
+
+      // Getting the 'response' from the database and sending it to our route. This is were the data is.
+      res.send(result);
+    });
+  });
+});
+
+// --------------------------------------------------------------------------------------------------------
+
+app.get('/getStock/week/:name', function (req, res) {
+  // Connecting to the database.
+  connection.getConnection(function (err, connection) {
+    var query = ("SELECT * FROM " + req.params.name + " LIMIT 700");
+    console.log("this is SQL : " + query);
+    connection.query(query, function (error, result, fields) {
+      console.log(result[0]);
+      if (error) {
+        throw error;
+      }
+
+      // Getting the 'response' from the database and sending it to our route. This is were the data is.
+      res.send(result);
+    });
+  });
+});
+
+// --------------------------------------------------------------------------------------------------------
+
+app.get('/getStock/month/:name', function (req, res) {
+  // Connecting to the database.
+  connection.getConnection(function (err, connection) {
+    var query = ("SELECT * FROM " + req.params.name + " LIMIT 3100");
+    console.log("this is SQL : " + query);
+    connection.query(query, function (error, result, fields) {
       console.log(result[0]);
       if (error) {
         throw error;
