@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,8 +10,9 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import {speak} from '../service/speech';
+import { speak } from '../service/speech';
 import Voice from 'react-native-voice';
+import { getGraph } from '../service/graph';
 
 Voice.onSpeechResults = (res) => {
   const key = res.value[0];
@@ -33,19 +34,21 @@ Voice.onSpeechResults = (res) => {
             this.stock_check(key);
             alert(this.state.check);
             if (this.state.check === true) {
-              this.props.navigation.navigate('Graph', {key});
+              this.props.navigation.navigate('Graph', { key });
             } else {
               speak('We dont have a stock');
             }
           } else {
-            this.props.navigation.navigate('Favorite', {key});
+            this.props.navigation.navigate('Favorite', { key });
           }
         },
       },
     ],
-    {cancelable: false},
+    { cancelable: false },
   );
 };
+
+
 
 export class ButtonGraph extends Component {
   constructor() {
@@ -53,13 +56,27 @@ export class ButtonGraph extends Component {
     this.state = {};
   }
 
+  go_getGraph(symbolName) {
+    getGraph(symbolName).then((data) => {
+      const chartData = data.map((d) => {
+        console.log(data);
+        return { x: d.date, y: d.vol };
+      });
+
+      this.setState(() => {
+        return { symbolData: data, chartData: chartData };
+      });
+    });
+
+  }
   render() {
     return (
       <View style={styles.seticonbtn}>
         <TouchableOpacity
           onPress={() => {
             speak('This is button Voice');
-            Voice.start('en-US');
+            // Voice.start('en-US');
+            this.go_getGraph('a');
           }}>
           <View style={styles.setbtnvoice}>
             <Image

@@ -103,7 +103,7 @@ app.get('/checkstock/:name', function (req, res) {
 app.get('/getStock/day/:name', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
-    var query = ("SELECT * FROM " + req.params.name + " LIMIT 300");
+    var query = ("SELECT * FROM " + req.params.name + " ORDER BY DATE DESC LIMIT 300");
     console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
       console.log(result);
