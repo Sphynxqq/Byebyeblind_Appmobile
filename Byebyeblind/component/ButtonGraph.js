@@ -51,32 +51,22 @@ Voice.onSpeechResults = (res) => {
 
 
 export class ButtonGraph extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {};
+    console.log(this.props)
   }
 
-  go_getGraph(symbolName) {
-    getGraph(symbolName).then((data) => {
-      const chartData = data.map((d) => {
-        console.log(data);
-        return { x: d.date, y: d.vol };
-      });
-
-      this.setState(() => {
-        return { symbolData: data, chartData: chartData };
-      });
-    });
-
-  }
   render() {
     return (
       <View style={styles.seticonbtn}>
         <TouchableOpacity
           onPress={() => {
             speak('This is button Voice');
+            this.props.myPropsFunction('a');
             // Voice.start('en-US');
-            this.go_getGraph('a');
+
+            
           }}>
           <View style={styles.setbtnvoice}>
             <Image

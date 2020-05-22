@@ -104,9 +104,9 @@ app.get('/getStock/day/:name', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
     var query = ("SELECT * FROM " + req.params.name + " ORDER BY DATE DESC LIMIT 300");
-    console.log("this is SQL : " + query);
+    // console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
-      console.log(result);
+      // console.log(result);
       // console.log(result[0]);
       if (error) {
         throw error;
@@ -124,9 +124,9 @@ app.get('/getStock/week/:name', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
     var query = ("SELECT * FROM " + req.params.name + " LIMIT 700");
-    console.log("this is SQL : " + query);
+    // console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
-      console.log(result[0]);
+      // console.log(result[0]);
       if (error) {
         throw error;
       }
@@ -145,7 +145,7 @@ app.get('/getStock/month/:name', function (req, res) {
     var query = ("SELECT * FROM " + req.params.name + " LIMIT 3100");
     console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
-      console.log(result[0]);
+      // console.log(result[0]);
       if (error) {
         throw error;
       }
