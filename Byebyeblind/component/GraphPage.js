@@ -67,6 +67,7 @@ export class GraphPage extends Component {
   }
 
   updateGraph(symbolName) {
+    // TODO: check symbol here before get graph
     getGraph(symbolName).then((data) => {
       const chartData = data.map((d) => {
         return {x: d.date, y: d.vol};
