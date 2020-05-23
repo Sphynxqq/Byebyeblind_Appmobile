@@ -1,6 +1,8 @@
 export async function isSymbolExist(symbolName) {
   try {
-    return (await fetch('http://192.168.1.37:3000/checkstock/' + symbolName)).json();
+    return (
+      await fetch('http://192.168.1.37:3000/checkstock/' + symbolName)
+    ).json();
     // return symbolName === '7UP';
     // return true;
   } catch (error) {
@@ -8,6 +10,8 @@ export async function isSymbolExist(symbolName) {
     return false;
   }
 }
+
+// Test comment
 
 export async function getGraph(symbolName) {
   /* Data from API format
@@ -24,8 +28,6 @@ export async function getGraph(symbolName) {
 ]
   */
   try {
-
-
     let url = 'http://192.168.1.37:3000/getStock/day/' + symbolName;
     let response = await fetch(url);
 
@@ -37,7 +39,7 @@ export async function getGraph(symbolName) {
     // const raw = generateSampleData();
     // console.log(commits);
     return commits
-      .map(({ OPEN, CLOSE, HIGH, LOW, VOL, DATE }) => {
+      .map(({OPEN, CLOSE, HIGH, LOW, VOL, DATE}) => {
         const year = Number.parseInt(DATE.slice(0, 4), 10);
         const month = Number.parseInt(DATE.slice(4, 6), 10);
         const date = Number.parseInt(DATE.slice(6, 8), 10);
