@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Dimensions} from 'react-native';
-import {LoginButton, AccessToken} from 'react-native-fbsdk';
+// import {LoginButton, AccessToken} from 'react-native-fbsdk';
 
 export class Loginfb extends Component {
   render() {
     return (
       <View>
-        <LoginButton
+        {/* <LoginButton
           publishPermissions={['email']}
           onLoginFinished={(error, result) => {
             if (error) {
@@ -22,7 +22,7 @@ export class Loginfb extends Component {
             }
           }}
           onLogoutFinished={() => alert('User logged out')}
-        />
+        /> */}
       </View>
     );
   }
