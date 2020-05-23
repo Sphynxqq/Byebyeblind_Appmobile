@@ -1,18 +1,14 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Image,
   TouchableOpacity,
-  PanResponder,
-  Button,
-  Platform,
   Alert,
 } from 'react-native';
-import { speak } from '../service/speech';
+import {speak} from '../service/speech';
 import Voice from 'react-native-voice';
-import { getGraph } from '../service/graph';
 
 Voice.onSpeechResults = (res) => {
   const key = res.value[0];
@@ -34,27 +30,24 @@ Voice.onSpeechResults = (res) => {
             this.stock_check(key);
             alert(this.state.check);
             if (this.state.check === true) {
-              this.props.navigation.navigate('Graph', { key });
+              this.props.navigation.navigate('Graph', {key});
             } else {
               speak('We dont have a stock');
             }
           } else {
-            this.props.navigation.navigate('Favorite', { key });
+            this.props.navigation.navigate('Favorite', {key});
           }
         },
       },
     ],
-    { cancelable: false },
+    {cancelable: false},
   );
 };
-
-
 
 export class ButtonGraph extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-    console.log(this.props)
   }
 
   render() {
@@ -63,10 +56,8 @@ export class ButtonGraph extends Component {
         <TouchableOpacity
           onPress={() => {
             speak('This is button Voice');
-            this.props.myPropsFunction('a');
+            this.props.triggerGraphUpdate('a');
             // Voice.start('en-US');
-
-            
           }}>
           <View style={styles.setbtnvoice}>
             <Image
