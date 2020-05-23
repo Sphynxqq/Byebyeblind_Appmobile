@@ -119,7 +119,7 @@ class HomeScreen extends React.Component {
             </TouchableOpacity>
           </View>
 
-          <Loginfb />
+          {/* <Loginfb /> */}
         </View>
       </View>
     );
