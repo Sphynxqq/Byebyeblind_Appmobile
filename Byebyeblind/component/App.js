@@ -14,7 +14,7 @@ import {isSymbolExist} from '../service/graph';
 import {speak} from '../service/speech';
 import {GraphPage} from './GraphPage';
 import {FavoritePage} from './FavoritePage';
-// import {Loginfb} from './Loginfb';
+import {Loginfb} from './Loginfb';
 
 class HomeScreen extends React.Component {
   constructor() {
@@ -119,7 +119,7 @@ class HomeScreen extends React.Component {
             </TouchableOpacity>
           </View>
 
-          {/* <Loginfb /> */}
+          <Loginfb />
         </View>
       </View>
     );
