@@ -126,6 +126,17 @@ app.get('/getStock/week/:name', function (req, res) {
   connection.getConnection(function (err, connection) {
     var query = ("SELECT * FROM " + req.params.name + " LIMIT 700");
     // console.log("this is SQL : " + query);
+    var resultWeek = [{
+      OPEN: null,
+      CLOSE: null,
+      high: null,
+      low: null,
+      vol: null,
+      date: null,
+      avg: null,
+      monthCount: null,
+
+    }]
     connection.query(query, function (error, result, fields) {
 
       console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< START >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
@@ -134,17 +145,20 @@ app.get('/getStock/week/:name', function (req, res) {
       var daySum = 0;
       var average = 0;
       var weekCount = 0;
-      const resultWeek = result.map(({ S_ID, OPEN, CLOSE, HIGH, LOW, VOL, DATE }) => {
-        const year = Number.parseInt(DATE.slice(0, 4), 10);
-        const month = Number.parseInt(DATE.slice(4, 6), 10);
-        const date = Number.parseInt(DATE.slice(6, 8), 10);
+      var i = 0;
+      var j = 0;
+
+      result.forEach(element => {
+        const year = Number.parseInt(result[i].DATE.slice(0, 4), 10);
+        const month = Number.parseInt(result[i].DATE.slice(4, 6), 10);
+        const date = Number.parseInt(result[i].DATE.slice(6, 8), 10);
 
         if (date - dateFirst >= -6 && date - dateFirst <= 6) {
           console.log("date : " + date + "/" + month + "/" + year);
           console.log("sum++");
           dayCount++;
-          daySum += Number.parseFloat(VOL);
-          
+          daySum += Number.parseFloat(result[i].VOL);
+
         } else {
           average = daySum / dayCount;
           console.log(daySum + " / " + dayCount + " = " + average);
@@ -154,30 +168,69 @@ app.get('/getStock/week/:name', function (req, res) {
           console.log("date : " + date + "/" + month + "/" + year);
           dayCount = 1;
           weekCount++;
-          daySum = daySum = Number.parseFloat(VOL);
+          daySum = daySum = Number.parseFloat(result[i].VOL);
           dateFirst = date;
           console.log("datefirst : " + dateFirst);
-          return {
-            open: Number.parseFloat(OPEN),
-            close: Number.parseFloat(CLOSE),
-            high: Number.parseFloat(HIGH),
-            low: Number.parseFloat(LOW),
-            vol: Number.parseFloat(VOL),
+
+          resultWeek[j] = {
+            open: Number.parseFloat(result[i].OPEN),
+            close: Number.parseFloat(result[i].CLOSE),
+            high: Number.parseFloat(result[i].HIGH),
+            low: Number.parseFloat(result[i].LOW),
+            vol: Number.parseFloat(result[i].VOL),
             date: new Date(year, month - 1, date),
             avg: average,
             weekCount: weekCount,
           };
+          j++;
         }
-
+        i++;
       })
-      console.log(resultWeek);
+      // const resultWeek = result.map(({ S_ID, OPEN, CLOSE, HIGH, LOW, VOL, DATE }) => {
+      //   const year = Number.parseInt(DATE.slice(0, 4), 10);
+      //   const month = Number.parseInt(DATE.slice(4, 6), 10);
+      //   const date = Number.parseInt(DATE.slice(6, 8), 10);
 
+      //   if (date - dateFirst >= -6 && date - dateFirst <= 6) {
+      //     console.log("date : " + date + "/" + month + "/" + year);
+      //     console.log("sum++");
+      //     dayCount++;
+      //     daySum += Number.parseFloat(VOL);
+
+      //   } else {
+      //     average = daySum / dayCount;
+      //     console.log(daySum + " / " + dayCount + " = " + average);
+      //     console.log("average : " + average);
+
+      //     console.log("END WEEK ")
+      //     console.log("date : " + date + "/" + month + "/" + year);
+      //     dayCount = 1;
+      //     weekCount++;
+      //     daySum = daySum = Number.parseFloat(VOL);
+      //     dateFirst = date;
+      //     console.log("datefirst : " + dateFirst);
+      //     return {
+      //       open: Number.parseFloat(OPEN),
+      //       close: Number.parseFloat(CLOSE),
+      //       high: Number.parseFloat(HIGH),
+      //       low: Number.parseFloat(LOW),
+      //       vol: Number.parseFloat(VOL),
+      //       date: new Date(year, month - 1, date),
+      //       avg: average,
+      //       weekCount: weekCount,
+      //     };
+      //   }
+
+      // })
+      // resultWeek.map(console.log(resultWeek)); 
+
+      console.log(resultWeek);
       if (error) {
         throw error;
       }
 
       // Getting the 'response' from the database and sending it to our route. This is were the data is.
-      res.send(result);
+      res.send(resultWeek);
     });
   });
 });
@@ -189,26 +242,40 @@ app.get('/getStock/month/:name', function (req, res) {
   connection.getConnection(function (err, connection) {
     var query = ("SELECT * FROM " + req.params.name + " LIMIT 3100");
     // console.log("this is SQL : " + query);
+    var resultMonth = {
+      OPEN: null,
+      CLOSE: null,
+      high: null,
+      low: null,
+      vol: null,
+      date: null,
+      avg: null,
+      monthCount: null,
+
+    }
 
     connection.query(query, function (error, result, fields) {
       console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< START >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      // console.log("DATE : " + result[0].DATE);
       var monthCurrent = Number.parseInt(result[0].DATE.slice(4, 6), 10);
       var dayCount = 0;
       var daySum = 0;
       var average = 0;
       var monthCount = 0;
-
-      const resultMonth = result.map(({ S_ID, OPEN, CLOSE, HIGH, LOW, VOL, DATE }) => {
-        const year = Number.parseInt(DATE.slice(0, 4), 10);
-        const month = Number.parseInt(DATE.slice(4, 6), 10);
-        const date = Number.parseInt(DATE.slice(6, 8), 10);
+      var i = 0;
+      var j = 0;
+      // console.log(result[0]);
+      result.forEach(element => {
+        const year = Number.parseInt(result[i].DATE.slice(0, 4), 10);
+        const month = Number.parseInt(result[i].DATE.slice(4, 6), 10);
+        const date = Number.parseInt(result[i].DATE.slice(6, 8), 10);
 
         if (monthCurrent == month) {
           console.log("date : " + date + "/" + month + "/" + year);
           console.log("sum++");
           dayCount++;
-          daySum += Number.parseFloat(VOL);
-          
+          daySum += Number.parseFloat(result[i].VOL);
+
         } else {
           average = daySum / dayCount;
           console.log(daySum + " / " + dayCount + " = " + average);
@@ -218,27 +285,73 @@ app.get('/getStock/month/:name', function (req, res) {
           monthCount++;
           console.log("date : " + date + "/" + month + "/" + year);
           dayCount = 1;
-          daySum = daySum = Number.parseFloat(VOL);
+          daySum = daySum = Number.parseFloat(result[i].VOL);
           monthCurrent = month;
           console.log("monthCurrent : " + month);
 
-          return {
-            open: Number.parseFloat(OPEN),
-            close: Number.parseFloat(CLOSE),
-            high: Number.parseFloat(HIGH),
-            low: Number.parseFloat(LOW),
-            vol: Number.parseFloat(VOL),
+          resultMonth[j] = {
+            open: Number.parseFloat(result[i].OPEN),
+            close: Number.parseFloat(result[i].CLOSE),
+            high: Number.parseFloat(result[i].HIGH),
+            low: Number.parseFloat(result[i].LOW),
+            vol: Number.parseFloat(result[i].VOL),
             date: new Date(year, month - 1, date),
             avg: average,
             monthCount: monthCount,
           };
+          j++;
         }
-
+        i++;
       })
+
+
+
+
+      // const resultMonth = result.map(({ S_ID, OPEN, CLOSE, HIGH, LOW, VOL, DATE }) => {
+      //   const year = Number.parseInt(DATE.slice(0, 4), 10);
+      //   const month = Number.parseInt(DATE.slice(4, 6), 10);
+      //   const date = Number.parseInt(DATE.slice(6, 8), 10);
+
+      //   if (monthCurrent == month) {
+      //     // console.log("date : " + date + "/" + month + "/" + year);
+      //     // console.log("sum++");
+      //     dayCount++;
+      //     daySum += Number.parseFloat(VOL);
+
+      //   } else {
+      //     average = daySum / dayCount;
+      //     // console.log(daySum + " / " + dayCount + " = " + average);
+      //     // console.log("average : " + average);
+
+      //     // console.log("END MONTH ")
+      //     monthCount++;
+      //     // console.log("date : " + date + "/" + month + "/" + year);
+      //     dayCount = 1;
+      //     daySum = Number.parseFloat(VOL);
+      //     monthCurrent = month;
+      //     // console.log("monthCurrent : " + month);
+
+      //     return {
+      //       open: Number.parseFloat(OPEN),
+      //       close: Number.parseFloat(CLOSE),
+      //       high: Number.parseFloat(HIGH),
+      //       low: Number.parseFloat(LOW),
+      //       vol: Number.parseFloat(VOL),
+      //       date: new Date(year, month - 1, date),
+      //       avg: average,
+      //       monthCount: monthCount,
+      //     };
+      //   }
+
+      // })
+
+      console.log(resultMonth[0]);
+
+
       if (error) {
         throw error;
       }
-      console.log(resultMonth);
+      // console.log(resultMonth);
       // Getting the 'response' from the database and sending it to our route. This is were the data is.
       res.send(result);
     });

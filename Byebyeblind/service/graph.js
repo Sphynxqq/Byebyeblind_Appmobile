@@ -39,7 +39,7 @@ export async function getGraph(symbolName) {
     // const raw = generateSampleData();
     // console.log(commits);
     return commits
-      .map(({OPEN, CLOSE, HIGH, LOW, VOL, DATE}) => {
+      .map(({ OPEN, CLOSE, HIGH, LOW, VOL, DATE }) => {
         const year = Number.parseInt(DATE.slice(0, 4), 10);
         const month = Number.parseInt(DATE.slice(4, 6), 10);
         const date = Number.parseInt(DATE.slice(6, 8), 10);
@@ -70,6 +70,21 @@ export async function getGraph(symbolName) {
     }
   ]
    */
+}
+
+export async function getGraphweek(symbolName) {
+
+  try {
+    let url = 'http://192.168.1.41:3000/getStock/week/' + symbolName;
+    let response = await fetch(url);
+
+    let commits = await response.json();
+    return commits;
+  } catch (error) {
+    console.warn('Request failed.', error);
+    return [];
+  }
+
 }
 
 function generateSampleData() {
