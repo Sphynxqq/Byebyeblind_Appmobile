@@ -56,7 +56,7 @@ export class ButtonGraph extends Component {
         <TouchableOpacity
           onPress={() => {
             speak('This is button Voice');
-            this.props.triggerGraphUpdate('a');
+            this.props.triggerGraphUpdate('acc');
             // Voice.start('en-US');
           }}>
           <View style={styles.setbtnvoice}>

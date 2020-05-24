@@ -31,15 +31,7 @@ class HomeScreen extends React.Component {
 
   componentDidMount() {
     console.log('start');
-    fetch('http://10.0.216.157:3000/ticker_name')
-      .then((response) => response.json())
-      .then((ticker_name) => {
-        this.state.name = Object.keys(ticker_name).map(
-          (key) => ticker_name[key],
-        );
-        console.log(this.state.name[0].TICKER);
-      });
-
+    
     Voice.onSpeechResults = (res) => {
       const key = res.value[0];
       speak(res.value[0] + ' Confirm');
@@ -57,13 +49,15 @@ class HomeScreen extends React.Component {
             text: 'ตกลง',
             onPress: async () => {
               if (key !== 'favorite') {
-                this.stock_check(key);
-                alert(this.state.check);
-                if (this.state.check === true) {
-                  this.props.navigation.navigate('Graph', {key});
-                } else {
-                  speak('We dont have a stock');
-                }
+                // this.stock_check(key);
+                // alert(this.state.check);
+                isSymbolExist(symbol).then((exist) => {
+                  if (exist) {
+                    this.props.navigation.navigate('Graph', {symbol});
+                  } else {
+                    speak('Symbol does not exist');
+                  }
+                });
               } else {
                 this.props.navigation.navigate('Favorite', {key});
               }
@@ -85,26 +79,26 @@ class HomeScreen extends React.Component {
     });
   }
 
-  stock_check(key) {
-    fetch('http://10.0.216.157:3000/checkstock' + key)
-      .then((response) => response.json())
-      .then((check) => {
-        this.state.check2 = Object.keys(check).map((key) => check[key]);
-        console.log(this.state.check2[0].CHECK);
-      });
+  // stock_check(key) {
+  //   fetch('http://10.0.216.157:3000/checkstock' + key)
+  //     .then((response) => response.json())
+  //     .then((check) => {
+  //       this.state.check2 = Object.keys(check).map((key) => check[key]);
+  //       console.log(this.state.check2[0].CHECK);
+  //     });
 
-    console.log('stock check');
-    for (let i = 0; i < this.state.name.length; i++) {
-      console.log(this.state.name[i].TICKER);
-      if (this.state.name[i].TICKER === key) {
-        console.log('check : ' + this.state.name[i].TICKER);
-        this.setState({check: true});
-        break;
-      } else {
-        this.setState({check: false});
-      }
-    }
-  }
+  //   console.log('stock check');
+  //   for (let i = 0; i < this.state.name.length; i++) {
+  //     console.log(this.state.name[i].TICKER);
+  //     if (this.state.name[i].TICKER === key) {
+  //       console.log('check : ' + this.state.name[i].TICKER);
+  //       this.setState({check: true});
+  //       break;
+  //     } else {
+  //       this.setState({check: false});
+  //     }
+  //   }
+  // }
 
   render() {
     return (

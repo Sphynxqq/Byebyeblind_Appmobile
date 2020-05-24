@@ -31,18 +31,15 @@ export async function getGraph(symbolName) {
     let url = 'http://192.168.1.37:3000/getStock/day/' + symbolName;
     let response = await fetch(url);
 
-    let commits = await response.json(); // read response body and parse as JSON
-    // const temp = ("http://192.168.1.37:3000/getStock/day/" + symbolName);
-    // console.log(temp);
-    // const raw = await fetch('http://192.168.1.37:3000/getStock/day/' + symbolName);
-    // let raw2 = raw.json();
-    // const raw = generateSampleData();
-    // console.log(commits);
+    let commits = await response.json(); 
     return commits
       .map(({ OPEN, CLOSE, HIGH, LOW, VOL, DATE }) => {
         const year = Number.parseInt(DATE.slice(0, 4), 10);
         const month = Number.parseInt(DATE.slice(4, 6), 10);
         const date = Number.parseInt(DATE.slice(6, 8), 10);
+        var posX = -800;
+        posX = posX + 300;
+        // console.log(posX);
         return {
           open: Number.parseFloat(OPEN),
           close: Number.parseFloat(CLOSE),
@@ -50,7 +47,9 @@ export async function getGraph(symbolName) {
           low: Number.parseFloat(LOW),
           vol: Number.parseFloat(VOL),
           date: new Date(year, month - 1, date),
+          positionX: posX,
         };
+        
       })
       .slice(-10);
   } catch (error) {
@@ -75,11 +74,26 @@ export async function getGraph(symbolName) {
 export async function getGraphweek(symbolName) {
 
   try {
-    let url = 'http://192.168.1.41:3000/getStock/week/' + symbolName;
+    let url = 'http://192.168.1.37:3000/getStock/week/' + symbolName;
     let response = await fetch(url);
 
     let commits = await response.json();
-    return commits;
+    return commits.slice(-10);
+  } catch (error) {
+    console.warn('Request failed.', error);
+    return [];
+  }
+
+}
+
+export async function getGraphmonth(symbolName) {
+
+  try {
+    let url = 'http://192.168.1.37:3000/getStock/month/' + symbolName;
+    let response = await fetch(url);
+
+    let commits = await response.json();
+    return commits.slice(-10);
   } catch (error) {
     console.warn('Request failed.', error);
     return [];

@@ -14,7 +14,7 @@ import { VictoryChart, VictoryLine, VictoryScatter } from 'victory-native';
 
 import Tts from 'react-native-tts';
 
-import { getGraph, getGraphweek } from '../service/graph';
+import { getGraph, getGraphweek, getGraphmonth } from '../service/graph';
 import { ButtonGraph } from './ButtonGraph';
 import { speak } from '../service/speech';
 
@@ -70,10 +70,8 @@ export class GraphPage extends Component {
     // TODO: check symbol here before get graph
     getGraph(symbolName).then((data) => {
       const chartData = data.map((d) => {
-
         return { x: d.date, y: d.vol };
       });
-
       this.setState(() => {
         this.setState({ symbol: symbolName });
         // this.symbol : symbolName,
@@ -89,18 +87,41 @@ export class GraphPage extends Component {
       const chartData = data.map((d) => {
         // console.log(chartData);
         this.setState({ symbol: symbolName });
+        // console.log(d);
+        return { x: d.positionX, y: d.vol };
+      });
+
+      this.setState(() => {
+        // this.setState({ symbol: symbolName });
+        // this.symbol = symbolName
+        // console.log("symbo : " + symbolName);
+        return { symbolData: data, chartData: chartData };
+      });
+    });
+  }
+
+  updateGraphmonth(symbolName) {
+    // TODO: check symbol here before get graph
+
+    getGraphmonth(symbolName).then((data) => {
+      const chartData = data.map((d) => {
+        // console.log(chartData);
+        this.setState({ symbol: symbolName });
         return { x: d.date, y: d.vol };
       });
 
       this.setState(() => {
         // this.setState({ symbol: symbolName });
         // this.symbol = symbolName
-        console.log("symbo : " + symbolName);
+        // console.log("symbo : " + symbolName);
         return { symbolData: data, chartData: chartData };
       });
     });
   }
 
+  getX() {
+    return [-250, -200, -150, -100, -50, 50, 100, 150, 200, 250]
+  }
 
 
   //ขนาดหน้าจอโทรศัพท์ที่ใช้เทส width:731, height:411
@@ -169,25 +190,8 @@ export class GraphPage extends Component {
               color="#FBD1A7"
               onPress={() => {
                 speak('This is button Day');
-                Alert.alert(
-                  'ยืนยัน',
-                  'Day',
-                  [
-                    {
-                      text: 'ยกเลิก',
-                      onPress: () => {
-                        console.log('ยกเลิก');
-                      },
-                    },
-                    {
-                      text: 'ตกลง',
-                      onPress: async () => {
-                        console.log('ตกลง');
-                      },
-                    },
-                  ],
-                  { cancelable: false },
-                );
+                console.log(this.state.symbol);
+                this.updateGraph(this.state.symbol);
                 this.speechFirstData();
               }}
               title="DAY"
@@ -199,26 +203,7 @@ export class GraphPage extends Component {
               color="#FBD1A7"
               onPress={() => {
                 speak('This is button Week');
-                this.updateGraphweek("7up");
-                Alert.alert(
-                  'ยืนยัน',
-                  'Week',
-                  [
-                    {
-                      text: 'ยกเลิก',
-                      onPress: () => {
-                        console.log('ยกเลิก');
-                      },
-                    },
-                    {
-                      text: 'ตกลง',
-                      onPress: async () => {
-                        console.log('ตกลง');
-                      },
-                    },
-                  ],
-                  { cancelable: false },
-                );
+                this.updateGraphweek(this.state.symbol);
               }}
               title="WEEK"
             />
@@ -229,25 +214,7 @@ export class GraphPage extends Component {
               color="#FBD1A7"
               onPress={() => {
                 speak('This is button Month');
-                Alert.alert(
-                  'ยืนยัน',
-                  'Month',
-                  [
-                    {
-                      text: 'ยกเลิก',
-                      onPress: () => {
-                        console.log('ยกเลิก');
-                      },
-                    },
-                    {
-                      text: 'ตกลง',
-                      onPress: async () => {
-                        console.log('ตกลง');
-                      },
-                    },
-                  ],
-                  { cancelable: false },
-                );
+                this.updateGraphmonth(this.state.symbol);
               }}
               title="MONTH"
             />
@@ -282,7 +249,7 @@ export class GraphPage extends Component {
               <Text>{this.state.symbol}</Text>
             </View>
           </View>
-          <ButtonGraph triggerGraphUpdate={this.updateGraph} />
+          <ButtonGraph triggerGraphUpdate={this.updateGraph.bind(this)} />
         </View>
       </View>
     );
