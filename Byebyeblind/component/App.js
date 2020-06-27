@@ -31,7 +31,7 @@ class HomeScreen extends React.Component {
 
   componentDidMount() {
     console.log('start');
-    
+
     Voice.onSpeechResults = (res) => {
       const key = res.value[0];
       speak(res.value[0] + ' Confirm');
@@ -70,13 +70,14 @@ class HomeScreen extends React.Component {
   }
 
   go_graph(symbol) {
-    isSymbolExist(symbol).then((exist) => {
-      if (exist) {
-        this.props.navigation.navigate('Graph', {symbol});
-      } else {
-        alert('Symbol does not exist');
-      }
-    });
+    // isSymbolExist(symbol).then((exist) => {
+    //   if (exist) {
+    //     this.props.navigation.navigate('Graph', {symbol});
+    //   } else {
+    //     alert('Symbol does not exist');
+    //   }
+    // });
+    this.props.navigation.navigate('Graph', {symbol});
   }
 
   // stock_check(key) {

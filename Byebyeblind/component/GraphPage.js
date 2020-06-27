@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,13 +10,13 @@ import {
 } from 'react-native';
 import Svg from 'react-native-svg';
 
-import { VictoryChart, VictoryLine, VictoryScatter } from 'victory-native';
+import {VictoryChart, VictoryLine, VictoryScatter} from 'victory-native';
 
 import Tts from 'react-native-tts';
 
-import { getGraph, getGraphweek, getGraphmonth } from '../service/graph';
-import { ButtonGraph } from './ButtonGraph';
-import { speak } from '../service/speech';
+import {getGraph, getGraphweek, getGraphmonth} from '../service/graph';
+import {ButtonGraph} from './ButtonGraph';
+import {speak} from '../service/speech';
 
 export class GraphPage extends Component {
   constructor(props) {
@@ -26,19 +26,42 @@ export class GraphPage extends Component {
       symbol: props.navigation.getParam('symbol', '-'),
       symbolData: [],
       displayData: [],
+      checkDataGraph: [],
     };
     this.updateGraph.bind(this);
   }
 
   componentDidMount() {
-    this.updateGraph('7UP');
+    //this.updateGraph('7UP');
+
+    //DEMO DATA
+    getGraph('7up').then((data) => {
+      const chartData = data.map((d) => {
+        return {x: d.date, y: d.close};
+      });
+
+      this.setState(() => {
+        return {symbolData: data, chartData: chartData};
+      });
+    });
+
+    //State Check Show Data
+    getGraph('7up').then((data) => {
+      const lengthData = data.map((d) => {
+        return {dataShow: d.date};
+      });
+
+      this.setState(() => {
+        return {checkDataGraph: lengthData};
+      });
+    });
   }
 
   UNSAFE_componentWillMount() {
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (ev, gs) => true,
       onMoveShouldSetPanResponderCapture: (ev, gs) => true,
-      onPanResponderMove: (ev, gs) => { },
+      onPanResponderMove: (ev, gs) => {},
     });
   }
 
@@ -46,16 +69,16 @@ export class GraphPage extends Component {
     const firstData = this.state.symbolData[0] ?? {};
     console.log(
       'Today is ' +
-      (firstData.date ?? new Date()) +
-      'And Vaule is ' +
-      (firstData.close ?? 0),
+        (firstData.date ?? new Date()) +
+        'And Vaule is ' +
+        (firstData.close ?? 0),
     );
 
     Tts.speak(
       'Today is ' +
-      (firstData.date ?? new Date()) +
-      'And Vaule is ' +
-      (firstData.close ?? 0),
+        (firstData.date ?? new Date()) +
+        'And Vaule is ' +
+        (firstData.close ?? 0),
       {
         androidParams: {
           KEY_PARAM_PAN: -1,
@@ -70,12 +93,12 @@ export class GraphPage extends Component {
     // TODO: check symbol here before get graph
     getGraph(symbolName).then((data) => {
       const chartData = data.map((d) => {
-        return { x: d.date, y: d.vol };
+        return {x: d.date, y: d.vol};
       });
       this.setState(() => {
-        this.setState({ symbol: symbolName });
+        this.setState({symbol: symbolName});
         // this.symbol : symbolName,
-        return { symbolData: data, chartData: chartData };
+        return {symbolData: data, chartData: chartData};
       });
     });
   }
@@ -86,16 +109,16 @@ export class GraphPage extends Component {
     getGraphweek(symbolName).then((data) => {
       const chartData = data.map((d) => {
         // console.log(chartData);
-        this.setState({ symbol: symbolName });
+        this.setState({symbol: symbolName});
         // console.log(d);
-        return { x: d.positionX, y: d.vol };
+        return {x: d.positionX, y: d.vol};
       });
 
       this.setState(() => {
         // this.setState({ symbol: symbolName });
         // this.symbol = symbolName
         // console.log("symbo : " + symbolName);
-        return { symbolData: data, chartData: chartData };
+        return {symbolData: data, chartData: chartData};
       });
     });
   }
@@ -106,23 +129,22 @@ export class GraphPage extends Component {
     getGraphmonth(symbolName).then((data) => {
       const chartData = data.map((d) => {
         // console.log(chartData);
-        this.setState({ symbol: symbolName });
-        return { x: d.date, y: d.vol };
+        this.setState({symbol: symbolName});
+        return {x: d.date, y: d.vol};
       });
 
       this.setState(() => {
         // this.setState({ symbol: symbolName });
         // this.symbol = symbolName
         // console.log("symbo : " + symbolName);
-        return { symbolData: data, chartData: chartData };
+        return {symbolData: data, chartData: chartData};
       });
     });
   }
 
   getX() {
-    return [-250, -200, -150, -100, -50, 50, 100, 150, 200, 250]
+    return [-250, -200, -150, -100, -50, 50, 100, 150, 200, 250];
   }
-
 
   //ขนาดหน้าจอโทรศัพท์ที่ใช้เทส width:731, height:411
   render() {
@@ -144,7 +166,7 @@ export class GraphPage extends Component {
                       const fill = props.style.fill;
                       return fill === '#030303'
                         ? null
-                        : { style: { fill: '#030303' } };
+                        : {style: {fill: '#030303'}};
                     },
                   },
                 ];
@@ -152,18 +174,18 @@ export class GraphPage extends Component {
             },
           },
         ]}
-        padding={{ top: 22, bottom: 10, left: 45, right: 11 }}
+        padding={{top: 22, bottom: 10, left: 45, right: 11}}
         width={700}
         height={205}>
         <VictoryLine
           name="line"
           data={this.state.chartData}
           style={{
-            data: { stroke: 'tomato' },
+            data: {stroke: 'tomato'},
           }}
           animate={{
             duration: 2000,
-            onLoad: { duration: 1000 },
+            onLoad: {duration: 1000},
           }}
           interpolation="linear"
         />
@@ -173,12 +195,12 @@ export class GraphPage extends Component {
           data={this.state.chartData}
           size={5}
           style={{
-            data: { fill: '#c43a31' },
+            data: {fill: '#c43a31'},
             labels: {
-              fill: ({ datum }) => datum.x === '#FFFFFF',
+              fill: ({datum}) => datum.x === '#FFFFFF',
             },
           }}
-          labels={({ datum }) => datum.y}
+          labels={({datum}) => datum.y}
         />
       </VictoryChart>
     );
@@ -225,10 +247,10 @@ export class GraphPage extends Component {
           {Platform.OS === 'ios' ? (
             chart
           ) : (
-              <Svg width="700" height="205">
-                {chart}
-              </Svg>
-            )}
+            <Svg width="700" height="205">
+              {chart}
+            </Svg>
+          )}
         </View>
 
         <View>

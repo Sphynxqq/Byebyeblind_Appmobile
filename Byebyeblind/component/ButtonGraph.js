@@ -43,12 +43,25 @@ Voice.onSpeechResults = (res) => {
     {cancelable: false},
   );
 };
-
 export class ButtonGraph extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      showDaygraph: 0,
+    };
   }
+
+  nextDaygraph = () => {
+    this.setState({
+      showDaygraph: this.state.showDaygraph + 1,
+    });
+  };
+
+  beforeDaygraph = () => {
+    this.setState({
+      showDaygraph: this.state.showDaygraph - 1,
+    });
+  };
 
   render() {
     return (
@@ -70,8 +83,9 @@ export class ButtonGraph extends Component {
 
         <TouchableOpacity
           onPress={() => {
-            speak('This is button left');
-            alert('You tapped the button left');
+            speak('This is button Previous day');
+            //this.setState({showDaygraph: this.state.showDaygraph - 1});
+            this.beforeDaygraph();
           }}>
           <View style={styles.setbtnleftandright}>
             <Image
@@ -83,8 +97,9 @@ export class ButtonGraph extends Component {
 
         <TouchableOpacity
           onPress={() => {
-            speak('This is button right');
-            alert('You tapped the button right');
+            speak('This is button Next day');
+            //this.setState({showDaygraph: this.state.showDaygraph + 1});
+            this.nextDaygraph();
           }}>
           <View style={styles.setbtnleftandright}>
             <Image
@@ -97,7 +112,8 @@ export class ButtonGraph extends Component {
         <TouchableOpacity
           onPress={() => {
             speak('This is button Favorite');
-            alert('You tapped the button Favorite');
+            // alert('You tapped the button Favorite');
+            Voice.start('en-US');
           }}>
           <View style={styles.setbtnfavorite}>
             <Image

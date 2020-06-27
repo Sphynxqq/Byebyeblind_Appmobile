@@ -1,8 +1,6 @@
 export async function isSymbolExist(symbolName) {
   try {
-    return (
-      await fetch('http://192.168.1.37:3000/checkstock/' + symbolName)
-    ).json();
+    return (await fetch('http://10.0.216.172/checkstock/' + symbolName)).json();
     // return symbolName === '7UP';
     // return true;
   } catch (error) {
@@ -27,19 +25,42 @@ export async function getGraph(symbolName) {
     ...
 ]
   */
-  try {
-    let url = 'http://192.168.1.37:3000/getStock/day/' + symbolName;
-    let response = await fetch(url);
+  // try {
+  //   let url = 'http://10.0.216.172/getStock/day/' + symbolName;
+  //   let response = await fetch(url);
+  //   let commits = await response.json();
+  //   return commits
+  //     .map(({OPEN, CLOSE, HIGH, LOW, VOL, DATE}) => {
+  //       const year = Number.parseInt(DATE.slice(0, 4), 10);
+  //       const month = Number.parseInt(DATE.slice(4, 6), 10);
+  //       const date = Number.parseInt(DATE.slice(6, 8), 10);
+  //       var posX = -800;
+  //       posX = posX + 300;
+  //       // console.log(posX);
+  //       return {
+  //         open: Number.parseFloat(OPEN),
+  //         close: Number.parseFloat(CLOSE),
+  //         high: Number.parseFloat(HIGH),
+  //         low: Number.parseFloat(LOW),
+  //         vol: Number.parseFloat(VOL),
+  //         date: new Date(year, month - 1, date),
+  //         positionX: posX,
+  //       };
+  //     })
+  //     .slice(-10);
+  // } catch (error) {
+  //   console.warn('Request failed.', error);
+  //   return [];
+  // }
 
-    let commits = await response.json(); 
-    return commits
-      .map(({ OPEN, CLOSE, HIGH, LOW, VOL, DATE }) => {
+  //DEMO DATA
+  try {
+    const raw = generateSampleData();
+    return raw
+      .map(({OPEN, CLOSE, HIGH, LOW, VOL, DATE}) => {
         const year = Number.parseInt(DATE.slice(0, 4), 10);
         const month = Number.parseInt(DATE.slice(4, 6), 10);
         const date = Number.parseInt(DATE.slice(6, 8), 10);
-        var posX = -800;
-        posX = posX + 300;
-        // console.log(posX);
         return {
           open: Number.parseFloat(OPEN),
           close: Number.parseFloat(CLOSE),
@@ -47,15 +68,14 @@ export async function getGraph(symbolName) {
           low: Number.parseFloat(LOW),
           vol: Number.parseFloat(VOL),
           date: new Date(year, month - 1, date),
-          positionX: posX,
         };
-        
       })
       .slice(-10);
   } catch (error) {
     console.warn('Request failed.', error);
     return [];
   }
+
   /*
   Return symbolData format
   [
@@ -72,9 +92,8 @@ export async function getGraph(symbolName) {
 }
 
 export async function getGraphweek(symbolName) {
-
   try {
-    let url = 'http://192.168.1.37:3000/getStock/week/' + symbolName;
+    let url = 'http://10.0.216.172/getStock/week/' + symbolName;
     let response = await fetch(url);
 
     let commits = await response.json();
@@ -83,13 +102,11 @@ export async function getGraphweek(symbolName) {
     console.warn('Request failed.', error);
     return [];
   }
-
 }
 
 export async function getGraphmonth(symbolName) {
-
   try {
-    let url = 'http://192.168.1.37:3000/getStock/month/' + symbolName;
+    let url = 'http://10.0.216.172/getStock/month/' + symbolName;
     let response = await fetch(url);
 
     let commits = await response.json();
@@ -98,7 +115,6 @@ export async function getGraphmonth(symbolName) {
     console.warn('Request failed.', error);
     return [];
   }
-
 }
 
 function generateSampleData() {
