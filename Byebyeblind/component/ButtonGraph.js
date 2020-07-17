@@ -10,6 +10,9 @@ import {
 import {speak} from '../service/speech';
 import Voice from 'react-native-voice';
 
+import {getGraph, getGraphNextDay} from '../service/graph';
+import {GraphPage} from './GraphPage';
+
 Voice.onSpeechResults = (res) => {
   const key = res.value[0];
   speak(res.value[0] + ' Confirm');
@@ -55,12 +58,14 @@ export class ButtonGraph extends Component {
     this.setState({
       showDaygraph: this.state.showDaygraph + 1,
     });
+    return this.state.showDaygraph;
   };
 
   beforeDaygraph = () => {
     this.setState({
       showDaygraph: this.state.showDaygraph - 1,
     });
+    return this.state.showDaygraph;
   };
 
   render() {
@@ -84,8 +89,8 @@ export class ButtonGraph extends Component {
         <TouchableOpacity
           onPress={() => {
             speak('This is button Previous day');
-            //this.setState({showDaygraph: this.state.showDaygraph - 1});
             this.beforeDaygraph();
+            getGraphNextDay(this.state.showDaygraph);
           }}>
           <View style={styles.setbtnleftandright}>
             <Image
@@ -98,8 +103,8 @@ export class ButtonGraph extends Component {
         <TouchableOpacity
           onPress={() => {
             speak('This is button Next day');
-            //this.setState({showDaygraph: this.state.showDaygraph + 1});
             this.nextDaygraph();
+            getGraphNextDay(this.state.showDaygraph);
           }}>
           <View style={styles.setbtnleftandright}>
             <Image

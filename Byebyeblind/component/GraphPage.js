@@ -14,9 +14,16 @@ import {VictoryChart, VictoryLine, VictoryScatter} from 'victory-native';
 
 import Tts from 'react-native-tts';
 
-import {getGraph, getGraphweek, getGraphmonth} from '../service/graph';
+import {
+  getGraph,
+  getGraphweek,
+  getGraphmonth,
+  getGraphNextDay,
+} from '../service/graph';
 import {ButtonGraph} from './ButtonGraph';
 import {speak} from '../service/speech';
+import {nextDaygraph, showDaygraph} from './ButtonGraph';
+console.log(showDaygraph);
 
 export class GraphPage extends Component {
   constructor(props) {
@@ -35,7 +42,18 @@ export class GraphPage extends Component {
     //this.updateGraph('7UP');
 
     //DEMO DATA
-    getGraph('7up').then((data) => {
+    // getGraph('7up').then((data) => {
+    //   const chartData = data.map((d) => {
+    //     console.log(d.s_id);
+    //     return {x: d.date, y: d.close};
+    //   });
+
+    //   this.setState(() => {
+    //     return {symbolData: data, chartData: chartData};
+    //   });
+    // });
+
+    getGraphNextDay(20).then((data) => {
       const chartData = data.map((d) => {
         return {x: d.date, y: d.close};
       });

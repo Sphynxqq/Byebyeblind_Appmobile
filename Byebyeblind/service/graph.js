@@ -9,8 +9,6 @@ export async function isSymbolExist(symbolName) {
   }
 }
 
-// Test comment
-
 export async function getGraph(symbolName) {
   /* Data from API format
 [
@@ -56,8 +54,16 @@ export async function getGraph(symbolName) {
   //DEMO DATA
   try {
     const raw = generateSampleData();
-    return raw
-      .map(({OPEN, CLOSE, HIGH, LOW, VOL, DATE}) => {
+    const temp = [];
+    // console.log(symbolName);
+    for (let i = 0; i < 10; i++) {
+      temp[i] = raw[i];
+    }
+    // for (let i = symbolName; i < 10 + symbolName; i++) {
+    //   console.log(temp[i]);
+    // }
+    return temp
+      .map(({OPEN, CLOSE, HIGH, LOW, VOL, DATE, S_ID}) => {
         const year = Number.parseInt(DATE.slice(0, 4), 10);
         const month = Number.parseInt(DATE.slice(4, 6), 10);
         const date = Number.parseInt(DATE.slice(6, 8), 10);
@@ -67,6 +73,7 @@ export async function getGraph(symbolName) {
           high: Number.parseFloat(HIGH),
           low: Number.parseFloat(LOW),
           vol: Number.parseFloat(VOL),
+          s_id: Number.parseFloat(S_ID),
           date: new Date(year, month - 1, date),
         };
       })
@@ -89,6 +96,39 @@ export async function getGraph(symbolName) {
     }
   ]
    */
+}
+
+export async function getGraphNextDay(symbolName) {
+  try {
+    const raw = generateSampleData();
+    const temp = [];
+    // console.log(symbolName);
+    for (let i = symbolName; i < 10 + symbolName; i++) {
+      temp[i] = raw[i];
+    }
+    // for (let i = symbolName; i < 10 + symbolName; i++) {
+    //   console.log(temp[i]);
+    // }
+    return temp
+      .map(({OPEN, CLOSE, HIGH, LOW, VOL, DATE, S_ID}) => {
+        const year = Number.parseInt(DATE.slice(0, 4), 10);
+        const month = Number.parseInt(DATE.slice(4, 6), 10);
+        const date = Number.parseInt(DATE.slice(6, 8), 10);
+        return {
+          open: Number.parseFloat(OPEN),
+          close: Number.parseFloat(CLOSE),
+          high: Number.parseFloat(HIGH),
+          low: Number.parseFloat(LOW),
+          vol: Number.parseFloat(VOL),
+          s_id: Number.parseFloat(S_ID),
+          date: new Date(year, month - 1, date),
+        };
+      })
+      .slice(-10);
+  } catch (error) {
+    console.warn('Request failed.', error);
+    return [];
+  }
 }
 
 export async function getGraphweek(symbolName) {
