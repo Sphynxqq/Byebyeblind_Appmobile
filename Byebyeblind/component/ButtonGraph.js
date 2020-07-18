@@ -90,7 +90,7 @@ export class ButtonGraph extends Component {
           onPress={() => {
             speak('This is button Previous day');
             this.beforeDaygraph();
-            getGraphNextDay(this.state.showDaygraph);
+            getGraphNextDay('7up', this.state.showDaygraph);
           }}>
           <View style={styles.setbtnleftandright}>
             <Image
@@ -104,7 +104,7 @@ export class ButtonGraph extends Component {
           onPress={() => {
             speak('This is button Next day');
             this.nextDaygraph();
-            getGraphNextDay(this.state.showDaygraph);
+            getGraphNextDay('7up', this.state.showDaygraph);
           }}>
           <View style={styles.setbtnleftandright}>
             <Image

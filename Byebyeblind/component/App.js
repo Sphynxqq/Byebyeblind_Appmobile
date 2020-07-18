@@ -142,18 +142,18 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   bgcolor: {
-    backgroundColor: '#01273C',
+    backgroundColor: '#fffff0',
     flex: 1,
   },
   setflex: {
     flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: '#01273C',
+    backgroundColor: '#fffff0',
   },
 
   fontHomepage: {
     fontSize: 50,
-    color: '#ffffff',
+    color: '#000000',
     fontWeight: '700',
   },
 

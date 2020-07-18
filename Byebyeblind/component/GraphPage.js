@@ -23,7 +23,6 @@ import {
 import {ButtonGraph} from './ButtonGraph';
 import {speak} from '../service/speech';
 import {nextDaygraph, showDaygraph} from './ButtonGraph';
-console.log(showDaygraph);
 
 export class GraphPage extends Component {
   constructor(props) {
@@ -34,6 +33,7 @@ export class GraphPage extends Component {
       symbolData: [],
       displayData: [],
       checkDataGraph: [],
+      countNextday: [],
     };
     this.updateGraph.bind(this);
   }
@@ -53,7 +53,7 @@ export class GraphPage extends Component {
     //   });
     // });
 
-    getGraphNextDay(20).then((data) => {
+    getGraphNextDay('7up', 0).then((data) => {
       const chartData = data.map((d) => {
         return {x: d.date, y: d.close};
       });
@@ -64,15 +64,15 @@ export class GraphPage extends Component {
     });
 
     //State Check Show Data
-    getGraph('7up').then((data) => {
-      const lengthData = data.map((d) => {
-        return {dataShow: d.date};
-      });
+    // getGraph('7up').then((data) => {
+    //   const lengthData = data.map((d) => {
+    //     return {dataShow: d.date};
+    //   });
 
-      this.setState(() => {
-        return {checkDataGraph: lengthData};
-      });
-    });
+    //   this.setState(() => {
+    //     return {checkDataGraph: lengthData};
+    //   });
+    // });
   }
 
   UNSAFE_componentWillMount() {
@@ -298,7 +298,7 @@ export class GraphPage extends Component {
 
 const styles = StyleSheet.create({
   setBg: {
-    backgroundColor: '#01273C',
+    backgroundColor: '#fffff0',
   },
   setBtnDate: {
     flexDirection: 'row',

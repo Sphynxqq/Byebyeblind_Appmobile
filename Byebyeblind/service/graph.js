@@ -98,17 +98,37 @@ export async function getGraph(symbolName) {
    */
 }
 
-export async function getGraphNextDay(symbolName) {
+export async function getGraphNextDay(symbolName, countNextday) {
   try {
+    console.log("Stocks is " + symbolName);
+    console.log("countNextday is " + countNextday);
+    // let url = 'http://10.0.216.172/getStock/week/' + symbolName;
+    // let response = await fetch(url);
+    //let commits = await response.json();
+
+    // let raw = await response.json();
     const raw = generateSampleData();
     const temp = [];
     // console.log(symbolName);
-    for (let i = symbolName; i < 10 + symbolName; i++) {
-      temp[i] = raw[i];
+    
+    if(countNextday == 0) {
+      for (let i = countNextday; i < 10 + countNextday; i++) {
+        temp[i] = raw[i];
+        console.log(temp[i]);
+      }
+      console.log("This is if countNextday == 0");
+    } else {
+      for (let i = countNextday; i < 10 + countNextday; i++) {
+        temp[i] = raw[i];
+        console.log(temp[i]);
+      }
+      console.log("This is else countNextday != 0");
     }
-    // for (let i = symbolName; i < 10 + symbolName; i++) {
-    //   console.log(temp[i]);
+
+    // for (let i = countNextday; i < 10 + countNextday; i++) {
+    //   console.log("This is array temp " + temp[i].S_ID);
     // }
+    
     return temp
       .map(({OPEN, CLOSE, HIGH, LOW, VOL, DATE, S_ID}) => {
         const year = Number.parseInt(DATE.slice(0, 4), 10);
