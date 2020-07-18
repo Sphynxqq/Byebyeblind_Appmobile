@@ -51,13 +51,7 @@ class HomeScreen extends React.Component {
               if (key !== 'favorite') {
                 // this.stock_check(key);
                 // alert(this.state.check);
-                isSymbolExist(symbol).then((exist) => {
-                  if (exist) {
-                    this.props.navigation.navigate('Graph', {symbol});
-                  } else {
-                    speak('Symbol does not exist');
-                  }
-                });
+                this.go_graph(key);
               } else {
                 this.props.navigation.navigate('Favorite', {key});
               }
@@ -74,31 +68,10 @@ class HomeScreen extends React.Component {
       if (exist) {
         this.props.navigation.navigate('Graph', {symbol});
       } else {
-        alert('Symbol does not exist');
+        speak('Symbol does not exist');
       }
     });
   }
-
-  // stock_check(key) {
-  //   fetch('http://10.0.216.157:3000/checkstock' + key)
-  //     .then((response) => response.json())
-  //     .then((check) => {
-  //       this.state.check2 = Object.keys(check).map((key) => check[key]);
-  //       console.log(this.state.check2[0].CHECK);
-  //     });
-
-  //   console.log('stock check');
-  //   for (let i = 0; i < this.state.name.length; i++) {
-  //     console.log(this.state.name[i].TICKER);
-  //     if (this.state.name[i].TICKER === key) {
-  //       console.log('check : ' + this.state.name[i].TICKER);
-  //       this.setState({check: true});
-  //       break;
-  //     } else {
-  //       this.setState({check: false});
-  //     }
-  //   }
-  // }
 
   render() {
     return (
@@ -107,8 +80,8 @@ class HomeScreen extends React.Component {
           <Text style={styles.fontHomepage}>Bye Bye Blind</Text>
 
           <View style={styles.voiceBtn}>
-            {/* <TouchableOpacity onPress={() => Voice.start('en-US')}> */}
-            <TouchableOpacity onPress={() => this.go_graph('7up')}>
+            <TouchableOpacity onPress={() => Voice.start('en-US')}>
+            {/* <TouchableOpacity onPress={() => this.go_graph('7up')}> */}
               <Image source={require('../assets/iconmicro.png')} />
             </TouchableOpacity>
           </View>
@@ -141,18 +114,18 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   bgcolor: {
-    backgroundColor: '#01273C',
+    backgroundColor: '#D0D3D4',
     flex: 1,
   },
   setflex: {
     flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: '#01273C',
+    backgroundColor: '#D0D3D4',
   },
 
   fontHomepage: {
     fontSize: 50,
-    color: '#ffffff',
+    color: '#000000',
     fontWeight: '700',
   },
 
@@ -160,3 +133,25 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
 });
+
+
+// stock_check(key) {
+  //   fetch('http://10.0.216.157:3000/checkstock' + key)
+  //     .then((response) => response.json())
+  //     .then((check) => {
+  //       this.state.check2 = Object.keys(check).map((key) => check[key]);
+  //       console.log(this.state.check2[0].CHECK);
+  //     });
+
+  //   console.log('stock check');
+  //   for (let i = 0; i < this.state.name.length; i++) {
+  //     console.log(this.state.name[i].TICKER);
+  //     if (this.state.name[i].TICKER === key) {
+  //       console.log('check : ' + this.state.name[i].TICKER);
+  //       this.setState({check: true});
+  //       break;
+  //     } else {
+  //       this.setState({check: false});
+  //     }
+  //   }
+  // }

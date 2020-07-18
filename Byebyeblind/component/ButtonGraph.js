@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,8 +7,11 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {speak} from '../service/speech';
+import { speak } from '../service/speech';
 import Voice from 'react-native-voice';
+import { checkFav, addFav, delFav } from '../service/favorite';
+import { getGraphNextDay } from '../service/graph';
+import { isSymbolExist } from '../service/graph';
 
 Voice.onSpeechResults = (res) => {
   const key = res.value[0];
@@ -26,28 +29,60 @@ Voice.onSpeechResults = (res) => {
       {
         text: 'ตกลง',
         onPress: async () => {
+          console.log("logtestttttttt");
+          console.log("key : " + res.value[0]);
           if (key !== 'favorite') {
-            this.stock_check(key);
-            alert(this.state.check);
-            if (this.state.check === true) {
-              this.props.navigation.navigate('Graph', {key});
-            } else {
-              speak('We dont have a stock');
-            }
+            isSymbolExist(res.value[0]).then((exist) => {
+              if (exist) {
+                console.log("change : " + res.value[0]);
+                ButtonGraph.up(res.value[0]);
+              } else {
+                speak('Symbol does not exist');
+              }
+            });
           } else {
-            this.props.navigation.navigate('Favorite', {key});
+            this.props.navigation.navigate('Favorite', '01');
           }
         },
       },
     ],
-    {cancelable: false},
+    { cancelable: false },
   );
 };
 
 export class ButtonGraph extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      showDaygraph: 0,
+      check: true,
+      name: [],
+      key: 0,
+      check2: [],
+
+    };
+  }
+
+  nextDaygraph = () => {
+    this.setState({
+      showDaygraph: this.state.showDaygraph + 1,
+    });
+    return this.state.showDaygraph;
+  };
+
+  beforeDaygraph = () => {
+    this.setState({
+      showDaygraph: this.state.showDaygraph - 1,
+    });
+    return this.state.showDaygraph;
+  };
+
+  up(key) {
+    this.props.triggerGraphUpdate(key);
+  }
+
+  componentDidMount() {
+    
   }
 
   render() {
@@ -56,8 +91,9 @@ export class ButtonGraph extends Component {
         <TouchableOpacity
           onPress={() => {
             speak('This is button Voice');
-            this.props.triggerGraphUpdate('acc');
-            // Voice.start('en-US');
+            // this.props.triggerGraphUpdate('acc');
+            Voice.start('en-US');
+            // this.props.navigation.navigate('Home');
           }}>
           <View style={styles.setbtnvoice}>
             <Image
@@ -70,8 +106,9 @@ export class ButtonGraph extends Component {
 
         <TouchableOpacity
           onPress={() => {
-            speak('This is button left');
-            alert('You tapped the button left');
+            speak('This is button Previous day');
+            this.beforeDaygraph();
+            getGraphNextDay('7up', this.state.showDaygraph);
           }}>
           <View style={styles.setbtnleftandright}>
             <Image
@@ -83,8 +120,9 @@ export class ButtonGraph extends Component {
 
         <TouchableOpacity
           onPress={() => {
-            speak('This is button right');
-            alert('You tapped the button right');
+            speak('This is button Next day');
+            this.nextDaygraph();
+            getGraphNextDay('7up', this.state.showDaygraph);
           }}>
           <View style={styles.setbtnleftandright}>
             <Image
@@ -96,8 +134,18 @@ export class ButtonGraph extends Component {
 
         <TouchableOpacity
           onPress={() => {
-            speak('This is button Favorite');
-            alert('You tapped the button Favorite');
+            speak('This is Favorite button');
+            checkFav('01', 'AP').then((exist) => {
+              console.log(exist);
+              if (exist) {
+                console.log("have")
+                delFav('01', '7UP')
+              } else {
+                console.log("dont have")
+                addFav('01', 'AP')
+              }
+            });
+
           }}>
           <View style={styles.setbtnfavorite}>
             <Image
@@ -121,12 +169,14 @@ const styles = StyleSheet.create({
   },
   setbtnvoice: {
     width: 130,
-    height: 65,
-    backgroundColor: '#FBD1A7',
+    height: 60,
+    backgroundColor: '#797D7F',
     marginTop: 10,
     borderRadius: 30,
     marginBottom: 10,
     flexDirection: 'row',
+    elevation: 5,
+    marginLeft: 6
   },
   sizeImgbtn: {
     width: 45,
@@ -144,20 +194,23 @@ const styles = StyleSheet.create({
   },
   setbtnfavorite: {
     width: 130,
-    height: 65,
-    backgroundColor: '#FBD1A7',
+    height: 60,
+    backgroundColor: '#797D7F',
     marginTop: 10,
     borderRadius: 30,
     marginBottom: 10,
     flexDirection: 'row',
+    elevation: 5,
+    marginRight: 6
   },
   setbtnleftandright: {
     width: 60,
-    height: 65,
-    backgroundColor: '#FBD1A7',
+    height: 60,
+    backgroundColor: '#797D7F',
     marginTop: 10,
     borderRadius: 30,
     marginBottom: 10,
     flexDirection: 'row',
+    elevation: 5,
   },
 });

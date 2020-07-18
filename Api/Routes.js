@@ -20,59 +20,12 @@ app.use(express.json());
 app.use(cors());
 
 app.use(cors());
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
 
 // Creating a GET route that returns data from the 'users' table.
-app.get('/ticker_name', function (req, res) {
-  // Connecting to the database.
-  connection.getConnection(function (err, connection) {
-    // Executing the MySQL query (select all data from the 'users' table).
-    connection.query('SELECT TICKER FROM ticker_name', function (
-      error,
-      result,
-      fields,
-    ) {
-      // If some error occurs, we throw an error.
-      if (error) {
-        throw error;
-      }
 
-      // Getting the 'response' from the database and sending it to our route. This is were the data is.
-      res.send(result);
-    });
-  });
-});
-
-app.get('/7up', function (req, res) {
-  // Connecting to the database.
-  connection.getConnection(function (err, connection) {
-    // Executing the MySQL query (select all data from the 'users' table).
-    connection.query('SELECT * FROM 7UP', function (error, result, fields) {
-      console.log(result[0].OPEN);
-      if (error) {
-        throw error;
-      }
-
-      // Getting the 'response' from the database and sending it to our route. This is were the data is.
-      res.send(result);
-    });
-  });
-});
-
-app.get('/7upmore', function (req, res) {
-  // Connecting to the database.
-  connection.getConnection(function (err, connection) {
-    // Executing the MySQL query (select all data from the 'users' table).
-    connection.query('SELECT * FROM 7UP', function (error, result, fields) {
-      // If some error occurs, we throw an error.
-      if (error) {
-        throw error;
-      }
-
-      // Getting the 'response' from the database and sending it to our route. This is were the data is.
-      res.send(result);
-    });
-  });
-});
 
 
 // --------------------------------------------------------------------------------------------------------
@@ -80,11 +33,11 @@ app.get('/7upmore', function (req, res) {
 app.get('/checkstock/:name', function (req, res) {
 
   connection.getConnection(function (err, connection) {
-    
+
     // console.log(req.params);
     var query = ("SELECT COUNT(TICKER) AS 'CHECK' FROM ticker_name WHERE TICKER = '" + req.params.name + "'");
-    console.log("this is name : " + req.params.name);
-    console.log("this is SQL : " + query);
+    // console.log("this is name : " + req.params.name);
+    // console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
       var check = result[0].CHECK;
       console.log(check);
@@ -100,12 +53,12 @@ app.get('/checkstock/:name', function (req, res) {
 });
 
 // --------------------------------------------------------------------------------------------------------
-
+// day
 app.get('/getStock/day/:name', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
     var query = ("SELECT * FROM " + req.params.name + " ORDER BY DATE DESC LIMIT 300");
-    // console.log("this is SQL : " + query);
+    console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
       // console.log(result);
       // console.log(result[0]);
@@ -121,7 +74,7 @@ app.get('/getStock/day/:name', function (req, res) {
 });
 
 // --------------------------------------------------------------------------------------------------------
-
+//week
 app.get('/getStock/week/:name', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
@@ -180,10 +133,10 @@ app.get('/getStock/week/:name', function (req, res) {
             date: new Date(year, month - 1, date),
             avg: average,
             weekCount: weekCount,
-            positionX : posX,
+            positionX: posX,
           };
           j++;
-          posX+=50;
+          posX += 50;
         }
         i++;
       })
@@ -199,7 +152,7 @@ app.get('/getStock/week/:name', function (req, res) {
 });
 
 // --------------------------------------------------------------------------------------------------------
-
+//month อ่ออ คืออันที่มึงทำคือ แบบนี้ใช่มะ พอกดปุ่ม day ปุ้ป ก็ไปเรียก
 app.get('/getStock/month/:name', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
@@ -280,12 +233,93 @@ app.get('/getStock/month/:name', function (req, res) {
   });
 });
 
+// --------------------------------------------------------------------------------------------------------
+
+app.get('/checkFav/:u_id/:ticker', function (req, res) {
+  // Connecting to the database.
+  connection.getConnection(function (err, connection) {
+    var query = ("SELECT COUNT(TICKER) AS 'CHECK' FROM favorite where U_ID = '" + req.params.u_id + "' AND TICKER = '" + req.params.ticker+ "'");
+    // console.log("this is SQL : " + query);
+    connection.query(query, function (error, result, fields) {
+      // console.log(result);
+      // console.log(result[0]);
+      var check = result[0].CHECK;
+      console.log(check);
+      if (check == 1)
+        check = true;
+      else
+        check = false;
+
+      if (error) {
+        throw error;
+      }
+
+      // Getting the 'response' from the database and sending it to our route. This is were the data is.
+      res.send(check);
+    });
+  });
+});
+
+// --------------------------------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------------------------------
+
+app.post('/addFav', function (req, res) {
+  // Connecting to the database.
+  connection.getConnection(function (err, connection) {
+    console.log(req.body.user_id);
+    // var today = new Date("d/m/y");
+    
+
+    var query = ("INSERT INTO favorite (U_ID, TICKER) VALUES ('" + req.body.user_id + "', '" + req.body.ticker + "')");
+    
+    console.log("this is SQL : " + query);
+    connection.query(query, function (error, result, fields) {
+      
+
+      if (error) {
+        throw error;
+      }
+
+      // Getting the 'response' from the database and sending it to our route. This is were the data is
+      console.log("success");
+      // res.send("success");
+    });
+  });
+});
+
+// --------------------------------------------------------------------------------------------------------
+
+app.delete('/delFav/:u_id/:ticker', function (req, res) {
+  // Connecting to the database.
+  connection.getConnection(function (err, connection) {
+    // var today = new Date("d/m/y");
+  
+    var query = ("DELETE FROM favorite WHERE U_ID = '" + req.params.u_id + "' AND TICKER = '" + req.params.ticker + "'");
+    
+    console.log("this is SQL : " + query);
+    connection.query(query, function (error, result, fields) {
+      
+
+      if (error) {
+        throw error;
+      }
+
+      // Getting the 'response' from the database and sending it to our route. This is were the data is
+      console.log("success");
+      res.send("success");
+    });
+  });
+});
+
+// --------------------------------------------------------------------------------------------------------
+
 
 
 // Starting our server.
 app.listen(3000, () => {
   console.log(
-    'Go to http://localhost:3000/ticker_name so you can see the data.',
+    'start server.',
   );
 });
 
