@@ -5,8 +5,8 @@ import {speak} from '../../service/speech';
 
 export const PeriodSelector = (props) => {
   return (
-    <View style={styles.setBtnDate}>
-      <View>
+    <View style={styles.periodSelector}>
+      <View style={styles.periodBtn}>
         <Button
           color="#FBD1A7"
           onPress={() => {
@@ -17,7 +17,7 @@ export const PeriodSelector = (props) => {
         />
       </View>
 
-      <View style={styles.btnDateleft}>
+      <View style={styles.periodBtn}>
         <Button
           color="#FBD1A7"
           onPress={() => {
@@ -28,7 +28,7 @@ export const PeriodSelector = (props) => {
         />
       </View>
 
-      <View style={styles.btnDateleft}>
+      <View style={styles.periodBtn}>
         <Button
           color="#FBD1A7"
           onPress={() => {
@@ -49,13 +49,14 @@ PeriodSelector.propsTypes = {
 };
 
 const styles = StyleSheet.create({
-  setBtnDate: {
+  periodSelector: {
+    flexBasis: 50,
     flexDirection: 'row',
     marginTop: 10,
     borderRadius: 10,
     justifyContent: 'center',
   },
-  btnDateleft: {
+  periodBtn: {
     marginLeft: 5,
   },
 });

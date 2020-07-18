@@ -4,14 +4,14 @@ import {StyleSheet, Text, View} from 'react-native';
 
 export const DetailPanel = (props) => {
   return (
-    <View style={styles.cardview}>
-      <View style={styles.displayincard}>
+    <View style={styles.detailPanel}>
+      <View style={styles.detailItem}>
         <Text>เปิด {props.open}</Text>
         <Text>สูงสุด {props.high}</Text>
         <Text>ล่าสุด</Text>
       </View>
 
-      <View style={styles.displayincard}>
+      <View style={styles.detailItem}>
         <Text>ราคาปิด {props.close}</Text>
         <Text>ต่ำสุด {props.low}</Text>
         <Text>VOL {props.vol}</Text>
@@ -34,7 +34,8 @@ DetailPanel.propsTypes = {
 };
 
 const styles = StyleSheet.create({
-  cardview: {
+  detailPanel: {
+    flexBasis: 60,
     marginLeft: 30,
     width: 670,
     height: 60,
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 5,
   },
-  displayincard: {
+  detailItem: {
     flexDirection: 'row',
     justifyContent: 'space-around',
   },

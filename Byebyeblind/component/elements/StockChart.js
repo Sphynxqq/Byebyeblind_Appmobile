@@ -1,6 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {VictoryChart, VictoryLine, VictoryScatter} from 'victory-native';
+import format from 'date-fns/format';
+import {
+  VictoryChart,
+  VictoryLine,
+  VictoryScatter,
+  VictoryLabel,
+  VictoryAxis,
+} from 'victory-native';
 
 export const StockChart = (props) => {
   return (
@@ -15,10 +22,7 @@ export const StockChart = (props) => {
                 {
                   childName: ['line', 'scatter'],
                   mutation: (props) => {
-                    const fill = props.style.fill;
-                    return fill === '#030303'
-                      ? null
-                      : {style: {fill: '#030303'}};
+                    // todo: check and announce if user is on line
                   },
                 },
               ];
@@ -46,10 +50,24 @@ export const StockChart = (props) => {
         }}
         labels={({datum}) => datum.y}
       />
+
+      {/*<VictoryLabel x={25} y={10} text={'High'} />*/}
+      <VictoryAxis
+        scale="linear"
+        tickFormat={(d) => {
+          const date = new Date(d);
+          if (props.viewMode === 'month') {
+            return format(date, 'MMM yyyy');
+          }
+          return format(date, 'd MMM yy');
+        }}
+      />
+      <VictoryAxis dependentAxis label="High" scale="linear" />
     </VictoryChart>
   );
 };
 
 StockChart.propsTypes = {
   stockData: PropTypes.array.isRequired,
+  viewMode: PropTypes.string.isRequired,
 };

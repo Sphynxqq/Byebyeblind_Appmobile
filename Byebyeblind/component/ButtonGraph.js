@@ -1,140 +1,76 @@
-import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Image,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import {speak} from '../service/speech';
 import Voice from 'react-native-voice';
 
-import {getDayGraph, getGraphNextDay} from '../service/graphService';
-import {GraphPage} from './GraphPage';
+export const ButtonGraph = (props) => {
+  return (
+    <View style={styles.seticonbtn}>
+      <TouchableOpacity
+        onPress={() => {
+          speak('This is button Voice');
+        }}
+        style={styles.setbtnvoice}>
+        <Image
+          style={styles.sizeImgbtn}
+          source={require('../assets/microphone.png')}
+        />
+        <Text style={styles.btnfont}>Voice</Text>
+      </TouchableOpacity>
 
-Voice.onSpeechResults = (res) => {
-  const key = res.value[0];
-  speak(res.value[0] + ' Confirm');
-  Alert.alert(
-    'ยืนยัน',
-    res.value[0],
-    [
-      {
-        text: 'ยกเลิก',
-        onPress: () => {
-          return null;
-        },
-      },
-      {
-        text: 'ตกลง',
-        onPress: async () => {
-          if (key !== 'favorite') {
-            this.stock_check(key);
-            alert(this.state.check);
-            if (this.state.check === true) {
-              this.props.navigation.navigate('Graph', {key});
-            } else {
-              speak('We dont have a stock');
-            }
-          } else {
-            this.props.navigation.navigate('Favorite', {key});
-          }
-        },
-      },
-    ],
-    {cancelable: false},
+      <TouchableOpacity
+        onPress={() => {
+          speak('Previous');
+          props.previous();
+        }}>
+        <View style={styles.setbtnleftandright}>
+          <Image
+            style={styles.sizeImgbtn}
+            source={require('../assets/left.png')}
+          />
+        </View>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => {
+          speak('Next');
+          props.next();
+        }}>
+        <View style={styles.setbtnleftandright}>
+          <Image
+            style={styles.sizeImgbtn}
+            source={require('../assets/right.png')}
+          />
+        </View>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => {
+          speak('This is button Favorite');
+          // Voice.start('en-US');
+        }}>
+        <View style={styles.setbtnfavorite}>
+          <Image
+            style={styles.sizeImgbtn}
+            source={require('../assets/star.png')}
+          />
+          <Text style={styles.btnfont}>Favorite</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 };
-export class ButtonGraph extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showDaygraph: 0,
-    };
-  }
-
-  nextDaygraph = () => {
-    this.setState({
-      showDaygraph: this.state.showDaygraph + 1,
-    });
-    return this.state.showDaygraph;
-  };
-
-  beforeDaygraph = () => {
-    this.setState({
-      showDaygraph: this.state.showDaygraph - 1,
-    });
-    return this.state.showDaygraph;
-  };
-
-  render() {
-    return (
-      <View style={styles.seticonbtn}>
-        <TouchableOpacity
-          onPress={() => {
-            speak('This is button Voice');
-            this.props.triggerGraphUpdate('acc');
-            // Voice.start('en-US');
-          }}>
-          <View style={styles.setbtnvoice}>
-            <Image
-              style={styles.sizeImgbtn}
-              source={require('../assets/microphone.png')}
-            />
-            <Text style={styles.btnfont}>Voice</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => {
-            speak('This is button Previous day');
-            this.beforeDaygraph();
-            getGraphNextDay('7up', this.state.showDaygraph);
-          }}>
-          <View style={styles.setbtnleftandright}>
-            <Image
-              style={styles.sizeImgbtn}
-              source={require('../assets/left.png')}
-            />
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => {
-            speak('This is button Next day');
-            this.nextDaygraph();
-            getGraphNextDay('7up', this.state.showDaygraph);
-          }}>
-          <View style={styles.setbtnleftandright}>
-            <Image
-              style={styles.sizeImgbtn}
-              source={require('../assets/right.png')}
-            />
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => {
-            speak('This is button Favorite');
-            // alert('You tapped the button Favorite');
-            Voice.start('en-US');
-          }}>
-          <View style={styles.setbtnfavorite}>
-            <Image
-              style={styles.sizeImgbtn}
-              source={require('../assets/star.png')}
-            />
-            <Text style={styles.btnfont}>Favorite</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-}
 
 const styles = StyleSheet.create({
   seticonbtn: {
+    flexBasis: 100,
     flexDirection: 'row',
     width: '100%',
     height: '100%',
@@ -182,3 +118,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 });
+
+ButtonGraph.propsTypes = {
+  previous: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
+};

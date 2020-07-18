@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import setDay from 'date-fns/setDay';
+import addDays from 'date-fns/addDays';
 import addWeeks from 'date-fns/addWeeks';
 import format from 'date-fns/format';
 
@@ -107,23 +108,31 @@ export async function getMonthGraph(symbolName, end) {
 /** BELOW IS MOCK DATA, REMOVE WHEN DONE **/
 
 function getMockData(type, end) {
-  let endDate = setDay(new Date(`${end.slice(0, 4)}/${end.slice(4, 6)}/${end.slice(6, 8)}`), 5);
+  let endDate = new Date(`${end.slice(0, 4)}/${end.slice(4, 6)}/${end.slice(6, 8)}`);
+  let n;
   switch (type) {
     case 'month':
       const day = end.slice(6, 8);
       return rawData
           .filter(d => d.DATE.slice(6, 8) === day);
     case 'week':
-      let n = 10;
       const weeks = [];
+      endDate = setDay(endDate, 5);
+      n = 15;
       while (n--) {
         weeks.push(asDateString(endDate));
         endDate = addWeeks(endDate, -1);
       }
-      console.log(weeks);
       return rawData.filter(d => weeks.indexOf(d.DATE) > -1);
     default:
-      return rawData.slice(-10);
+      const days = [];
+      n = 15;
+      while (n--) {
+        days.push(asDateString(endDate));
+        endDate = addDays(endDate, -1);
+      }
+      console.log(days);
+      return rawData.filter(d => days.indexOf(d.DATE) > -1);
   }
 }
 

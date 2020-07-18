@@ -1,8 +1,13 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, PanResponder, Platform} from 'react-native';
+import {View, PanResponder, Platform, ScrollView} from 'react-native';
+
+import addDays from 'date-fns/addDays';
+import addWeeks from 'date-fns/addWeeks';
+import addMonths from 'date-fns/addMonths';
 
 import Svg from 'react-native-svg';
 import Tts from 'react-native-tts';
+import {Text} from 'victory-native';
 
 import {
   getDayGraph,
@@ -23,12 +28,16 @@ export class GraphPage extends Component {
       symbolData: [],
       displayData: [],
       endDate: new Date(),
+      viewMode: 'day',
     };
 
     this.setDayView = this.setDayView.bind(this);
     this.setWeekView = this.setWeekView.bind(this);
     this.setMonthView = this.setMonthView.bind(this);
     this.mapToDisplayData = this.mapToDisplayData.bind(this);
+    this.previous = this.previous.bind(this);
+    this.next = this.next.bind(this);
+    this.jump = this.jump.bind(this);
   }
 
   componentDidMount() {
@@ -43,56 +52,98 @@ export class GraphPage extends Component {
     });
   }
 
-  mapToDisplayData(data) {
-    const chartData = data.map((d) => {
+  mapToDisplayData(symbolData, viewMode) {
+    const displayData = symbolData.map((d) => {
       return {x: d.date, y: d.high};
     });
 
-    this.setState(() => ({symbolData: data, chartData: chartData}));
+    this.setState(() => ({symbolData, displayData, viewMode}));
   }
 
   setDayView() {
-    // TODO: check symbol here before get graph
-
-    getDayGraph(this.state.symbol, this.state.endDate).then(this.mapToDisplayData);
+    getDayGraph(this.state.symbol, this.state.endDate).then((data) =>
+      this.mapToDisplayData(data, 'day'),
+    );
   }
 
   setWeekView() {
-    // TODO: check symbol here before get graph
-
-    getWeekGraph(this.state.symbol, this.state.endDate).then(this.mapToDisplayData);
+    getWeekGraph(this.state.symbol, this.state.endDate).then((data) =>
+      this.mapToDisplayData(data, 'week'),
+    );
   }
 
   setMonthView() {
-    // TODO: check symbol here before get graph
+    getMonthGraph(this.state.symbol, this.state.endDate).then((data) =>
+      this.mapToDisplayData(data, 'month'),
+    );
+  }
 
-    getMonthGraph(this.state.symbol, this.state.endDate).then(this.mapToDisplayData);
+  jump(amount) {
+    if (this.state.viewMode === 'month') {
+      this.setState(
+        () => ({endDate: addMonths(this.state.endDate, amount)}),
+        () => this.setMonthView(),
+      );
+    } else if (this.state.viewMode === 'week') {
+      this.setState(
+        () => ({endDate: addWeeks(this.state.endDate, amount)}),
+        () => this.setWeekView(),
+      );
+    } else {
+      this.setState(
+        () => ({endDate: addDays(this.state.endDate, amount)}),
+        () => this.setDayView(),
+      );
+    }
+  }
+
+  previous() {
+    this.jump(-1);
+  }
+
+  next() {
+    this.jump(1);
   }
 
   render() {
     const firstPoint = this.state.symbolData[0];
-    const chart = <StockChart stockData={this.state.chartData} />;
+    const chart =
+      this.state.displayData.length > 0 ? (
+        <StockChart
+          stockData={this.state.displayData}
+          viewMode={this.state.viewMode}
+        />
+      ) : (
+        <Text>No Data</Text>
+      );
+
+    console.log(this.state.endDate);
+    console.log(this.state.displayData);
 
     return (
-      <View style={styles.setBg}>
+      <View
+        style={{
+          backgroundColor: '#fffff0',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'stretch',
+          alignContent: 'stretch',
+          width: '100%',
+          height: '100%',
+        }}>
         <PeriodSelector
           setDayView={this.setDayView}
           setWeekView={this.setWeekView}
           setMonthView={this.setMonthView}
         />
-        <View>{Platform.OS === 'ios' ? chart : <Svg>{chart}</Svg>}</View>
 
-        <View>
-          <DetailPanel {...firstPoint} symbol={this.state.symbol} />
-          <ButtonGraph triggerGraphUpdate={this.setDayView} />
+        <View style={{flex: 1}}>
+          {Platform.OS === 'ios' ? chart : <Svg>{chart}</Svg>}
         </View>
+
+        <DetailPanel {...firstPoint} symbol={this.state.symbol} />
+        <ButtonGraph previous={this.previous} next={this.next} />
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  setBg: {
-    backgroundColor: '#fffff0',
-  },
-});
