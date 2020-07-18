@@ -131,7 +131,6 @@ function getMockData(type, end) {
         days.push(asDateString(endDate));
         endDate = addDays(endDate, -1);
       }
-      console.log(days);
       return rawData.filter(d => days.indexOf(d.DATE) > -1);
   }
 }

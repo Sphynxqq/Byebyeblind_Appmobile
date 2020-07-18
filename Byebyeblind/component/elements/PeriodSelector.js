@@ -50,7 +50,6 @@ PeriodSelector.propsTypes = {
 
 const styles = StyleSheet.create({
   periodSelector: {
-    flexBasis: 50,
     flexDirection: 'row',
     marginTop: 10,
     borderRadius: 10,

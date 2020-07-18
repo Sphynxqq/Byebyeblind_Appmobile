@@ -35,7 +35,6 @@ DetailPanel.propsTypes = {
 
 const styles = StyleSheet.create({
   detailPanel: {
-    flexBasis: 60,
     marginLeft: 30,
     width: 670,
     height: 60,

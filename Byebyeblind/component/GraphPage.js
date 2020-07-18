@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, PanResponder, Platform, ScrollView} from 'react-native';
+import {View, PanResponder, Dimensions} from 'react-native';
 
 import addDays from 'date-fns/addDays';
 import addWeeks from 'date-fns/addWeeks';
@@ -38,10 +38,12 @@ export class GraphPage extends Component {
     this.previous = this.previous.bind(this);
     this.next = this.next.bind(this);
     this.jump = this.jump.bind(this);
+    this.setChartDimension = this.setChartDimension.bind(this);
   }
 
   componentDidMount() {
     this.setDayView();
+    Dimensions.addEventListener('change', () => {});
   }
 
   UNSAFE_componentWillMount() {
@@ -105,6 +107,11 @@ export class GraphPage extends Component {
     this.jump(1);
   }
 
+  setChartDimension(event) {
+    const {chartWidth, chartHeight} = event.nativeEvent.layout;
+    this.setState(() => ({chartWidth, chartHeight}));
+  }
+
   render() {
     const firstPoint = this.state.symbolData[0];
     const chart =
@@ -116,9 +123,6 @@ export class GraphPage extends Component {
       ) : (
         <Text>No Data</Text>
       );
-
-    console.log(this.state.endDate);
-    console.log(this.state.displayData);
 
     return (
       <View
@@ -137,8 +141,15 @@ export class GraphPage extends Component {
           setMonthView={this.setMonthView}
         />
 
-        <View style={{flex: 1}}>
-          {Platform.OS === 'ios' ? chart : <Svg>{chart}</Svg>}
+        <View
+          style={{
+            flex: 1,
+            width: '100%',
+          }}
+          onLayout={this.setChartDimension}>
+          <Svg width={this.state.chartWidth} height={this.state.chartHeight}>
+            {chart}
+          </Svg>
         </View>
 
         <DetailPanel {...firstPoint} symbol={this.state.symbol} />

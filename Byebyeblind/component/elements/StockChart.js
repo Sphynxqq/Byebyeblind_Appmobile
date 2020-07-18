@@ -12,6 +12,7 @@ import {
 export const StockChart = (props) => {
   return (
     <VictoryChart
+      height={200}
       events={[
         {
           childName: ['line', 'scatter'],
@@ -51,18 +52,16 @@ export const StockChart = (props) => {
         labels={({datum}) => datum.y}
       />
 
-      {/*<VictoryLabel x={25} y={10} text={'High'} />*/}
+      <VictoryLabel x={25} y={10} text={'High'} />
       <VictoryAxis
         scale="linear"
         tickFormat={(d) => {
           const date = new Date(d);
-          if (props.viewMode === 'month') {
-            return format(date, 'MMM yyyy');
-          }
           return format(date, 'd MMM yy');
         }}
       />
-      <VictoryAxis dependentAxis label="High" scale="linear" />
+
+      <VictoryAxis dependentAxis scale="linear" />
     </VictoryChart>
   );
 };
@@ -70,4 +69,6 @@ export const StockChart = (props) => {
 StockChart.propsTypes = {
   stockData: PropTypes.array.isRequired,
   viewMode: PropTypes.string.isRequired,
+  width: PropTypes.string.isRequired,
+  height: PropTypes.string.isRequired,
 };

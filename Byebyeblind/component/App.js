@@ -30,8 +30,6 @@ class HomeScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('start');
-
     Voice.onSpeechResults = (res) => {
       const key = res.value[0];
       speak(res.value[0] + ' Confirm');
