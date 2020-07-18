@@ -10,7 +10,7 @@ import {
 
 import Voice from 'react-native-voice';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
-import {isSymbolExist} from '../service/graph';
+import {isSymbolExist} from '../service/graphService';
 import {speak} from '../service/speech';
 import {GraphPage} from './GraphPage';
 import {FavoritePage} from './FavoritePage';
@@ -80,28 +80,9 @@ class HomeScreen extends React.Component {
     this.props.navigation.navigate('Graph', {symbol});
   }
 
-  // stock_check(key) {
-  //   fetch('http://10.0.216.157:3000/checkstock' + key)
-  //     .then((response) => response.json())
-  //     .then((check) => {
-  //       this.state.check2 = Object.keys(check).map((key) => check[key]);
-  //       console.log(this.state.check2[0].CHECK);
-  //     });
-
-  //   console.log('stock check');
-  //   for (let i = 0; i < this.state.name.length; i++) {
-  //     console.log(this.state.name[i].TICKER);
-  //     if (this.state.name[i].TICKER === key) {
-  //       console.log('check : ' + this.state.name[i].TICKER);
-  //       this.setState({check: true});
-  //       break;
-  //     } else {
-  //       this.setState({check: false});
-  //     }
-  //   }
-  // }
-
   render() {
+    console.disableYellowBox = true;
+
     return (
       <View style={styles.bgcolor}>
         <View style={styles.setflex}>

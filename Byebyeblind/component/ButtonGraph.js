@@ -10,7 +10,7 @@ import {
 import {speak} from '../service/speech';
 import Voice from 'react-native-voice';
 
-import {getGraph, getGraphNextDay} from '../service/graph';
+import {getDayGraph, getGraphNextDay} from '../service/graphService';
 import {GraphPage} from './GraphPage';
 
 Voice.onSpeechResults = (res) => {
