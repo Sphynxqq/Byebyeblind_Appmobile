@@ -1,16 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import format from 'date-fns/format';
 import {StyleSheet, Text, View, SafeAreaView} from 'react-native';
 
-export const DetailPanel = ({open, close, high, low, vol}) => {
+export const DetailPanel = ({
+  date = new Date(),
+  open,
+  close,
+  high,
+  low,
+  vol,
+}) => {
   return (
     <SafeAreaView>
       <View style={styles.detailPanel}>
-        <ValuePill name="เปิด" value={open} />
-        <ValuePill name="ปิด" value={close} />
-        <ValuePill name="สูงสุด" value={high} />
-        <ValuePill name="ต่ำสุด" value={low} />
-        <ValuePill name="มูลค่า" value={vol} />
+        <ValuePill name="วันที่" value={format(date, 'd MMMM yyyy')} />
+        <ValuePill name="เปิด" value={formatter.format(open)} />
+        <ValuePill name="ปิด" value={formatter.format(close)} />
+        <ValuePill name="สูงสุด" value={formatter.format(high)} />
+        <ValuePill name="ต่ำสุด" value={formatter.format(low)} />
+        <ValuePill name="มูลค่า" value={formatter.format(vol)} />
       </View>
     </SafeAreaView>
   );
@@ -21,7 +30,7 @@ const formatter = new Intl.NumberFormat();
 const ValuePill = ({name, value}) => (
   <View style={styles.valuePill}>
     <Text style={styles.pillName}>{name}: </Text>
-    <Text style={styles.pillValue}>{formatter.format(value)}</Text>
+    <Text style={styles.pillValue}>{value}</Text>
   </View>
 );
 
@@ -35,7 +44,7 @@ DetailPanel.propsTypes = {
 
 ValuePill.propsTypes = {
   name: PropTypes.string.isRequired,
-  value: PropTypes.number.isRequired,
+  value: PropTypes.string.isRequired,
 };
 
 const styles = StyleSheet.create({

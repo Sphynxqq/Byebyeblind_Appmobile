@@ -8,7 +8,6 @@ import {
   VictoryLabel,
   VictoryAxis,
 } from 'victory-native';
-import {speak} from '../../service/speech';
 
 export const Chart = (props) => {
   /** Hack to force update VictoryChart event listener **/
@@ -32,12 +31,7 @@ export const Chart = (props) => {
                 {
                   childName: 'scatter',
                   mutation: (event) => {
-                    const {datum} = event;
-                    const speakText = `${format(
-                      datum.x,
-                      'MMMM do, yyyy',
-                    )}.  High, ${datum.y}`;
-                    speak(speakText);
+                    props.onScatterClick(event.index);
                   },
                 },
               ];
@@ -84,4 +78,5 @@ Chart.propsTypes = {
   viewMode: PropTypes.string.isRequired,
   width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,
+  onScatterClick: PropTypes.func.isRequired,
 };

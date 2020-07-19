@@ -1,4 +1,4 @@
-import format from "date-fns/format";
+import format from 'date-fns/format';
 import React, {Component} from 'react';
 import {View, SafeAreaView, PanResponder, Dimensions} from 'react-native';
 
@@ -32,6 +32,7 @@ export class GraphPage extends Component {
       viewMode: 'day',
       chartWidth: 100,
       chartHeight: 100,
+      detailDisplayIndex: null,
     };
 
     this.setDayView = this.setDayView.bind(this);
@@ -42,6 +43,7 @@ export class GraphPage extends Component {
     this.next = this.next.bind(this);
     this.jump = this.jump.bind(this);
     this.setChartDimension = this.setChartDimension.bind(this);
+    this.onScatterClick = this.onScatterClick.bind(this);
   }
 
   componentDidMount() {
@@ -115,8 +117,20 @@ export class GraphPage extends Component {
     this.setState(() => ({chartWidth, chartHeight}));
   }
 
+  onScatterClick(index) {
+    const data = this.state.symbolData[index];
+    const speakText = `${format(data.date, 'MMMM do, yyyy')}.  High, ${
+      data.high
+    }`;
+    speak(speakText);
+    this.setState(() => ({detailDisplayIndex: index}));
+  }
+
   render() {
-    const firstPoint = this.state.symbolData[0];
+    const detailDisplay = this.state.symbolData[
+      this.state.detailDisplayIndex ?? this.state.symbolData.length - 1
+    ];
+
     const chart =
       this.state.displayData.length > 0 ? (
         <Chart
@@ -157,7 +171,7 @@ export class GraphPage extends Component {
           <Svg>{chart}</Svg>
         </SafeAreaView>
 
-        <DetailPanel {...firstPoint} />
+        <DetailPanel {...detailDisplay} />
         <ButtonGraph previous={this.previous} next={this.next} />
       </View>
     );
