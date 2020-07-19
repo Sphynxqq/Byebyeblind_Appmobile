@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import format from 'date-fns/format';
+import numeral from 'numeral';
 import {StyleSheet, Text, View, SafeAreaView} from 'react-native';
 
 export const DetailPanel = ({
@@ -15,15 +16,17 @@ export const DetailPanel = ({
     <SafeAreaView>
       <View style={styles.detailPanel}>
         <ValuePill name="วันที่" value={format(date, 'd MMMM yyyy')} />
-        <ValuePill name="เปิด" value={Number(open).toLocaleString()} />
-        <ValuePill name="ปิด" value={Number(close).toLocaleString()} />
-        <ValuePill name="สูงสุด" value={Number(high).toLocaleString()} />
-        <ValuePill name="ต่ำสุด" value={Number(low).toLocaleString()} />
-        <ValuePill name="มูลค่า" value={Number(vol).toLocaleString()} />
+        <ValuePill name="เปิด" value={asLocaleNumber(open)} />
+        <ValuePill name="ปิด" value={asLocaleNumber(close)} />
+        <ValuePill name="สูงสุด" value={asLocaleNumber(high)} />
+        <ValuePill name="ต่ำสุด" value={asLocaleNumber(low)} />
+        <ValuePill name="มูลค่า" value={asLocaleNumber(vol)} />
       </View>
     </SafeAreaView>
   );
 };
+
+const asLocaleNumber = (number) => numeral(number).format('0,0.00');
 
 const ValuePill = ({name, value}) => (
   <View style={styles.valuePill}>
