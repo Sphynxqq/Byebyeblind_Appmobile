@@ -3,6 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
+  SafeAreaView,
   TouchableOpacity,
   Image,
   Alert,
@@ -10,11 +11,12 @@ import {
 
 import Voice from 'react-native-voice';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
-import {isSymbolExist} from '../service/graph';
+
+import {isSymbolExist} from '../service/graphService';
 import {speak} from '../service/speech';
+
 import {GraphPage} from './GraphPage';
 import {FavoritePage} from './FavoritePage';
-// import {Loginfb} from './Loginfb';
 
 class HomeScreen extends React.Component {
   constructor() {
@@ -30,8 +32,6 @@ class HomeScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log('start');
-    
     Voice.onSpeechResults = (res) => {
       const key = res.value[0];
       speak(res.value[0] + ' Confirm');
@@ -74,8 +74,10 @@ class HomeScreen extends React.Component {
   }
 
   render() {
+    console.disableYellowBox = true;
+
     return (
-      <View style={styles.bgcolor}>
+      <SafeAreaView style={styles.bgcolor}>
         <View style={styles.setflex}>
           <Text style={styles.fontHomepage}>Bye Bye Blind</Text>
 
@@ -88,7 +90,7 @@ class HomeScreen extends React.Component {
 
           {/* <Loginfb /> */}
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -114,13 +116,13 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   bgcolor: {
-    backgroundColor: '#D0D3D4',
+    backgroundColor: '#fffff0',
     flex: 1,
   },
   setflex: {
     flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: '#D0D3D4',
+    backgroundColor: '#fffff0',
   },
 
   fontHomepage: {
