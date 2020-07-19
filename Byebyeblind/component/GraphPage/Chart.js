@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import format from 'date-fns/format';
+import getWeekOfMonth from 'date-fns/getWeekOfMonth';
 import {
   VictoryChart,
   VictoryLine,
@@ -63,7 +64,13 @@ export const Chart = (props) => {
         scale="linear"
         tickFormat={(d) => {
           const date = new Date(d);
-          return format(date, 'd MMM yy');
+          if (props.viewMode === 'month') {
+            return format(date, 'MMM yyyy');
+          } else if (props.viewMode === 'week') {
+            return `Week ${getWeekOfMonth}, ${format(date, 'MMM yyyy')}`;
+          } else {
+            return format(date, 'd/MMM/yy');
+          }
         }}
         label="Time"
       />
