@@ -13,43 +13,6 @@ import { checkFav, addFav, delFav } from '../service/favorite';
 import { getGraphNextDay } from '../service/graph';
 import { isSymbolExist } from '../service/graph';
 
-Voice.onSpeechResults = (res) => {
-  const key = res.value[0];
-  speak(res.value[0] + ' Confirm');
-  Alert.alert(
-    'ยืนยัน',
-    res.value[0],
-    [
-      {
-        text: 'ยกเลิก',
-        onPress: () => {
-          return null;
-        },
-      },
-      {
-        text: 'ตกลง',
-        onPress: async () => {
-          console.log("logtestttttttt");
-          console.log("key : " + res.value[0]);
-          if (key !== 'favorite') {
-            isSymbolExist(res.value[0]).then((exist) => {
-              if (exist) {
-                console.log("change : " + res.value[0]);
-                ButtonGraph.up(res.value[0]);
-              } else {
-                speak('Symbol does not exist');
-              }
-            });
-          } else {
-            this.props.navigation.navigate('Favorite', '01');
-          }
-        },
-      },
-    ],
-    { cancelable: false },
-  );
-};
-
 export class ButtonGraph extends Component {
   constructor(props) {
     super(props);
@@ -82,7 +45,42 @@ export class ButtonGraph extends Component {
   }
 
   componentDidMount() {
-    
+    Voice.onSpeechResults = (res) => {
+      const key = res.value[0];
+      speak(res.value[0] + ' Confirm');
+      Alert.alert(
+        'ยืนยัน',
+        res.value[0],
+        [
+          {
+            text: 'ยกเลิก',
+            onPress: () => {
+              return null;
+            },
+          },
+          {
+            text: 'ตกลง',
+            onPress: async () => {
+              console.log("logtestttttttt");
+              console.log("key : " + res.value[0]);
+              if (key !== 'favorite') {
+                isSymbolExist(res.value[0]).then((exist) => {
+                  if (exist) {
+                    console.log("change : " + res.value[0]);
+                    this.props.triggerGraphUpdate(res.value[0]);
+                  } else {
+                    speak('Symbol does not exist');
+                  }
+                });
+              } else {
+                this.props.navigation.navigate('Favorite', '01');
+              }
+            },
+          },
+        ],
+        { cancelable: false },
+      );
+    };
   }
 
   render() {
