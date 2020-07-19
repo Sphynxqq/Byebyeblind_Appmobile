@@ -62,6 +62,8 @@ Return symbolData format
 
 export async function getDayGraph(symbolName, end) {
   try {
+    end = format(end, 'yyyyMMd')
+    
     const url = `http://${server}/getStock/day/${symbolName}/${end}/${20}`;
     const response = await fetch(url);
     console.log(url);
@@ -69,7 +71,7 @@ export async function getDayGraph(symbolName, end) {
 
     // const raw = getMockData('day', asDateString(end));
 
-    return raw.map(toDisplayData).slice(-20);
+    return raw.map(toDisplayData).slice(-10);
   } catch (error) {
     console.warn('Request failed.', error);
     return [];

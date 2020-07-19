@@ -1,5 +1,4 @@
 // This is the routes.js file!
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
@@ -57,7 +56,9 @@ app.get('/checkstock/:name', function (req, res) {
 app.get('/getStock/day/:name/:end/:n', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
-    var query = ("SELECT * FROM " + req.params.name + " ORDER BY DATE DESC LIMIT " + req.params.n);
+    // var date = format(parseISO(req.params.end), 'DMYY')
+    // console.log(req.params.end + " : " + date);
+    var query = ("SELECT * FROM " + req.params.name + " WHERE DATE < " + req.params.end +" ORDER BY DATE DESC LIMIT " + req.params.n);
     console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
       // console.log(result);
