@@ -19,6 +19,7 @@ import {ButtonGraph} from './ButtonGraph';
 import {DetailPanel} from './DetailPanel';
 import {Chart} from './Chart';
 import {TopBar} from './TopBar';
+import { checkFav, addFav, delFav } from '../../service/favorite';
 
 export class GraphPage extends Component {
   constructor(props) {
@@ -122,11 +123,14 @@ export class GraphPage extends Component {
   }
 
   async onFavorite() {
-    await VoiceListener.stop();
-    VoiceListener.setCallback((text) => {
-      console.log('Favorite ' + text);
+    checkFav('01', this.state.symbol).then((exist) => {
+      console.log(exist);
+      if (exist) {
+        delFav('01', this.state.symbol)
+      } else {
+        addFav('01', this.state.symbol)
+      }
     });
-    await VoiceListener.start();
   }
 
   setChartDimension(event) {

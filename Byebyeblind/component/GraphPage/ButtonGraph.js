@@ -9,55 +9,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {speak} from '../../service/speech';
-import { checkFav, addFav, delFav } from '../../service/favorite';
+
 
 export const ButtonGraph = (props) => {
-  // Voice.onSpeechResults = (res) => {
-  //   const key = res.value[0];
-  //   speak(res.value[0] + ' Confirm');
-  //   Alert.alert(
-  //     'ยืนยัน',
-  //     res.value[0],
-  //     [
-  //       {
-  //         text: 'ยกเลิก',
-  //         onPress: () => {
-  //           return null;
-  //         },
-  //       },
-  //       {
-  //         text: 'ตกลง',
-  //         onPress: async () => {
-  //           console.log("logtestttttttt");
-  //           console.log("key : " + res.value[0]);
-  //           if (key !== 'favorite') {
-  //             isSymbolExist(res.value[0]).then((exist) => {
-  //               if (exist) {
-  //                 console.log("change : " + res.value[0]);
-  //                 this.props.triggerGraphUpdate(res.value[0]);
-  //               } else {
-  //                 speak('Symbol does not exist');
-  //               }
-  //             });
-  //           } else {
-  //             this.props.navigation.navigate('Favorite', '01');
-  //           }
-  //         },
-  //       },
-  //     ],
-  //     { cancelable: false },
-  //   );
-  // };
+  
   return (
     <SafeAreaView style={styles.buttonGraph}>
       <TouchableOpacity
         onPress={() => {
           speak('Voice');
-<<<<<<< HEAD
-          // Voice.start('en-US');
-=======
           props.onVoice();
->>>>>>> acd59781f7dd7ea85bdcfeff948abb2130981958
         }}
         style={styles.bigBtn}>
         <Image
@@ -96,20 +57,7 @@ export const ButtonGraph = (props) => {
       <TouchableOpacity
         onPress={() => {
           speak('Favorite');
-<<<<<<< HEAD
-          checkFav('01', 'AP').then((exist) => {
-            // console.log(exist);
-            if (exist) {
-              console.log("have")
-              delFav('01', '7UP')
-            } else {
-              console.log("dont have")
-              addFav('01', 'AP')
-            }
-          });
-=======
           props.onFavorite();
->>>>>>> acd59781f7dd7ea85bdcfeff948abb2130981958
         }}>
         <View style={styles.bigBtn}>
           <Image

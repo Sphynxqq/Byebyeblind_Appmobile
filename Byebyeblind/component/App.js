@@ -8,12 +8,13 @@ import {
   Image,
 } from 'react-native';
 
-import {createAppContainer, createSwitchNavigator} from 'react-navigation';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
-import {speak, VoiceListener} from '../service/speech';
+import { speak, VoiceListener } from '../service/speech';
+import { isSymbolExist } from '../service/graphService';
 
-import {GraphPage} from './GraphPage';
-import {FavoritePage} from './FavoritePage';
+import { GraphPage } from './GraphPage';
+import { FavoritePage } from './FavoritePage';
 
 class HomeScreen extends React.Component {
   constructor() {
@@ -35,7 +36,12 @@ class HomeScreen extends React.Component {
 
     VoiceListener.setCallback((speechText) => {
       console.log('Home page', speechText);
-      this.go_graph(speechText);
+      if (speechText == 'favorite') {
+        
+      } else {
+        this.go_graph(speechText);
+      }
+
     });
 
     await VoiceListener.start();
@@ -51,14 +57,14 @@ class HomeScreen extends React.Component {
   }
 
   go_graph(symbol) {
-    // isSymbolExist(symbol).then((exist) => {
-    //   if (exist) {
-    //     this.props.navigation.navigate('Graph', {symbol});
-    //   } else {
-    //     alert('Symbol does not exist');
-    //   }
-    // });
-    this.props.navigation.navigate('Graph', {symbol});
+    isSymbolExist(symbol).then((exist) => {
+      if (exist) {
+        this.props.navigation.navigate('Graph', { symbol });
+      } else {
+        alert('Symbol does not exist');
+      }
+    });
+    // this.props.navigation.navigate('Graph', {symbol});
   }
 
   render() {
