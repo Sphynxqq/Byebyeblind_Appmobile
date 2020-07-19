@@ -16,6 +16,7 @@ export const ButtonGraph = (props) => {
       <TouchableOpacity
         onPress={() => {
           speak('Voice');
+          props.onVoice();
         }}
         style={styles.bigBtn}>
         <Image
@@ -54,7 +55,7 @@ export const ButtonGraph = (props) => {
       <TouchableOpacity
         onPress={() => {
           speak('Favorite');
-          // Voice.start('en-US');
+          props.onFavorite();
         }}>
         <View style={styles.bigBtn}>
           <Image
@@ -108,4 +109,6 @@ const styles = StyleSheet.create({
 ButtonGraph.propsTypes = {
   previous: PropTypes.func.isRequired,
   next: PropTypes.func.isRequired,
+  onVoice: PropTypes.func.isRequired,
+  onFavorite: PropTypes.func.isRequired,
 };
