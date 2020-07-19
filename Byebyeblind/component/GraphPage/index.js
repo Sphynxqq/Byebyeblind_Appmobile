@@ -14,10 +14,11 @@ import {
   getWeekGraph,
   getMonthGraph,
 } from '../../service/graphService';
-import {ButtonGraph} from '../ButtonGraph';
+import {ButtonGraph} from './ButtonGraph';
 import {DetailPanel} from './DetailPanel';
 import {PeriodSelector} from './PeriodSelector';
 import {StockChart} from './StockChart';
+import {TopBar} from './TopBar';
 
 export class GraphPage extends Component {
   constructor(props) {
@@ -135,8 +136,11 @@ export class GraphPage extends Component {
           flexDirection: 'column',
           width: '100%',
           height: '100%',
+          paddingRight: 5,
+          paddingLeft: 5,
         }}>
-        <PeriodSelector
+        <TopBar
+          symbol={this.state.symbol}
           setDayView={this.setDayView}
           setWeekView={this.setWeekView}
           setMonthView={this.setMonthView}

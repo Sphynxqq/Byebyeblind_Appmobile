@@ -3,6 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
+  SafeAreaView,
   TouchableOpacity,
   Image,
   Alert,
@@ -83,7 +84,7 @@ class HomeScreen extends React.Component {
     console.disableYellowBox = true;
 
     return (
-      <View style={styles.bgcolor}>
+      <SafeAreaView style={styles.bgcolor}>
         <View style={styles.setflex}>
           <Text style={styles.fontHomepage}>Bye Bye Blind</Text>
 
@@ -96,7 +97,7 @@ class HomeScreen extends React.Component {
 
           {/* <Loginfb /> */}
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }

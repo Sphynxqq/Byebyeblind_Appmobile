@@ -5,7 +5,7 @@ import {speak} from '../../service/speech';
 
 export const PeriodSelector = (props) => {
   return (
-    <SafeAreaView style={styles.periodSelector}>
+    <View style={styles.periodSelector}>
       <View style={styles.periodBtn}>
         <Button
           color="#FBD1A7"
@@ -38,7 +38,7 @@ export const PeriodSelector = (props) => {
           title="MONTH"
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
   periodSelector: {
     flexDirection: 'row',
     justifyContent: 'center',
+    alignSelf: 'flex-end',
   },
   periodBtn: {
     marginLeft: 5,

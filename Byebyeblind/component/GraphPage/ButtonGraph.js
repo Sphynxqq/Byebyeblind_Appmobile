@@ -8,7 +8,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {speak} from '../service/speech';
+import {speak} from '../../service/speech';
 import Voice from 'react-native-voice';
 
 export const ButtonGraph = (props) => {
@@ -21,7 +21,7 @@ export const ButtonGraph = (props) => {
         style={styles.bigBtn}>
         <Image
           style={styles.sizeImgbtn}
-          source={require('../assets/microphone.png')}
+          source={require('../../assets/microphone.png')}
         />
         <Text style={styles.btnfont}>Voice</Text>
       </TouchableOpacity>
@@ -34,7 +34,7 @@ export const ButtonGraph = (props) => {
         <View style={styles.setbtnleftandright}>
           <Image
             style={styles.sizeImgbtn}
-            source={require('../assets/left.png')}
+            source={require('../../assets/left.png')}
           />
         </View>
       </TouchableOpacity>
@@ -47,7 +47,7 @@ export const ButtonGraph = (props) => {
         <View style={styles.setbtnleftandright}>
           <Image
             style={styles.sizeImgbtn}
-            source={require('../assets/right.png')}
+            source={require('../../assets/right.png')}
           />
         </View>
       </TouchableOpacity>
@@ -60,7 +60,7 @@ export const ButtonGraph = (props) => {
         <View style={styles.bigBtn}>
           <Image
             style={styles.sizeImgbtn}
-            source={require('../assets/star.png')}
+            source={require('../../assets/star.png')}
           />
           <Text style={styles.btnfont}>Favorite</Text>
         </View>
