@@ -8,23 +8,29 @@ import {
   VictoryLabel,
   VictoryAxis,
 } from 'victory-native';
+import {speak} from '../../service/speech';
 
-export const StockChart = (props) => {
+export const Chart = (props) => {
   return (
     <VictoryChart
       height={props.height}
       width={props.width}
       events={[
         {
-          childName: ['line', 'scatter'],
+          childName: ['scatter'],
           target: 'data',
           eventHandlers: {
             onPress: () => {
               return [
                 {
-                  childName: ['line', 'scatter'],
-                  mutation: (props) => {
-                    // todo: check and announce if user is on line
+                  childName: ['scatter'],
+                  mutation: (event) => {
+                    const {datum} = event;
+                    const speakText = `${format(
+                      datum.x,
+                      'MMMM do, yyyy',
+                    )}.  High, ${datum.y}`;
+                    speak(speakText);
                   },
                 },
               ];
@@ -44,11 +50,9 @@ export const StockChart = (props) => {
       <VictoryScatter
         name="scatter"
         data={props.stockData}
+        size={8}
         style={{
           data: {fill: '#c43a31'},
-          labels: {
-            fill: ({datum}) => datum.x === '#FFFFFF',
-          },
         }}
         labels={({datum}) => datum.y}
       />
@@ -68,7 +72,7 @@ export const StockChart = (props) => {
   );
 };
 
-StockChart.propsTypes = {
+Chart.propsTypes = {
   stockData: PropTypes.array.isRequired,
   viewMode: PropTypes.string.isRequired,
   width: PropTypes.string.isRequired,

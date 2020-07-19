@@ -17,7 +17,7 @@ import {
 import {ButtonGraph} from './ButtonGraph';
 import {DetailPanel} from './DetailPanel';
 import {PeriodSelector} from './PeriodSelector';
-import {StockChart} from './StockChart';
+import {Chart} from './Chart';
 import {TopBar} from './TopBar';
 
 export class GraphPage extends Component {
@@ -119,7 +119,7 @@ export class GraphPage extends Component {
     const firstPoint = this.state.symbolData[0];
     const chart =
       this.state.displayData.length > 0 ? (
-        <StockChart
+        <Chart
           stockData={this.state.displayData}
           viewMode={this.state.viewMode}
           width={this.state.chartWidth}
@@ -152,7 +152,7 @@ export class GraphPage extends Component {
             width: '100%',
           }}
           onLayout={this.setChartDimension}>
-          <Svg>{chart}</Svg>
+          {chart}
         </SafeAreaView>
 
         <DetailPanel {...firstPoint} />

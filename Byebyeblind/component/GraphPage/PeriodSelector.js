@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, View, SafeAreaView} from 'react-native';
+import {Button, StyleSheet, View} from 'react-native';
+
 import {speak} from '../../service/speech';
 
 export const PeriodSelector = (props) => {
@@ -10,7 +11,7 @@ export const PeriodSelector = (props) => {
         <Button
           color="#FBD1A7"
           onPress={() => {
-            speak('Day');
+            speak('Day view');
             props.setDayView();
           }}
           title="DAY"
@@ -21,7 +22,7 @@ export const PeriodSelector = (props) => {
         <Button
           color="#FBD1A7"
           onPress={() => {
-            speak('Week');
+            speak('Week view');
             props.setWeekView();
           }}
           title="WEEK"
@@ -32,7 +33,7 @@ export const PeriodSelector = (props) => {
         <Button
           color="#FBD1A7"
           onPress={() => {
-            speak('Month');
+            speak('Month view');
             props.setMonthView();
           }}
           title="MONTH"
