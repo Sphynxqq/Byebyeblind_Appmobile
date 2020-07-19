@@ -37,6 +37,7 @@ class HomeScreen extends React.Component {
     VoiceListener.setCallback((speechText) => {
       console.log('Home page', speechText);
       if (speechText === 'favorite') {
+        this.props.navigation.navigate('Favorite', '01');
       } else {
         this.go_graph(speechText);
       }

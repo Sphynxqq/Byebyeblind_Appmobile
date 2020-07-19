@@ -120,21 +120,25 @@ export class GraphPage extends Component {
   next() {
     this.jump(1);
   }
-
+  
   async onVoice() {
-    // await VoiceListener.stop();
-    // VoiceListener.setCallback((text) => {
-    //   this.setState(
-    //     () => ({symbol: text}),
-    //     () => this.setDayView(),
-    //   );
-    // });
-    // await VoiceListener.start();
+    await VoiceListener.stop();
+    VoiceListener.setCallback((text) => {
+      if (text === 'favorite') {
+        this.props.navigation.navigate('favorite', '01');
+      } else {
+        this.setState(
+          () => ({symbol: text}),
+          () => this.setDayView(),
+        );
+      }
+    });
+    await VoiceListener.start();
 
-    this.setState(
-      () => ({symbol: 'TEST'}),
-      () => this.setDayView(),
-    );
+    // this.setState(
+    //   () => ({symbol: 'TEST'}),
+    //   () => this.setDayView(),
+    // );
   }
 
   async onFavorite() {

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -8,48 +8,66 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import {speak, VoiceListener} from '../service/speech';
+import {isSymbolExist} from '../service/graphService';
+
+import {GraphPage} from './GraphPage';
+
+
+
 export class FavoritePage extends Component {
+
+  constructor() {
+    this.onPressMicButton = this.onPressMicButton.bind(this);
+  }
+  
+  async onPressMicButton() {
+    await VoiceListener.stop();
+
+    VoiceListener.setCallback((speechText) => {
+      console.log('Home page', speechText);
+      if (speechText === 'favorite') {
+        this.props.navigation.navigate('Favorite', '01');
+      } else {
+        this.go_graph(speechText);
+      }
+    });
+
+    await VoiceListener.start();
+  }
+
+  go_graph(symbol) {
+    isSymbolExist(symbol).then((exist) => {
+      if (exist) {
+        this.props.navigation.navigate('Graph', {symbol});
+      } else {
+        alert('Symbol does not exist');
+      }
+    });
+    // this.props.navigation.navigate('Graph', {symbol});
+  }
+
   renderListFooter() {
     return (
       <View style={styles.seticonbtn}>
-        <TouchableOpacity
-          onPress={() => {
-            alert('You tapped the button Voice');
-          }}>
-          <View style={styles.setbtnvoice}>
-            <Image
-              style={styles.sizeImgbtn}
-              source={require('../assets/microphone.png')}
-            />
-            <Text style={styles.btnfont}>Voice</Text>
-          </View>
+        <TouchableOpacity onPress={this.onPressMicButton}>
+          {/*<TouchableOpacity onPress={() => this.go_graph('7up')}>*/}
+          <Image source={require('../assets/iconmicro.png')} />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => {
-            alert('You tapped the button Favorite');
-          }}>
-          <View style={styles.setbtnfavorite}>
-            <Image
-              style={styles.sizeImgbtn}
-              source={require('../assets/star.png')}
-            />
-            <Text style={styles.btnfont}>Favorite</Text>
-          </View>
-        </TouchableOpacity>
       </View>
     );
   }
 
   renderItem(item) {
     return (
-      <View style={{backgroundColor: '#01273C', alignItems: 'center'}}>
+      <View style={{ backgroundColor: '#01273C', alignItems: 'center' }}>
         <View style={styles.createcard}>
           <View style={styles.displayIncard}>
             {/* <Image
                             style={styles.sizeImgcard}
                             source={require('../assets/bangkokbank.png')}
-                        /> */}
+                        /> เอาค่ามาใส่ตรงนี้ vvvv*/}
             <Text style={styles.fontcard}>Bangkok Bank</Text>
             <Text style={styles.fontnumbercard}>168 ฿</Text>
           </View>
@@ -60,11 +78,11 @@ export class FavoritePage extends Component {
 
   render() {
     return (
-      <View style={{padding: 10, flexDirection: 'column'}}>
+      <View style={{ padding: 10, flexDirection: 'column' }}>
         <FlatList
-          data={[1, 2, 3, 4, 5, 6]}
+          data={[1, 2, 3, 4, 5, 6]} // รับค่าจาก database 
           ListFooterComponent={this.renderListFooter}
-          renderItem={({item}) => this.renderItem(item)}
+          renderItem={({ item }) => this.renderItem(item)}
         />
 
         {/* <TouchableOpacity onPress={(evt) => this.handlePress(evt)}>
