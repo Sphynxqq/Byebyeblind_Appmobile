@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import format from 'date-fns/format';
 import {
   VictoryChart,
   VictoryLine,
@@ -8,6 +7,8 @@ import {
   VictoryLabel,
   VictoryAxis,
 } from 'victory-native';
+
+import {asPeriodFormat} from './DateTools';
 
 export const Chart = (props) => {
   /** Hack to force update VictoryChart event listener **/
@@ -58,13 +59,10 @@ export const Chart = (props) => {
         labels={({datum}) => datum.y}
       />
 
-      <VictoryLabel x={25} y={10} text={'High'} />
+      <VictoryLabel x={25} y={10} text={'Price'} />
       <VictoryAxis
         scale="linear"
-        tickFormat={(d) => {
-          const date = new Date(d);
-          return format(date, 'd MMM yy');
-        }}
+        tickFormat={(d) => asPeriodFormat(props.viewMode, d)}
         label="Time"
       />
 

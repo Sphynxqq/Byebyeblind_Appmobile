@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import format from 'date-fns/format';
 import numeral from 'numeral';
 import {StyleSheet, Text, View, SafeAreaView} from 'react-native';
+
+import {asPeriodFormat} from './DateTools';
 
 export const DetailPanel = ({
   date = new Date(),
@@ -11,11 +12,12 @@ export const DetailPanel = ({
   high,
   low,
   vol,
+  viewMode,
 }) => {
   return (
     <SafeAreaView>
       <View style={styles.detailPanel}>
-        <ValuePill name="วันที่" value={format(date, 'd MMMM yyyy')} />
+        <ValuePill name="วันที่" value={asPeriodFormat(viewMode, date)} />
         <ValuePill name="เปิด" value={asLocaleNumber(open)} />
         <ValuePill name="ปิด" value={asLocaleNumber(close)} />
         <ValuePill name="สูงสุด" value={asLocaleNumber(high)} />
@@ -41,6 +43,7 @@ DetailPanel.propsTypes = {
   high: PropTypes.number.isRequired,
   low: PropTypes.number.isRequired,
   vol: PropTypes.number.isRequired,
+  viewMode: PropTypes.string.isRequired,
 };
 
 ValuePill.propsTypes = {

@@ -10,9 +10,7 @@ import {
 } from 'react-native';
 import {speak} from '../../service/speech';
 
-
 export const ButtonGraph = (props) => {
-  
   return (
     <SafeAreaView style={styles.buttonGraph}>
       <TouchableOpacity
