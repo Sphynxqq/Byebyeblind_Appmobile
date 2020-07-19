@@ -58,7 +58,7 @@ export const Chart = (props) => {
         labels={({datum}) => datum.y}
       />
 
-      <VictoryLabel x={25} y={10} text={'High'} />
+      <VictoryLabel x={25} y={10} text={'Price'} />
       <VictoryAxis
         scale="linear"
         tickFormat={(d) => {
