@@ -1,59 +1,50 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 
 import {speak} from '../../service/speech';
 
 export const PeriodSelector = (props) => {
   return (
     <View style={styles.periodSelector}>
-      <View
+      <TouchableOpacity
         style={
           props.currentView === 'day'
             ? styles.currentPeriodBtn
             : styles.periodBtn
-        }>
-        <Button
-          color="#FBD1A7"
-          onPress={() => {
-            speak('Day view');
-            props.setDayView();
-          }}
-          title="DAY"
-        />
-      </View>
+        }
+        onPress={() => {
+          speak('Day view');
+          props.setDayView();
+        }}>
+        <Text>DAY</Text>
+      </TouchableOpacity>
 
-      <View
+      <TouchableOpacity
         style={
           props.currentView === 'week'
             ? styles.currentPeriodBtn
             : styles.periodBtn
-        }>
-        <Button
-          color="#FBD1A7"
-          onPress={() => {
-            speak('Week view');
-            props.setWeekView();
-          }}
-          title="WEEK"
-        />
-      </View>
+        }
+        onPress={() => {
+          speak('Week view');
+          props.setWeekView();
+        }}>
+        <Text>WEEK</Text>
+      </TouchableOpacity>
 
-      <View
+      <TouchableOpacity
         style={
           props.currentView === 'month'
             ? styles.currentPeriodBtn
             : styles.periodBtn
-        }>
-        <Button
-          color="#FBD1A7"
-          onPress={() => {
-            speak('Month view');
-            props.setMonthView();
-          }}
-          title="MONTH"
-        />
-      </View>
+        }
+        onPress={() => {
+          speak('Month view');
+          props.setMonthView();
+        }}>
+        <Text>MONTH</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -74,11 +65,16 @@ const styles = StyleSheet.create({
   periodBtn: {
     marginLeft: 5,
     borderRadius: 5,
+    padding: 5,
+  },
+  periodBtnText: {
+    fontSize: 20,
   },
   currentPeriodBtn: {
     backgroundColor: '#FF0000',
     color: '#FFFFFF',
     marginLeft: 5,
     borderRadius: 5,
+    padding: 5,
   },
 });

@@ -9,14 +9,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {speak} from '../../service/speech';
-import Voice from 'react-native-voice';
 
 export const ButtonGraph = (props) => {
   return (
     <SafeAreaView style={styles.buttonGraph}>
       <TouchableOpacity
         onPress={() => {
-          speak('This is button Voice');
+          speak('Voice');
         }}
         style={styles.bigBtn}>
         <Image
@@ -54,7 +53,7 @@ export const ButtonGraph = (props) => {
 
       <TouchableOpacity
         onPress={() => {
-          speak('This is button Favorite');
+          speak('Favorite');
           // Voice.start('en-US');
         }}>
         <View style={styles.bigBtn}>
