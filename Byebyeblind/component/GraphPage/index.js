@@ -1,11 +1,12 @@
 import format from 'date-fns/format';
 import React, {Component} from 'react';
 import {View, SafeAreaView, PanResponder} from 'react-native';
+import Svg from 'react-native-svg';
 
 import addDays from 'date-fns/addDays';
 import addWeeks from 'date-fns/addWeeks';
 import addMonths from 'date-fns/addMonths';
-import Svg from 'react-native-svg';
+import getWeekOfMonth from 'date-fns/getWeekOfMonth';
 
 import {Text} from 'victory-native';
 
@@ -19,7 +20,7 @@ import {ButtonGraph} from './ButtonGraph';
 import {DetailPanel} from './DetailPanel';
 import {Chart} from './Chart';
 import {TopBar} from './TopBar';
-import { checkFav, addFav, delFav } from '../../service/favorite';
+import {checkFav, addFav, delFav} from '../../service/favorite';
 
 export class GraphPage extends Component {
   constructor(props) {
@@ -126,9 +127,9 @@ export class GraphPage extends Component {
     checkFav('01', this.state.symbol).then((exist) => {
       console.log(exist);
       if (exist) {
-        delFav('01', this.state.symbol)
+        delFav('01', this.state.symbol);
       } else {
-        addFav('01', this.state.symbol)
+        addFav('01', this.state.symbol);
       }
     });
   }
@@ -140,9 +141,14 @@ export class GraphPage extends Component {
 
   onScatterClick(index) {
     const data = this.state.symbolData[index];
-    const speakText = `${format(data.date, 'MMMM do, yyyy')}.  High, ${
-      data.high
-    }`;
+    let speakText;
+    if (this.state.viewMode === 'day') {
+      speakText = `${format(data.date, 'MMMM d, yyyy')}. Price, ${data.high} Baht`;
+    } else if (this.state.viewMode === 'week') {
+      speakText = `Week ${getWeekOfMonth(data.date)} of ${format(data.date, 'MMMM, yyyy')}. Price, ${data.high} Baht`;
+    } else if (this.state.viewMode === 'month') {
+      speakText = `${format(data.date, 'MMMM, yyyy')}. Price, ${data.high} Baht`;
+    }
     speak(speakText);
     this.setState(() => ({detailDisplayIndex: index}));
   }
@@ -192,7 +198,7 @@ export class GraphPage extends Component {
           <Svg>{chart}</Svg>
         </SafeAreaView>
 
-        <DetailPanel {...detailDisplay} />
+        <DetailPanel {...detailDisplay} viewMode={this.state.viewMode} />
         <ButtonGraph
           previous={this.previous}
           next={this.next}

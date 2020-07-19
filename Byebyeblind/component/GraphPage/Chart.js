@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import format from 'date-fns/format';
-import getWeekOfMonth from 'date-fns/getWeekOfMonth';
 import {
   VictoryChart,
   VictoryLine,
@@ -9,6 +7,8 @@ import {
   VictoryLabel,
   VictoryAxis,
 } from 'victory-native';
+
+import {asPeriodFormat} from './DateTools';
 
 export const Chart = (props) => {
   /** Hack to force update VictoryChart event listener **/
@@ -62,16 +62,7 @@ export const Chart = (props) => {
       <VictoryLabel x={25} y={10} text={'Price'} />
       <VictoryAxis
         scale="linear"
-        tickFormat={(d) => {
-          const date = new Date(d);
-          if (props.viewMode === 'month') {
-            return format(date, 'MMM yyyy');
-          } else if (props.viewMode === 'week') {
-            return `W${getWeekOfMonth(date)}, ${format(date, 'MMMM')}`;
-          } else {
-            return format(date, 'd/MMM/yy');
-          }
-        }}
+        tickFormat={(d) => asPeriodFormat(props.viewMode, d)}
         label="Time"
       />
 
