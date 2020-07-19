@@ -152,7 +152,7 @@ export class GraphPage extends Component {
           </Svg>
         </View>
 
-        <DetailPanel {...firstPoint} symbol={this.state.symbol} />
+        <DetailPanel {...firstPoint} />
         <ButtonGraph previous={this.previous} next={this.next} />
       </View>
     );
