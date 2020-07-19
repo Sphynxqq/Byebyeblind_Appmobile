@@ -15,17 +15,15 @@ export const DetailPanel = ({
     <SafeAreaView>
       <View style={styles.detailPanel}>
         <ValuePill name="วันที่" value={format(date, 'd MMMM yyyy')} />
-        <ValuePill name="เปิด" value={formatter.format(open)} />
-        <ValuePill name="ปิด" value={formatter.format(close)} />
-        <ValuePill name="สูงสุด" value={formatter.format(high)} />
-        <ValuePill name="ต่ำสุด" value={formatter.format(low)} />
-        <ValuePill name="มูลค่า" value={formatter.format(vol)} />
+        <ValuePill name="เปิด" value={Number(open).toLocaleString()} />
+        <ValuePill name="ปิด" value={Number(close).toLocaleString()} />
+        <ValuePill name="สูงสุด" value={Number(high).toLocaleString()} />
+        <ValuePill name="ต่ำสุด" value={Number(low).toLocaleString()} />
+        <ValuePill name="มูลค่า" value={Number(vol).toLocaleString()} />
       </View>
     </SafeAreaView>
   );
 };
-
-const formatter = new Intl.NumberFormat();
 
 const ValuePill = ({name, value}) => (
   <View style={styles.valuePill}>

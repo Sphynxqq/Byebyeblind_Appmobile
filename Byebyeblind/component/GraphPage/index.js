@@ -48,7 +48,6 @@ export class GraphPage extends Component {
 
   componentDidMount() {
     this.setDayView();
-    Dimensions.addEventListener('change', () => {});
   }
 
   UNSAFE_componentWillMount() {
@@ -113,6 +112,7 @@ export class GraphPage extends Component {
   }
 
   setChartDimension(event) {
+    console.log(JSON.stringify(event.nativeEvent.layout, null, 2));
     const {width: chartWidth, height: chartHeight} = event.nativeEvent.layout;
     this.setState(() => ({chartWidth, chartHeight}));
   }
