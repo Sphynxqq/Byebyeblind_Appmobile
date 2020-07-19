@@ -7,7 +7,12 @@ import {speak} from '../../service/speech';
 export const PeriodSelector = (props) => {
   return (
     <View style={styles.periodSelector}>
-      <View style={styles.periodBtn}>
+      <View
+        style={
+          props.currentView === 'day'
+            ? styles.currentPeriodBtn
+            : styles.periodBtn
+        }>
         <Button
           color="#FBD1A7"
           onPress={() => {
@@ -18,7 +23,12 @@ export const PeriodSelector = (props) => {
         />
       </View>
 
-      <View style={styles.periodBtn}>
+      <View
+        style={
+          props.currentView === 'week'
+            ? styles.currentPeriodBtn
+            : styles.periodBtn
+        }>
         <Button
           color="#FBD1A7"
           onPress={() => {
@@ -29,7 +39,12 @@ export const PeriodSelector = (props) => {
         />
       </View>
 
-      <View style={styles.periodBtn}>
+      <View
+        style={
+          props.currentView === 'month'
+            ? styles.currentPeriodBtn
+            : styles.periodBtn
+        }>
         <Button
           color="#FBD1A7"
           onPress={() => {
@@ -47,6 +62,7 @@ PeriodSelector.propsTypes = {
   setDayView: PropTypes.func.isRequired,
   setWeekView: PropTypes.func.isRequired,
   setMonthView: PropTypes.func.isRequired,
+  currentView: PropTypes.string.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -57,5 +73,12 @@ const styles = StyleSheet.create({
   },
   periodBtn: {
     marginLeft: 5,
+    borderRadius: 5,
+  },
+  currentPeriodBtn: {
+    backgroundColor: '#FF0000',
+    color: '#FFFFFF',
+    marginLeft: 5,
+    borderRadius: 5,
   },
 });

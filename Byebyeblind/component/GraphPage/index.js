@@ -1,12 +1,12 @@
+import format from "date-fns/format";
 import React, {Component} from 'react';
 import {View, SafeAreaView, PanResponder, Dimensions} from 'react-native';
 
 import addDays from 'date-fns/addDays';
 import addWeeks from 'date-fns/addWeeks';
 import addMonths from 'date-fns/addMonths';
-
 import Svg from 'react-native-svg';
-import Tts from 'react-native-tts';
+
 import {Text} from 'victory-native';
 
 import {
@@ -14,9 +14,9 @@ import {
   getWeekGraph,
   getMonthGraph,
 } from '../../service/graphService';
+import {speak} from '../../service/speech';
 import {ButtonGraph} from './ButtonGraph';
 import {DetailPanel} from './DetailPanel';
-import {PeriodSelector} from './PeriodSelector';
 import {Chart} from './Chart';
 import {TopBar} from './TopBar';
 
@@ -124,6 +124,7 @@ export class GraphPage extends Component {
           viewMode={this.state.viewMode}
           width={this.state.chartWidth}
           height={this.state.chartHeight}
+          onScatterClick={this.onScatterClick}
         />
       ) : (
         <Text>No Data</Text>
@@ -141,6 +142,7 @@ export class GraphPage extends Component {
         }}>
         <TopBar
           symbol={this.state.symbol}
+          currentView={this.state.viewMode}
           setDayView={this.setDayView}
           setWeekView={this.setWeekView}
           setMonthView={this.setMonthView}
@@ -152,7 +154,7 @@ export class GraphPage extends Component {
             width: '100%',
           }}
           onLayout={this.setChartDimension}>
-          {chart}
+          <Svg>{chart}</Svg>
         </SafeAreaView>
 
         <DetailPanel {...firstPoint} />

@@ -16,6 +16,7 @@ export const TopBar = (props) => {
 
 TopBar.propsTypes = {
   symbol: PropTypes.string.isRequired,
+  currentView: PropTypes.string.isRequired,
   setDayView: PropTypes.func.isRequired,
   setWeekView: PropTypes.func.isRequired,
   setMonthView: PropTypes.func.isRequired,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import format from 'date-fns/format';
 import {
@@ -11,19 +11,26 @@ import {
 import {speak} from '../../service/speech';
 
 export const Chart = (props) => {
+  /** Hack to force update VictoryChart event listener **/
+  const [_, setDummy] = useState(0);
+  useEffect(() => {
+    setDummy(Math.random());
+  }, [props.viewMode]);
+
   return (
     <VictoryChart
       height={props.height}
       width={props.width}
+      standalone={false}
       events={[
         {
-          childName: ['scatter'],
+          childName: 'scatter',
           target: 'data',
           eventHandlers: {
             onPress: () => {
               return [
                 {
-                  childName: ['scatter'],
+                  childName: 'scatter',
                   mutation: (event) => {
                     const {datum} = event;
                     const speakText = `${format(
