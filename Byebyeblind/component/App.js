@@ -6,14 +6,11 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Image,
-  Alert,
 } from 'react-native';
 
-import Voice from 'react-native-voice';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 
-import {isSymbolExist} from '../service/graphService';
-import {speak} from '../service/speech';
+import {speak, VoiceListener} from '../service/speech';
 
 import {GraphPage} from './GraphPage';
 import {FavoritePage} from './FavoritePage';
@@ -29,44 +26,28 @@ class HomeScreen extends React.Component {
       key: 0,
       check2: [],
     };
+
+    this.onPressMicButton = this.onPressMicButton.bind(this);
+  }
+
+  async onPressMicButton() {
+    await VoiceListener.stop();
+
+    VoiceListener.setCallback((speechText) => {
+      console.log('Home page', speechText);
+      this.go_graph(speechText);
+    });
+
+    await VoiceListener.start();
   }
 
   componentDidMount() {
-    Voice.onSpeechResults = (res) => {
-      const key = res.value[0];
-      speak(res.value[0] + ' Confirm');
-      Alert.alert(
-        'ยืนยัน',
-        res.value[0],
-        [
-          {
-            text: 'ยกเลิก',
-            onPress: () => {
-              return null;
-            },
-          },
-          {
-            text: 'ตกลง',
-            onPress: async () => {
-              if (key !== 'favorite') {
-                // this.stock_check(key);
-                // alert(this.state.check);
-                isSymbolExist(symbol).then((exist) => {
-                  if (exist) {
-                    this.props.navigation.navigate('Graph', {symbol});
-                  } else {
-                    speak('Symbol does not exist');
-                  }
-                });
-              } else {
-                this.props.navigation.navigate('Favorite', {key});
-              }
-            },
-          },
-        ],
-        {cancelable: false},
-      );
-    };
+    VoiceListener.stop();
+
+    VoiceListener.setCallback((speechText) => {
+      console.log('Home page', speechText);
+      this.go_graph(speechText);
+    });
   }
 
   go_graph(symbol) {
@@ -89,8 +70,8 @@ class HomeScreen extends React.Component {
           <Text style={styles.fontHomepage}>Bye Bye Blind</Text>
 
           <View style={styles.voiceBtn}>
-            {/* <TouchableOpacity onPress={() => Voice.start('en-US')}> */}
-            <TouchableOpacity onPress={() => this.go_graph('7up')}>
+            <TouchableOpacity onPress={this.onPressMicButton}>
+              {/*<TouchableOpacity onPress={() => this.go_graph('7up')}>*/}
               <Image source={require('../assets/iconmicro.png')} />
             </TouchableOpacity>
           </View>

@@ -53,7 +53,11 @@ export const ButtonGraph = (props) => {
       <TouchableOpacity
         onPress={() => {
           speak('Voice');
+<<<<<<< HEAD
           // Voice.start('en-US');
+=======
+          props.onVoice();
+>>>>>>> acd59781f7dd7ea85bdcfeff948abb2130981958
         }}
         style={styles.bigBtn}>
         <Image
@@ -92,6 +96,7 @@ export const ButtonGraph = (props) => {
       <TouchableOpacity
         onPress={() => {
           speak('Favorite');
+<<<<<<< HEAD
           checkFav('01', 'AP').then((exist) => {
             // console.log(exist);
             if (exist) {
@@ -102,6 +107,9 @@ export const ButtonGraph = (props) => {
               addFav('01', 'AP')
             }
           });
+=======
+          props.onFavorite();
+>>>>>>> acd59781f7dd7ea85bdcfeff948abb2130981958
         }}>
         <View style={styles.bigBtn}>
           <Image
@@ -155,4 +163,6 @@ const styles = StyleSheet.create({
 ButtonGraph.propsTypes = {
   previous: PropTypes.func.isRequired,
   next: PropTypes.func.isRequired,
+  onVoice: PropTypes.func.isRequired,
+  onFavorite: PropTypes.func.isRequired,
 };

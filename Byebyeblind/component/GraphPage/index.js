@@ -1,6 +1,6 @@
 import format from 'date-fns/format';
 import React, {Component} from 'react';
-import {View, SafeAreaView, PanResponder, Dimensions} from 'react-native';
+import {View, SafeAreaView, PanResponder} from 'react-native';
 
 import addDays from 'date-fns/addDays';
 import addWeeks from 'date-fns/addWeeks';
@@ -14,7 +14,7 @@ import {
   getWeekGraph,
   getMonthGraph,
 } from '../../service/graphService';
-import {speak} from '../../service/speech';
+import {speak, VoiceListener} from '../../service/speech';
 import {ButtonGraph} from './ButtonGraph';
 import {DetailPanel} from './DetailPanel';
 import {Chart} from './Chart';
@@ -44,6 +44,8 @@ export class GraphPage extends Component {
     this.jump = this.jump.bind(this);
     this.setChartDimension = this.setChartDimension.bind(this);
     this.onScatterClick = this.onScatterClick.bind(this);
+    this.onVoice = this.onVoice.bind(this);
+    this.onFavorite = this.onFavorite.bind(this);
   }
 
   componentDidMount() {
@@ -111,8 +113,23 @@ export class GraphPage extends Component {
     this.jump(1);
   }
 
+  async onVoice() {
+    await VoiceListener.stop();
+    VoiceListener.setCallback((text) => {
+      console.log('Voice ' + text);
+    });
+    await VoiceListener.start();
+  }
+
+  async onFavorite() {
+    await VoiceListener.stop();
+    VoiceListener.setCallback((text) => {
+      console.log('Favorite ' + text);
+    });
+    await VoiceListener.start();
+  }
+
   setChartDimension(event) {
-    console.log(JSON.stringify(event.nativeEvent.layout, null, 2));
     const {width: chartWidth, height: chartHeight} = event.nativeEvent.layout;
     this.setState(() => ({chartWidth, chartHeight}));
   }
@@ -172,7 +189,12 @@ export class GraphPage extends Component {
         </SafeAreaView>
 
         <DetailPanel {...detailDisplay} />
-        <ButtonGraph previous={this.previous} next={this.next} />
+        <ButtonGraph
+          previous={this.previous}
+          next={this.next}
+          onVoice={this.onVoice}
+          onFavorite={this.onFavorite}
+        />
       </View>
     );
   }
