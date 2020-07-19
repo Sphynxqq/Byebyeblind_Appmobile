@@ -88,23 +88,29 @@ export class GraphPage extends Component {
     );
   }
 
-  jump(amount) {
-    if (this.state.viewMode === 'month') {
-      this.setState(
-        () => ({endDate: addMonths(this.state.endDate, amount)}),
-        () => this.setMonthView(),
-      );
+  updateGraph() {
+    if (this.state.viewMode === 'day') {
+      this.setDayView();
     } else if (this.state.viewMode === 'week') {
-      this.setState(
-        () => ({endDate: addWeeks(this.state.endDate, amount)}),
-        () => this.setWeekView(),
-      );
-    } else {
-      this.setState(
-        () => ({endDate: addDays(this.state.endDate, amount)}),
-        () => this.setDayView(),
-      );
+      this.setWeekView();
+    } else if (this.state.viewMode === 'month') {
+      this.setMonthView();
     }
+  }
+
+  jump(amount) {
+    this.setState(
+      () => {
+        if (this.state.viewMode === 'day') {
+          return {endDate: addMonths(this.state.endDate, amount)};
+        } else if (this.state.viewMode === 'week') {
+          return {endDate: addWeeks(this.state.endDate, amount)};
+        } else if (this.state.viewMode === 'month') {
+          return {endDate: addDays(this.state.endDate, amount)};
+        }
+      },
+      () => this.updateGraph(),
+    );
   }
 
   previous() {
@@ -116,11 +122,19 @@ export class GraphPage extends Component {
   }
 
   async onVoice() {
-    await VoiceListener.stop();
-    VoiceListener.setCallback((text) => {
-      console.log('Voice ' + text);
-    });
-    await VoiceListener.start();
+    // await VoiceListener.stop();
+    // VoiceListener.setCallback((text) => {
+    //   this.setState(
+    //     () => ({symbol: text}),
+    //     () => this.setDayView(),
+    //   );
+    // });
+    // await VoiceListener.start();
+
+    this.setState(
+      () => ({symbol: 'TEST'}),
+      () => this.setDayView(),
+    );
   }
 
   async onFavorite() {
@@ -143,11 +157,18 @@ export class GraphPage extends Component {
     const data = this.state.symbolData[index];
     let speakText;
     if (this.state.viewMode === 'day') {
-      speakText = `${format(data.date, 'MMMM d, yyyy')}. Price, ${data.high} Baht`;
+      speakText = `${format(data.date, 'MMMM d, yyyy')}. Price, ${
+        data.high
+      } Baht`;
     } else if (this.state.viewMode === 'week') {
-      speakText = `Week ${getWeekOfMonth(data.date)} of ${format(data.date, 'MMMM, yyyy')}. Price, ${data.high} Baht`;
+      speakText = `Week ${getWeekOfMonth(data.date)} of ${format(
+        data.date,
+        'MMMM, yyyy',
+      )}. Price, ${data.high} Baht`;
     } else if (this.state.viewMode === 'month') {
-      speakText = `${format(data.date, 'MMMM, yyyy')}. Price, ${data.high} Baht`;
+      speakText = `${format(data.date, 'MMMM, yyyy')}. Price, ${
+        data.high
+      } Baht`;
     }
     speak(speakText);
     this.setState(() => ({detailDisplayIndex: index}));
