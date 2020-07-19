@@ -10,7 +10,7 @@ import {
   Image,
   ImageBackground,
   Alert,
-  Button,,
+  Button,
 } from 'react-native';
 import {Dimensions} from 'react-native';
 import {LoginButton, AccessToken} from 'react-native-fbsdk';

@@ -4,7 +4,7 @@ import addDays from 'date-fns/addDays';
 import addWeeks from 'date-fns/addWeeks';
 import format from 'date-fns/format';
 
-const server = '10.0.216.172';
+const server = '192.168.1.43:3000';
 const asDateString = date => format(date, 'yyyyMMdd');
 
 export async function isSymbolExist(symbolName) {
