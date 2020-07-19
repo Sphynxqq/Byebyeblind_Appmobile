@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
+  SafeAreaView,
   Image,
   TouchableOpacity,
 } from 'react-native';
@@ -12,12 +13,12 @@ import Voice from 'react-native-voice';
 
 export const ButtonGraph = (props) => {
   return (
-    <View style={styles.seticonbtn}>
+    <SafeAreaView style={styles.buttonGraph}>
       <TouchableOpacity
         onPress={() => {
           speak('This is button Voice');
         }}
-        style={styles.setbtnvoice}>
+        style={styles.bigBtn}>
         <Image
           style={styles.sizeImgbtn}
           source={require('../assets/microphone.png')}
@@ -56,7 +57,7 @@ export const ButtonGraph = (props) => {
           speak('This is button Favorite');
           // Voice.start('en-US');
         }}>
-        <View style={styles.setbtnfavorite}>
+        <View style={styles.bigBtn}>
           <Image
             style={styles.sizeImgbtn}
             source={require('../assets/star.png')}
@@ -64,58 +65,44 @@ export const ButtonGraph = (props) => {
           <Text style={styles.btnfont}>Favorite</Text>
         </View>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  seticonbtn: {
-    flexBasis: 100,
+  buttonGraph: {
     flexDirection: 'row',
-    width: '100%',
-    height: '100%',
     justifyContent: 'space-between',
-  },
-  setbtnvoice: {
-    width: 130,
-    height: 65,
-    backgroundColor: '#FBD1A7',
-    marginTop: 10,
-    borderRadius: 30,
-    marginBottom: 10,
-    flexDirection: 'row',
+    paddingTop: 5,
+    paddingBottom: 5,
   },
   sizeImgbtn: {
     width: 45,
     height: 45,
-    marginLeft: 5,
-    marginTop: 10,
   },
   btnfont: {
-    width: 130,
-    height: 70,
     fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 20,
-    marginLeft: 2,
+    marginLeft: 5,
   },
-  setbtnfavorite: {
-    width: 130,
+  bigBtn: {
     height: 65,
+    padding: 8,
     backgroundColor: '#FBD1A7',
-    marginTop: 10,
-    borderRadius: 30,
-    marginBottom: 10,
+    borderRadius: 10,
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   setbtnleftandright: {
-    width: 60,
+    width: 65,
     height: 65,
     backgroundColor: '#FBD1A7',
-    marginTop: 10,
-    borderRadius: 30,
-    marginBottom: 10,
+    borderRadius: 35,
     flexDirection: 'row',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

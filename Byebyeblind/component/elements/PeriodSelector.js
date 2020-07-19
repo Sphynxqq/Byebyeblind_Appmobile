@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button, StyleSheet, View} from 'react-native';
+import {Button, StyleSheet, View, SafeAreaView} from 'react-native';
 import {speak} from '../../service/speech';
 
 export const PeriodSelector = (props) => {
   return (
-    <View style={styles.periodSelector}>
+    <SafeAreaView style={styles.periodSelector}>
       <View style={styles.periodBtn}>
         <Button
           color="#FBD1A7"
@@ -38,7 +38,7 @@ export const PeriodSelector = (props) => {
           title="MONTH"
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -51,8 +51,6 @@ PeriodSelector.propsTypes = {
 const styles = StyleSheet.create({
   periodSelector: {
     flexDirection: 'row',
-    marginTop: 10,
-    borderRadius: 10,
     justifyContent: 'center',
   },
   periodBtn: {

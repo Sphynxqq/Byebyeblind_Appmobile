@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, SafeAreaView} from 'react-native';
 
 export const DetailPanel = ({open, close, high, low, vol}) => {
   return (
-    <View style={styles.detailPanel}>
-      <ValuePill name="เปิด" value={open} />
-      <ValuePill name="ปิด" value={close} />
-      <ValuePill name="สูงสุด" value={high} />
-      <ValuePill name="ต่ำสุด" value={low} />
-      <ValuePill name="มูลค่า" value={vol} />
-    </View>
+    <SafeAreaView>
+      <View style={styles.detailPanel}>
+        <ValuePill name="เปิด" value={open} />
+        <ValuePill name="ปิด" value={close} />
+        <ValuePill name="สูงสุด" value={high} />
+        <ValuePill name="ต่ำสุด" value={low} />
+        <ValuePill name="มูลค่า" value={vol} />
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -40,6 +42,7 @@ const styles = StyleSheet.create({
   detailPanel: {
     display: 'flex',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'flex-start',
   },
   valuePill: {
@@ -56,6 +59,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
     marginRight: 5,
+    marginBottom: 5,
   },
   pillName: {
     fontWeight: 'bold',

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, PanResponder, Dimensions} from 'react-native';
+import {View, SafeAreaView, PanResponder, Dimensions} from 'react-native';
 
 import addDays from 'date-fns/addDays';
 import addWeeks from 'date-fns/addWeeks';
@@ -29,6 +29,8 @@ export class GraphPage extends Component {
       displayData: [],
       endDate: new Date(),
       viewMode: 'day',
+      chartWidth: 100,
+      chartHeight: 100,
     };
 
     this.setDayView = this.setDayView.bind(this);
@@ -108,7 +110,7 @@ export class GraphPage extends Component {
   }
 
   setChartDimension(event) {
-    const {chartWidth, chartHeight} = event.nativeEvent.layout;
+    const {width: chartWidth, height: chartHeight} = event.nativeEvent.layout;
     this.setState(() => ({chartWidth, chartHeight}));
   }
 
@@ -119,6 +121,8 @@ export class GraphPage extends Component {
         <StockChart
           stockData={this.state.displayData}
           viewMode={this.state.viewMode}
+          width={this.state.chartWidth}
+          height={this.state.chartHeight}
         />
       ) : (
         <Text>No Data</Text>
@@ -129,9 +133,6 @@ export class GraphPage extends Component {
         style={{
           backgroundColor: '#fffff0',
           flexDirection: 'column',
-          justifyContent: 'flex-start',
-          alignItems: 'stretch',
-          alignContent: 'stretch',
           width: '100%',
           height: '100%',
         }}>
@@ -141,16 +142,14 @@ export class GraphPage extends Component {
           setMonthView={this.setMonthView}
         />
 
-        <View
+        <SafeAreaView
           style={{
             flex: 1,
             width: '100%',
           }}
           onLayout={this.setChartDimension}>
-          <Svg width={this.state.chartWidth} height={this.state.chartHeight}>
-            {chart}
-          </Svg>
-        </View>
+          <Svg>{chart}</Svg>
+        </SafeAreaView>
 
         <DetailPanel {...firstPoint} />
         <ButtonGraph previous={this.previous} next={this.next} />

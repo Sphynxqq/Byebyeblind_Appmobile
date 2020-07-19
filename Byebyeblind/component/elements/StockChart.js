@@ -12,7 +12,8 @@ import {
 export const StockChart = (props) => {
   return (
     <VictoryChart
-      height={200}
+      height={props.height}
+      width={props.width}
       events={[
         {
           childName: ['line', 'scatter'],
@@ -59,6 +60,7 @@ export const StockChart = (props) => {
           const date = new Date(d);
           return format(date, 'd MMM yy');
         }}
+        label="Time"
       />
 
       <VictoryAxis dependentAxis scale="linear" />
