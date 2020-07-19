@@ -1,4 +1,6 @@
 // This is the routes.js file!
+var getWeekOfMonth = require('date-fns/getWeekOfMonth');
+var parseISO = require('date-fns/parseISO');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
@@ -54,11 +56,12 @@ app.get('/checkstock/:name', function (req, res) {
 // --------------------------------------------------------------------------------------------------------
 // day
 app.get('/getStock/day/:name/:end/:n', function (req, res) {
+  console.log("getDay");
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
     // var date = format(parseISO(req.params.end), 'DMYY')
     // console.log(req.params.end + " : " + date);
-    var query = ("SELECT * FROM " + req.params.name + " WHERE DATE < " + req.params.end +" ORDER BY DATE DESC LIMIT " + req.params.n);
+    var query = ("SELECT * FROM " + req.params.name + " WHERE DATE < " + req.params.end + " ORDER BY DATE DESC LIMIT " + req.params.n);
     console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
       // console.log(result);
@@ -76,72 +79,89 @@ app.get('/getStock/day/:name/:end/:n', function (req, res) {
 
 // --------------------------------------------------------------------------------------------------------
 //week
-app.get('/getStock/week/:name', function (req, res) {
+app.get('/getStock/week/:name/:end/:n', function (req, res) {
   // Connecting to the database.
+  console.log("getWeek");
   connection.getConnection(function (err, connection) {
-    var query = ("SELECT * FROM " + req.params.name + " ORDER BY DATE DESC LIMIT 700");
-    // console.log("this is SQL : " + query);
+    var query = ("SELECT * FROM " + req.params.name + " WHERE DATE < " + req.params.end + " ORDER BY DATE DESC LIMIT " + req.params.n);
+    console.log("this is SQL : " + query);
+    var WeekOfMonthCurrent, WeekOfMonth;
     var resultWeek = [{
+      TICKER: null,
       OPEN: null,
       CLOSE: null,
-      high: null,
-      low: null,
-      vol: null,
-      date: null,
-      avg: null,
-      monthCount: null,
-
+      HIGH: null,
+      LOW: null,
+      VOL: null,
+      DATE: null,
     }]
     connection.query(query, function (error, result, fields) {
+
+
       var dateFirst = Number.parseInt(result[0].DATE.slice(6, 8), 10);
-      var dayCount = 0;
-      var daySum = 0;
-      var average = 0;
-      var weekCount = 0;
+      dateFirst = result[0].DATE;
+      WeekOfMonthCurrent = getWeekOfMonth(parseISO(result[0].DATE))
+      // console.log(result[0].DATE + " : "+ dateFirst + " : " + WeekOfMonthCurrent);
+
       var i = 0;
       var j = 0;
-      var posX = 50;
+      var high = Number.parseFloat(result[0].HIGH);
+      var low = Number.parseFloat(result[0].LOW);
+      var closeAvg = 0, openAvg = 0;
+      var volSum = 0;
+
+      var dayCount = 0;
       result.forEach(element => {
-        const year = Number.parseInt(result[i].DATE.slice(0, 4), 10);
-        const month = Number.parseInt(result[i].DATE.slice(4, 6), 10);
-        const date = Number.parseInt(result[i].DATE.slice(6, 8), 10);
-
-        if (date - dateFirst >= -6 && date - dateFirst <= 6) {
-          // console.log("date : " + date + "/" + month + "/" + year);
-          // console.log("sum++");
+        WeekOfMonth = getWeekOfMonth(parseISO(result[i].DATE))
+        // console.log(result[i].DATE + " : "+ dateFirst + " : " + WeekOfMonthCurrent + " : " + WeekOfMonth);
+        //   const year = Number.parseInt(result[i].DATE.slice(0, 4), 10);
+        //   const month = Number.parseInt(result[i].DATE.slice(4, 6), 10);
+        //   const date = Number.parseInt(result[i].DATE.slice(6, 8), 10);
+        // console.log(dateFirst);
+        // รับวันมาก่อน แล้วมาดูว่าเป็นอาทิตที่เท่าไหร่ พอได้มาแล้ว 
+        if (WeekOfMonth == WeekOfMonthCurrent) { // เช็ควันในอาทิต
+          volSum += Number.parseFloat(result[i].VOL);
+          closeAvg += Number.parseFloat(result[i].CLOSE);
+          openAvg += Number.parseFloat(result[i].OPEN);
+          if (result[i].HIGH >= high) {
+            high = result[i].HIGH;
+          }
+          if (result[i].LOW <= low) {
+            low = result[i].LOW;
+          }
           dayCount++;
-          daySum += Number.parseFloat(result[i].VOL);
-
         } else {
-          average = daySum / dayCount;
-          // console.log(daySum + " / " + dayCount + " = " + average);
-          // console.log("average : " + average);
-
-          // console.log("END WEEK ")
-          // console.log("date : " + date + "/" + month + "/" + year);
-          dayCount = 1;
-          weekCount++;
-          daySum = daySum = Number.parseFloat(result[i].VOL);
-          dateFirst = date;
-          // console.log("datefirst : " + dateFirst);
-
+          WeekOfMonthCurrent = WeekOfMonth
+          // console.log(result[i].DATE + " : " + WeekOfMonthCurrent + " : " + WeekOfMonth);
+          openAvg = openAvg / dayCount;
+          closeAvg = closeAvg / dayCount;
+          // console.log(" open = " + openAvg + " close = " + closeAvg + " volSum = " + volSum);
           resultWeek[j] = {
-            open: Number.parseFloat(result[i].OPEN),
-            close: Number.parseFloat(result[i].CLOSE),
-            high: Number.parseFloat(result[i].HIGH),
-            low: Number.parseFloat(result[i].LOW),
-            vol: Number.parseFloat(average),
-            date: new Date(year, month - 1, date),
-            avg: average,
-            weekCount: weekCount,
-            positionX: posX,
+            TICKER: result[i].TICKER,
+            OPEN: Number.parseFloat(openAvg), //เฉลี่ย
+            CLOSE: Number.parseFloat(closeAvg),//เฉลี่ย
+            HIGH: Number.parseFloat(high),//สูงสุด
+            LOW: Number.parseFloat(low),//ต่ำสุด
+            VOL: Number.parseFloat(volSum),//sum
+            DATE: dateFirst,//วันแรก
+
           };
+          volSum = Number.parseFloat(result[i].VOL);
+          closeAvg = Number.parseFloat(result[i].CLOSE);
+          openAvg = Number.parseFloat(result[i].OPEN);
+          high = Number.parseFloat(result[i].HIGH);
+          low = Number.parseFloat(result[i].LOW);
+          dayCount = 1;
+          dateFirst = result[i].DATE;
           j++;
-          posX += 50;
+
+
         }
         i++;
       })
 
+
+      // console.log(resultWeek);
       if (error) {
         throw error;
       }
@@ -153,83 +173,96 @@ app.get('/getStock/week/:name', function (req, res) {
 });
 
 // --------------------------------------------------------------------------------------------------------
-//month อ่ออ คืออันที่มึงทำคือ แบบนี้ใช่มะ พอกดปุ่ม day ปุ้ป ก็ไปเรียก
-app.get('/getStock/month/:name', function (req, res) {
+//month 
+app.get('/getStock/month/:name/:end/:n', function (req, res) {
   // Connecting to the database.
+  console.log("getMonth");
   connection.getConnection(function (err, connection) {
-    var query = ("SELECT * FROM " + req.params.name + " ORDER BY DATE DESC LIMIT 3100");
-    // console.log("this is SQL : " + query);
+
+    var query = ("SELECT * FROM " + req.params.name + " WHERE DATE < " + req.params.end + " ORDER BY DATE DESC LIMIT " + req.params.n);
+    console.log("this is SQL : " + query);
+
+    var MonthCurrent, month;
+
     var resultMonth = [{
+      TICKER: null,
       OPEN: null,
       CLOSE: null,
-      high: null,
-      low: null,
-      vol: null,
-      date: null,
-      avg: null,
-      monthCount: null,
-
+      HIGH: null,
+      LOW: null,
+      VOL: null,
+      DATE: null,
     }]
 
     connection.query(query, function (error, result, fields) {
-      console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< START >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-      // console.log("DATE : " + result[0].DATE);
-      var monthCurrent = Number.parseInt(result[0].DATE.slice(4, 6), 10);
-      var dayCount = 0;
-      var daySum = 0;
-      var average = 0;
-      var monthCount = 0;
+
+      var dateFirst = Number.parseInt(result[0].DATE.slice(6, 8), 10);
+      dateFirst = result[0].DATE;
+      MonthCurrent = Number.parseInt(result[0].DATE.slice(4, 6), 10);
+      // console.log(result[0].DATE + " : "+ dateFirst + " : " + WeekOfMonthCurrent);
+
       var i = 0;
       var j = 0;
-      // console.log(result[0]);
+      var high = Number.parseFloat(result[0].HIGH);
+      var low = Number.parseFloat(result[0].LOW);
+      var closeAvg = 0, openAvg = 0;
+      var volSum = 0;
+
+      var dayCount = 0;
       result.forEach(element => {
-        const year = Number.parseInt(result[i].DATE.slice(0, 4), 10);
-        const month = Number.parseInt(result[i].DATE.slice(4, 6), 10);
-        const date = Number.parseInt(result[i].DATE.slice(6, 8), 10);
+        month = Number.parseInt(result[i].DATE.slice(4, 6), 10);
 
-        if (monthCurrent == month) {
-          // console.log("date : " + date + "/" + month + "/" + year);
-          // console.log("sum++");
+        if (month == MonthCurrent) { // เช็ควันในอาทิต
+
+          volSum += Number.parseFloat(result[i].VOL);
+          closeAvg += Number.parseFloat(result[i].CLOSE);
+          openAvg += Number.parseFloat(result[i].OPEN);
+          if (result[i].HIGH >= high) {
+            high = result[i].HIGH;
+          }
+          if (result[i].LOW <= low) {
+            low = result[i].LOW;
+          }
+
           dayCount++;
-          daySum += Number.parseFloat(result[i].VOL);
-
         } else {
-          average = daySum / dayCount;
-          // console.log(daySum + " / " + dayCount + " = " + average);
-          // console.log("average : " + average);
+          MonthCurrent = month
+          // console.log(result[i].DATE + " : " + WeekOfMonthCurrent + " : " + WeekOfMonth);
+          openAvg = openAvg / dayCount;
+          closeAvg = closeAvg / dayCount;
+          // console.log(" open = " + openAvg + " close = " + closeAvg + " volSum = " + volSum);
+          resultMonth[j] = {
+            TICKER: result[i].TICKER,
+            OPEN: Number.parseFloat(openAvg), //เฉลี่ย
+            CLOSE: Number.parseFloat(closeAvg),//เฉลี่ย
+            HIGH: Number.parseFloat(high),//สูงสุด
+            LOW: Number.parseFloat(low),//ต่ำสุด
+            VOL: Number.parseFloat(volSum),//sum
+            DATE: dateFirst,//วันแรก
 
-          // console.log("END MONTH ")
-          monthCount++;
-          // console.log("date : " + date + "/" + month + "/" + year);
+          };
+          volSum = Number.parseFloat(result[i].VOL);
+          closeAvg = Number.parseFloat(result[i].CLOSE);
+          openAvg = Number.parseFloat(result[i].OPEN);
+          high = Number.parseFloat(result[i].HIGH);
+          low = Number.parseFloat(result[i].LOW);
           dayCount = 1;
-          daySum = daySum = Number.parseFloat(result[i].VOL);
-          monthCurrent = month;
-          // console.log("monthCurrent : " + month);
-
-          resultMonth[j] = [{
-            open: Number.parseFloat(result[i].OPEN),
-            close: Number.parseFloat(result[i].CLOSE),
-            high: Number.parseFloat(result[i].HIGH),
-            low: Number.parseFloat(result[i].LOW),
-            vol: Number.parseFloat(result[i].VOL),
-            date: new Date(year, month - 1, date),
-            avg: average,
-            monthCount: monthCount,
-          }];
+          dateFirst = result[i].DATE;
           j++;
+
+
         }
         i++;
       })
 
-      console.log(resultMonth);
 
-
+      // console.log(resultMonth);
       if (error) {
         throw error;
       }
-      // console.log(resultMonth);
+
       // Getting the 'response' from the database and sending it to our route. This is were the data is.
-      res.send(result);
+      res.send(resultMonth);
     });
   });
 });
@@ -239,7 +272,7 @@ app.get('/getStock/month/:name', function (req, res) {
 app.get('/checkFav/:u_id/:ticker', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
-    var query = ("SELECT COUNT(TICKER) AS 'CHECK' FROM favorite where U_ID = '" + req.params.u_id + "' AND TICKER = '" + req.params.ticker+ "'");
+    var query = ("SELECT COUNT(TICKER) AS 'CHECK' FROM favorite where U_ID = '" + req.params.u_id + "' AND TICKER = '" + req.params.ticker + "'");
     // console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
       // console.log(result);
@@ -270,13 +303,13 @@ app.post('/addFav', function (req, res) {
   connection.getConnection(function (err, connection) {
     console.log(req.body.user_id);
     // var today = new Date("d/m/y");
-    
+
 
     var query = ("INSERT INTO favorite (U_ID, TICKER) VALUES ('" + req.body.user_id + "', '" + req.body.ticker + "')");
-    
+
     console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
-      
+
 
       if (error) {
         throw error;
@@ -295,12 +328,12 @@ app.delete('/delFav/:u_id/:ticker', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
     // var today = new Date("d/m/y");
-  
+
     var query = ("DELETE FROM favorite WHERE U_ID = '" + req.params.u_id + "' AND TICKER = '" + req.params.ticker + "'");
-    
+
     console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
-      
+
 
       if (error) {
         throw error;
@@ -320,7 +353,7 @@ app.delete('/delFav/:u_id/:ticker', function (req, res) {
 // Starting our server.
 app.listen(3000, () => {
   console.log(
-    'Go to http://localhost:3000/ticker_name so you can see the data.',
+    'Server Start.',
   );
 });
 

@@ -62,7 +62,7 @@ Return symbolData format
 
 export async function getDayGraph(symbolName, end) {
   try {
-    end = format(end, 'yyyyMMd')
+    end = format(end, 'yyyyMMdd')
     const url = `http://${server}/getStock/day/${symbolName}/${end}/${20}`;
     const response = await fetch(url);
     console.log(url);
@@ -79,11 +79,12 @@ export async function getDayGraph(symbolName, end) {
 
 export async function getWeekGraph(symbolName, end) {
   try {
-    // const url = `http://${server}/getStock/week/${symbolName}`;
-    // const response = await fetch(url);
+    end = format(end, 'yyyyMMdd')
+    const url = `http://${server}/getStock/week/${symbolName}/${end}/${100}`;
+    const response = await fetch(url);
 
-    // const raw = await response.json();
-    const raw = getMockData('week', asDateString(end));
+    const raw = await response.json();
+    // const raw = getMockData('week', asDateString(end));
 
     return raw.map(toDisplayData).slice(-10);
   } catch (error) {
@@ -94,11 +95,12 @@ export async function getWeekGraph(symbolName, end) {
 
 export async function getMonthGraph(symbolName, end) {
   try {
-    // const url = `http://${server}/getStock/month/${symbolName}`;
-    // const response = await fetch(url);
+    end = format(end, 'yyyyMMdd')
+    const url = `http://${server}/getStock/month/${symbolName}/${end}/${300}`;
+    const response = await fetch(url);
 
-    // const raw = await response.json();
-    const raw = getMockData('month', asDateString(end));
+    const raw = await response.json();
+    // const raw = getMockData('month', asDateString(end));
 
     return raw.map(toDisplayData).slice(-10);
   } catch (error) {
