@@ -13,11 +13,11 @@ import {
   getDayGraph,
   getWeekGraph,
   getMonthGraph,
-} from '../service/graphService';
-import {ButtonGraph} from './ButtonGraph';
-import {DetailPanel} from './elements/DetailPanel';
-import {PeriodSelector} from './elements/PeriodSelector';
-import {StockChart} from './elements/StockChart';
+} from '../../service/graphService';
+import {ButtonGraph} from '../ButtonGraph';
+import {DetailPanel} from './DetailPanel';
+import {PeriodSelector} from './PeriodSelector';
+import {StockChart} from './StockChart';
 
 export class GraphPage extends Component {
   constructor(props) {

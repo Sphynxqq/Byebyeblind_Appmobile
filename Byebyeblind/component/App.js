@@ -10,11 +10,12 @@ import {
 
 import Voice from 'react-native-voice';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
+
 import {isSymbolExist} from '../service/graphService';
 import {speak} from '../service/speech';
+
 import {GraphPage} from './GraphPage';
 import {FavoritePage} from './FavoritePage';
-// import {Loginfb} from './Loginfb';
 
 class HomeScreen extends React.Component {
   constructor() {
