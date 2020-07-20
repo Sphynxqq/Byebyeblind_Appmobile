@@ -40,7 +40,7 @@ export class FavoritePage extends Component {
     VoiceListener.setCallback((speechText) => {
       console.log('Home page', speechText);
       if (speechText === 'favorite') {
-        this.props.navigation.navigate('Favorite', '1');
+        // this.props.navigation.navigate('Favorite', '1');
       } else {
         this.go_graph(speechText);
       }
@@ -69,6 +69,7 @@ export class FavoritePage extends Component {
   go_graph(symbol) {
     isSymbolExist(symbol).then((exist) => {
       if (exist) {
+        speak(symbol);
         this.props.navigation.navigate('Graph', { symbol });
       } else {
         alert('Symbol does not exist');
@@ -84,15 +85,15 @@ export class FavoritePage extends Component {
         <TouchableOpacity
           onPress={() => {
             this.onPressMicButton()
-          }}
-          style={styles.bigBtn}>
-          <Image
-            style={styles.sizeImgbtn}
-            source={require('../assets/microphone.png')}
-          />
-          {/* <Text style={styles.btnfont}>Voice</Text> */}
+          }}>
+          <View style={styles.setbtnvoice}>
+            <Image
+              style={styles.sizeImgbtn}
+              source={require('../assets/microphone.png')}
+            />
+            <Text style={styles.btnfont}>Voice</Text>
+          </View>
         </TouchableOpacity>
-
 
       </View>
     );
@@ -104,6 +105,7 @@ export class FavoritePage extends Component {
         <View style={styles.createcard}>
         
           <TouchableOpacity onPress={() => {
+
             this.go_graph(item.TICKER);
           }}>
             <View style={styles.displayIncard}>
@@ -171,18 +173,16 @@ const styles = StyleSheet.create({
     marginLeft: 400,
   },
   seticonbtn: {
-    //flexDirection: 'row',
-    width: 100,
-    height: 100,
-    backgroundColor: '#FBD1A7',
-    borderRadius: 50,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#fffff0',
   },
   sizeImgbtn: {
-    width: 60,
-    height: 60,
-    marginLeft: 20,
-    marginTop: 8,
+    width: 45,
+    height: 45,
+    marginLeft: 5,
+    marginTop: 10,
   },
   btnfont: {
     width: 130,
@@ -193,18 +193,18 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   createcard: {
-    width: 400,
+    width: 500,
     height: 90,
     backgroundColor: '#FBD1A7',
     borderRadius: 20,
     marginTop: 10,
-  },
+  }, 
   displayIncard: {
     flexDirection: 'row',
     alignItems: 'center',
     width: 500,
     height: 90,
-    marginLeft: 110
+    marginLeft: 160
   },
   sizeImgcard: {
     width: 70,
