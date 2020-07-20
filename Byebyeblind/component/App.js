@@ -60,7 +60,7 @@ class HomeScreen extends React.Component {
       if (exist) {
         this.props.navigation.navigate('Graph', {symbol});
       } else {
-        alert('Symbol does not exist');
+        speak('Symbol does not exist');
       }
     });
     // this.props.navigation.navigate('Graph', {symbol});

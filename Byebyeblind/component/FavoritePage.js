@@ -8,19 +8,32 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import {speak, VoiceListener} from '../service/speech';
-import {isSymbolExist} from '../service/graphService';
+import { speak, VoiceListener } from '../service/speech';
+import { isSymbolExist } from '../service/graphService';
+import { getFav } from '../service/favorite';
+import { GraphPage } from './GraphPage';
 
-import {GraphPage} from './GraphPage';
 
 
 
 export class FavoritePage extends Component {
 
-  constructor() {
+  constructor(props) {
+    super(props);
     this.onPressMicButton = this.onPressMicButton.bind(this);
+    console.log("FavoritePage");
+    this.state = {
+      data: [],
+      u_id: '1',
+    };
+
+    this.setFavView = this.setFavView.bind(this);
+
+    this.onPressMicButton = this.onPressMicButton.bind(this);
+    this.go_graph = this.go_graph.bind(this);
+
   }
-  
+
   async onPressMicButton() {
     await VoiceListener.stop();
 
@@ -36,24 +49,44 @@ export class FavoritePage extends Component {
     await VoiceListener.start();
   }
 
+  componentDidMount() {
+    this.setFavView();
+  }
+
+  setFavData(data) {
+    this.setState(() => ({ data }));
+    console.log(this.state.data);
+  }
+
+  setFavView() {
+    getFav(this.state.u_id).then((data) =>
+      this.setFavData(data),
+    );
+  }
+
+ 
+
   go_graph(symbol) {
     isSymbolExist(symbol).then((exist) => {
       if (exist) {
-        this.props.navigation.navigate('Graph', {symbol});
+        this.props.navigation.navigate('Graph', { symbol });
       } else {
         alert('Symbol does not exist');
       }
     });
     // this.props.navigation.navigate('Graph', {symbol});
   }
+  
 
   renderListFooter() {
     return (
       <View style={styles.seticonbtn}>
-        <TouchableOpacity onPress={this.onPressMicButton}>
-          {/*<TouchableOpacity onPress={() => this.go_graph('7up')}>*/}
+        <TouchableOpacity onPress={() => this.onPressMicButton.bind(this)}>
+          {/* <TouchableOpacity onPress={() => this.go_graph('7up')}> */}
           <Image source={require('../assets/iconmicro.png')} />
         </TouchableOpacity>
+
+
 
       </View>
     );
@@ -61,15 +94,15 @@ export class FavoritePage extends Component {
 
   renderItem(item) {
     return (
-      <View style={{ backgroundColor: '#01273C', alignItems: 'center' }}>
+      <View style={{ backgroundColor: '#fffff0', alignItems: 'center' }}>
         <View style={styles.createcard}>
           <View style={styles.displayIncard}>
             {/* <Image
                             style={styles.sizeImgcard}
                             source={require('../assets/bangkokbank.png')}
                         /> เอาค่ามาใส่ตรงนี้ vvvv*/}
-            <Text style={styles.fontcard}>Bangkok Bank</Text>
-            <Text style={styles.fontnumbercard}>168 ฿</Text>
+            <Text style={styles.fontcard}>{item.TICKER}</Text>
+            {/* <Text style={styles.fontnumbercard}>168 ฿</Text> */}
           </View>
         </View>
       </View>
@@ -80,7 +113,7 @@ export class FavoritePage extends Component {
     return (
       <View style={{ padding: 10, flexDirection: 'column' }}>
         <FlatList
-          data={[1, 2, 3, 4, 5, 6]} // รับค่าจาก database 
+          data={this.state.data} // รับค่าจาก database 
           ListFooterComponent={this.renderListFooter}
           renderItem={({ item }) => this.renderItem(item)}
         />
@@ -147,7 +180,7 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   createcard: {
-    width: 500,
+    width: 400,
     height: 90,
     backgroundColor: '#FBD1A7',
     borderRadius: 20,
@@ -158,7 +191,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 500,
     height: 90,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   sizeImgcard: {
     width: 70,

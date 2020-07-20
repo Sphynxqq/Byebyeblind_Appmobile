@@ -38,7 +38,7 @@ app.get('/checkstock/:name', function (req, res) {
     // console.log(req.params);
     var query = ("SELECT COUNT(TICKER) AS 'CHECK' FROM ticker_name WHERE TICKER = '" + req.params.name + "'");
     // console.log("this is name : " + req.params.name);
-    // console.log("this is SQL : " + query);
+    console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
       var check = result[0].CHECK;
       console.log(check);
@@ -273,7 +273,7 @@ app.get('/checkFav/:u_id/:ticker', function (req, res) {
   // Connecting to the database.
   connection.getConnection(function (err, connection) {
     var query = ("SELECT COUNT(TICKER) AS 'CHECK' FROM favorite where U_ID = '" + req.params.u_id + "' AND TICKER = '" + req.params.ticker + "'");
-    // console.log("this is SQL : " + query);
+    console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
       // console.log(result);
       // console.log(result[0]);
@@ -316,7 +316,7 @@ app.post('/addFav', function (req, res) {
       }
 
       // Getting the 'response' from the database and sending it to our route. This is were the data is
-      console.log("success");
+      // console.log("success");
       res.send("success");
     });
   });
@@ -324,12 +324,13 @@ app.post('/addFav', function (req, res) {
 
 // --------------------------------------------------------------------------------------------------------
 
-app.delete('/delFav/:u_id/:ticker', function (req, res) {
+app.post('/delFav', function (req, res) {
   // Connecting to the database.
+  console.log("delFav");
   connection.getConnection(function (err, connection) {
     // var today = new Date("d/m/y");
 
-    var query = ("DELETE FROM favorite WHERE U_ID = '" + req.params.u_id + "' AND TICKER = '" + req.params.ticker + "'");
+    var query = ("DELETE FROM favorite WHERE U_ID = '" + req.body.user_id + "' AND TICKER = '" + req.body.ticker + "'");
 
     console.log("this is SQL : " + query);
     connection.query(query, function (error, result, fields) {
@@ -348,6 +349,27 @@ app.delete('/delFav/:u_id/:ticker', function (req, res) {
 
 // --------------------------------------------------------------------------------------------------------
 
+app.get('/getFav/:u_id', function (req, res) {
+  // Connecting to the database.
+  connection.getConnection(function (err, connection) {
+    // var today = new Date("d/m/y");
+
+    var query = ("SELECT * FROM favorite WHERE U_ID = '" + req.params.u_id + "'");
+
+    console.log("this is SQL : " + query);
+    connection.query(query, function (error, result, fields) {
+
+
+      if (error) {
+        throw error;
+      }
+
+      // Getting the 'response' from the database and sending it to our route. This is were the data is
+      // console.log(result);
+      res.send(result);
+    });
+  });
+});
 
 
 // Starting our server.
@@ -357,84 +379,3 @@ app.listen(3000, () => {
   );
 });
 
-
-
-
-// const resultWeek = result.map(({ S_ID, OPEN, CLOSE, HIGH, LOW, VOL, DATE }) => {
-      //   const year = Number.parseInt(DATE.slice(0, 4), 10);
-      //   const month = Number.parseInt(DATE.slice(4, 6), 10);
-      //   const date = Number.parseInt(DATE.slice(6, 8), 10);
-
-      //   if (date - dateFirst >= -6 && date - dateFirst <= 6) {
-      //     console.log("date : " + date + "/" + month + "/" + year);
-      //     console.log("sum++");
-      //     dayCount++;
-      //     daySum += Number.parseFloat(VOL);
-
-      //   } else {
-      //     average = daySum / dayCount;
-      //     console.log(daySum + " / " + dayCount + " = " + average);
-      //     console.log("average : " + average);
-
-      //     console.log("END WEEK ")
-      //     console.log("date : " + date + "/" + month + "/" + year);
-      //     dayCount = 1;
-      //     weekCount++;
-      //     daySum = daySum = Number.parseFloat(VOL);
-      //     dateFirst = date;
-      //     console.log("datefirst : " + dateFirst);
-      //     return {
-      //       open: Number.parseFloat(OPEN),
-      //       close: Number.parseFloat(CLOSE),
-      //       high: Number.parseFloat(HIGH),
-      //       low: Number.parseFloat(LOW),
-      //       vol: Number.parseFloat(VOL),
-      //       date: new Date(year, month - 1, date),
-      //       avg: average,
-      //       weekCount: weekCount,
-      //     };
-      //   }
-
-      // })
-      // resultWeek.map(console.log(resultWeek)); 
-
-      // console.log(resultWeek);
-
-
-      // const resultMonth = result.map(({ S_ID, OPEN, CLOSE, HIGH, LOW, VOL, DATE }) => {
-      //   const year = Number.parseInt(DATE.slice(0, 4), 10);
-      //   const month = Number.parseInt(DATE.slice(4, 6), 10);
-      //   const date = Number.parseInt(DATE.slice(6, 8), 10);
-
-      //   if (monthCurrent == month) {
-      //     // console.log("date : " + date + "/" + month + "/" + year);
-      //     // console.log("sum++");
-      //     dayCount++;
-      //     daySum += Number.parseFloat(VOL);
-
-      //   } else {
-      //     average = daySum / dayCount;
-      //     // console.log(daySum + " / " + dayCount + " = " + average);
-      //     // console.log("average : " + average);
-
-      //     // console.log("END MONTH ")
-      //     monthCount++;
-      //     // console.log("date : " + date + "/" + month + "/" + year);
-      //     dayCount = 1;
-      //     daySum = Number.parseFloat(VOL);
-      //     monthCurrent = month;
-      //     // console.log("monthCurrent : " + month);
-
-      //     return {
-      //       open: Number.parseFloat(OPEN),
-      //       close: Number.parseFloat(CLOSE),
-      //       high: Number.parseFloat(HIGH),
-      //       low: Number.parseFloat(LOW),
-      //       vol: Number.parseFloat(VOL),
-      //       date: new Date(year, month - 1, date),
-      //       avg: average,
-      //       monthCount: monthCount,
-      //     };
-      //   }
-
-      // })

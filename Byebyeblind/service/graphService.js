@@ -62,8 +62,10 @@ Return symbolData format
 
 export async function getDayGraph(symbolName, end) {
   try {
+    console.log(end);
+    
     end = format(end, 'yyyyMMdd')
-    const url = `http://${server}/getStock/day/${symbolName}/${end}/${20}`;
+    const url = `http://${server}/getStock/day/${symbolName}/${end}/${10}`;
     const response = await fetch(url);
     console.log(url);
     const raw = await response.json();

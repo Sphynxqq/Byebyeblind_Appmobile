@@ -1,6 +1,6 @@
 import format from 'date-fns/format';
-import React, {Component} from 'react';
-import {View, SafeAreaView, PanResponder} from 'react-native';
+import React, { Component } from 'react';
+import { View, SafeAreaView, PanResponder } from 'react-native';
 import Svg from 'react-native-svg';
 
 import addDays from 'date-fns/addDays';
@@ -8,19 +8,20 @@ import addWeeks from 'date-fns/addWeeks';
 import addMonths from 'date-fns/addMonths';
 import getWeekOfMonth from 'date-fns/getWeekOfMonth';
 
-import {Text} from 'victory-native';
+import { Text } from 'victory-native';
 
 import {
   getDayGraph,
   getWeekGraph,
   getMonthGraph,
+  isSymbolExist,
 } from '../../service/graphService';
-import {speak, VoiceListener} from '../../service/speech';
-import {ButtonGraph} from './ButtonGraph';
-import {DetailPanel} from './DetailPanel';
-import {Chart} from './Chart';
-import {TopBar} from './TopBar';
-import {checkFav, addFav, delFav} from '../../service/favorite';
+import { speak, VoiceListener } from '../../service/speech';
+import { ButtonGraph } from './ButtonGraph';
+import { DetailPanel } from './DetailPanel';
+import { Chart } from './Chart';
+import { TopBar } from './TopBar';
+import { checkFav, addFav, delFav } from '../../service/favorite';
 
 export class GraphPage extends Component {
   constructor(props) {
@@ -58,16 +59,16 @@ export class GraphPage extends Component {
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (ev, gs) => true,
       onMoveShouldSetPanResponderCapture: (ev, gs) => true,
-      onPanResponderMove: (ev, gs) => {},
+      onPanResponderMove: (ev, gs) => { },
     });
   }
 
   mapToDisplayData(symbolData, viewMode) {
     const displayData = symbolData.map((d) => {
-      return {x: d.date, y: d.high};
+      return { x: d.date, y: d.high };
     });
 
-    this.setState(() => ({symbolData, displayData, viewMode}));
+    this.setState(() => ({ symbolData, displayData, viewMode }));
   }
 
   setDayView() {
@@ -102,11 +103,11 @@ export class GraphPage extends Component {
     this.setState(
       () => {
         if (this.state.viewMode === 'day') {
-          return {endDate: addMonths(this.state.endDate, amount)};
+          return { endDate: addMonths(this.state.endDate, amount) };
         } else if (this.state.viewMode === 'week') {
-          return {endDate: addWeeks(this.state.endDate, amount)};
+          return { endDate: addWeeks(this.state.endDate, amount) };
         } else if (this.state.viewMode === 'month') {
-          return {endDate: addDays(this.state.endDate, amount)};
+          return { endDate: addDays(this.state.endDate, amount) };
         }
       },
       () => this.updateGraph(),
@@ -120,17 +121,26 @@ export class GraphPage extends Component {
   next() {
     this.jump(1);
   }
-  
+
   async onVoice() {
     await VoiceListener.stop();
     VoiceListener.setCallback((text) => {
+
+
       if (text === 'favorite') {
         this.props.navigation.navigate('favorite', '01');
       } else {
-        this.setState(
-          () => ({symbol: text}),
-          () => this.setDayView(),
-        );
+        isSymbolExist(text).then((exist) => {
+          if (exist) {
+            this.setState(
+              () => ({ symbol: text }),
+              () => this.setDayView(),
+            );
+          } else {
+            speak('Symbol does not exist');
+          }
+        });
+
       }
     });
     await VoiceListener.start();
@@ -142,19 +152,19 @@ export class GraphPage extends Component {
   }
 
   async onFavorite() {
-    checkFav('01', this.state.symbol).then((exist) => {
-      console.log(exist);
+    checkFav('1', this.state.symbol).then((exist) => {
+      console.log("exit : " + exist);
       if (exist) {
-        delFav('01', this.state.symbol);
+        delFav('1', this.state.symbol);
       } else {
-        addFav('01', this.state.symbol);
+        addFav('1', this.state.symbol);
       }
     });
   }
 
   setChartDimension(event) {
-    const {width: chartWidth, height: chartHeight} = event.nativeEvent.layout;
-    this.setState(() => ({chartWidth, chartHeight}));
+    const { width: chartWidth, height: chartHeight } = event.nativeEvent.layout;
+    this.setState(() => ({ chartWidth, chartHeight }));
   }
 
   onScatterClick(index) {
@@ -163,7 +173,7 @@ export class GraphPage extends Component {
     if (this.state.viewMode === 'day') {
       speakText = `${format(data.date, 'MMMM d, yyyy')}. Price, ${
         data.high
-      } Baht`;
+        } Baht`;
     } else if (this.state.viewMode === 'week') {
       speakText = `Week ${getWeekOfMonth(data.date)} of ${format(
         data.date,
@@ -172,10 +182,10 @@ export class GraphPage extends Component {
     } else if (this.state.viewMode === 'month') {
       speakText = `${format(data.date, 'MMMM, yyyy')}. Price, ${
         data.high
-      } Baht`;
+        } Baht`;
     }
     speak(speakText);
-    this.setState(() => ({detailDisplayIndex: index}));
+    this.setState(() => ({ detailDisplayIndex: index }));
   }
 
   render() {
@@ -193,8 +203,8 @@ export class GraphPage extends Component {
           onScatterClick={this.onScatterClick}
         />
       ) : (
-        <Text>No Data</Text>
-      );
+          <Text>No Data</Text>
+        );
 
     return (
       <View
