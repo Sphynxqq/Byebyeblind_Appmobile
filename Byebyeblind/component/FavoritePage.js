@@ -28,7 +28,7 @@ export class FavoritePage extends Component {
     };
 
     this.setFavView = this.setFavView.bind(this);
-
+    this.renderListFooter = this.renderListFooter.bind(this);
     this.onPressMicButton = this.onPressMicButton.bind(this);
     this.go_graph = this.go_graph.bind(this);
 
@@ -64,7 +64,7 @@ export class FavoritePage extends Component {
     );
   }
 
- 
+
 
   go_graph(symbol) {
     isSymbolExist(symbol).then((exist) => {
@@ -76,12 +76,12 @@ export class FavoritePage extends Component {
     });
     // this.props.navigation.navigate('Graph', {symbol});
   }
-  
+
 
   renderListFooter() {
     return (
       <View style={styles.seticonbtn}>
-        <TouchableOpacity onPress={() => this.onPressMicButton.bind(this)}>
+        <TouchableOpacity onPress={() => this.onPressMicButton()}>
           {/* <TouchableOpacity onPress={() => this.go_graph('7up')}> */}
           <Image source={require('../assets/iconmicro.png')} />
         </TouchableOpacity>
@@ -113,7 +113,7 @@ export class FavoritePage extends Component {
     return (
       <View style={{ padding: 10, flexDirection: 'column' }}>
         <FlatList
-          data={this.state.data} // รับค่าจาก database 
+          data={this.state.data} // รับค่าจาก database
           ListFooterComponent={this.renderListFooter}
           renderItem={({ item }) => this.renderItem(item)}
         />
