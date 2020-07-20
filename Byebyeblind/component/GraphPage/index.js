@@ -23,6 +23,7 @@ import { Chart } from './Chart';
 import { TopBar } from './TopBar';
 import { checkFav, addFav, delFav } from '../../service/favorite';
 
+
 export class GraphPage extends Component {
   constructor(props) {
     super(props);
@@ -103,11 +104,11 @@ export class GraphPage extends Component {
     this.setState(
       () => {
         if (this.state.viewMode === 'day') {
-          return { endDate: addMonths(this.state.endDate, amount) };
+          return { endDate: addDays(this.state.endDate, amount) };
         } else if (this.state.viewMode === 'week') {
           return { endDate: addWeeks(this.state.endDate, amount) };
         } else if (this.state.viewMode === 'month') {
-          return { endDate: addDays(this.state.endDate, amount) };
+          return { endDate: addMonths(this.state.endDate, amount) };
         }
       },
       () => this.updateGraph(),
@@ -128,7 +129,7 @@ export class GraphPage extends Component {
 
 
       if (text === 'favorite') {
-        this.props.navigation.navigate('favorite', '01');
+        this.props.navigation.navigate('Favorite', '1');
       } else {
         isSymbolExist(text).then((exist) => {
           if (exist) {

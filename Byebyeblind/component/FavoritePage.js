@@ -40,7 +40,7 @@ export class FavoritePage extends Component {
     VoiceListener.setCallback((speechText) => {
       console.log('Home page', speechText);
       if (speechText === 'favorite') {
-        this.props.navigation.navigate('Favorite', '01');
+        this.props.navigation.navigate('Favorite', '1');
       } else {
         this.go_graph(speechText);
       }
@@ -77,15 +77,21 @@ export class FavoritePage extends Component {
     // this.props.navigation.navigate('Graph', {symbol});
   }
 
-
+  // this.onPressMicButton()
   renderListFooter() {
     return (
       <View style={styles.seticonbtn}>
-        <TouchableOpacity onPress={() => this.onPressMicButton()}>
-          {/* <TouchableOpacity onPress={() => this.go_graph('7up')}> */}
-          <Image source={require('../assets/iconmicro.png')} />
+        <TouchableOpacity
+          onPress={() => {
+            this.onPressMicButton()
+          }}
+          style={styles.bigBtn}>
+          <Image
+            style={styles.sizeImgbtn}
+            source={require('../assets/microphone.png')}
+          />
+          {/* <Text style={styles.btnfont}>Voice</Text> */}
         </TouchableOpacity>
-
 
 
       </View>
@@ -96,14 +102,19 @@ export class FavoritePage extends Component {
     return (
       <View style={{ backgroundColor: '#fffff0', alignItems: 'center' }}>
         <View style={styles.createcard}>
-          <View style={styles.displayIncard}>
-            {/* <Image
+        
+          <TouchableOpacity onPress={() => {
+            this.go_graph(item.TICKER);
+          }}>
+            <View style={styles.displayIncard}>
+              {/* <Image
                             style={styles.sizeImgcard}
                             source={require('../assets/bangkokbank.png')}
                         /> เอาค่ามาใส่ตรงนี้ vvvv*/}
-            <Text style={styles.fontcard}>{item.TICKER}</Text>
-            {/* <Text style={styles.fontnumbercard}>168 ฿</Text> */}
-          </View>
+              <Text style={styles.fontcard}>{item.TICKER}</Text>
+              {/* <Text style={styles.fontnumbercard}>168 ฿</Text> */}
+            </View> 
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -160,16 +171,18 @@ const styles = StyleSheet.create({
     marginLeft: 400,
   },
   seticonbtn: {
-    flexDirection: 'row',
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#01273C',
+    //flexDirection: 'row',
+    width: 100,
+    height: 100,
+    backgroundColor: '#FBD1A7',
+    borderRadius: 50,
+    justifyContent: 'center',
   },
   sizeImgbtn: {
-    width: 45,
-    height: 45,
-    marginLeft: 5,
-    marginTop: 10,
+    width: 60,
+    height: 60,
+    marginLeft: 20,
+    marginTop: 8,
   },
   btnfont: {
     width: 130,
@@ -191,7 +204,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 500,
     height: 90,
-    justifyContent: 'flex-start',
+    marginLeft: 110
   },
   sizeImgcard: {
     width: 70,
